@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/URP/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/space-exploration-roguelite/Scenes/Menu.unity
+    guid: 72aca7203004a164e95e145dee5f1bff
+  - enabled: 1
+    path: Assets/space-exploration-roguelite/Scenes/Game.unity
+    guid: e989d8d76218af9409a669e8eca3aad2
   m_configObjects: {}
