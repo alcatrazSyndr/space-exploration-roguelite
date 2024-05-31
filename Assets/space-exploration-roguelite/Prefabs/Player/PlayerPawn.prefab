@@ -219,6 +219,8 @@ MonoBehaviour:
   _componentIndexCache: 1
   _addedNetworkObject: {fileID: 8654876999964684564}
   _networkObjectCache: {fileID: 8654876999964684564}
+  _rigidbody: {fileID: 4704757852479088121}
+  _setup: 0
 --- !u!54 &4704757852479088121
 Rigidbody:
   m_ObjectHideFlags: 0

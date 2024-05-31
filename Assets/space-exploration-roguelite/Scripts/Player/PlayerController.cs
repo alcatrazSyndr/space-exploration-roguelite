@@ -157,6 +157,10 @@ namespace SpaceExplorationRoguelite
             if (_playerInputController != null)
             {
                 _playerInputController.Setup();
+
+                _playerInputController.OnCameraInputChanged.AddListener(CameraInputChanged);
+                _playerInputController.OnMovementInputChanged.AddListener(MovementInputChanged);
+                _playerInputController.OnInteractInputPerformed.AddListener(InteractInput);
             }
         }
 
@@ -169,9 +173,37 @@ namespace SpaceExplorationRoguelite
 
             if (_playerInputController != null)
             {
+                _playerInputController.OnCameraInputChanged.RemoveListener(CameraInputChanged);
+                _playerInputController.OnMovementInputChanged.RemoveListener(MovementInputChanged);
+                _playerInputController.OnInteractInputPerformed.RemoveListener(InteractInput);
+
                 _playerInputController.Unsetup();
                 Destroy(_playerInputController.gameObject);
                 _playerInputController = null;
+            }
+        }
+
+        private void CameraInputChanged(Vector2 inputDelta)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+        }
+
+        private void MovementInputChanged(Vector2 input)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+        }
+
+        private void InteractInput()
+        {
+            if (!base.IsOwner)
+            {
+                return;
             }
         }
 
