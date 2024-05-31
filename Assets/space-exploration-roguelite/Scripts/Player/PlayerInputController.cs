@@ -1,9 +1,8 @@
-using FishNet.Object;
 using UnityEngine;
 
 namespace SpaceExplorationRoguelite
 {
-    public class PlayerPawnController : NetworkBehaviour
+    public class PlayerInputController : MonoBehaviour
     {
         [Header("Runtime")]
         [SerializeField] private bool _setup = false;

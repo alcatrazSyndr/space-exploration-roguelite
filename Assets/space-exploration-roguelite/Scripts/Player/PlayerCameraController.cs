@@ -1,18 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCameraController : MonoBehaviour
+namespace SpaceExplorationRoguelite
 {
-    // Start is called before the first frame update
-    void Start()
+    public class PlayerCameraController : MonoBehaviour
     {
-        
-    }
+        [Header("Runtime")]
+        [SerializeField] private bool _setup = false;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        #region Setup/Unsetup
+
+        public void Setup()
+        {
+            if (_setup)
+            {
+                return;
+            }
+            _setup = true;
+        }
+
+        public void Unsetup()
+        {
+            if (!_setup)
+            {
+                return;
+            }
+            _setup = false;
+        }
+
+        #endregion
     }
 }
