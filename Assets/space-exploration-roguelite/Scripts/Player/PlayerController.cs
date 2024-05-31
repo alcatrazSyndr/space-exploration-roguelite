@@ -197,6 +197,13 @@ namespace SpaceExplorationRoguelite
             {
                 return;
             }
+
+            if (PlayerPawnController.Value != null)
+            {
+                var movementVector = new Vector3(input.x, 0f, input.y);
+
+                PlayerPawnController.Value.MovementInputChange(movementVector);
+            }
         }
 
         private void InteractInput()

@@ -44,3 +44,118 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfdfdd60a6ea6c04cb40648b929f14b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interactInputCooldown: 0.5
+  _movementInput:
+    m_Name: Movement Input
+    m_Type: 0
+    m_ExpectedControlType: Vector2
+    m_Id: 3bdc00ce-d7e5-4e8c-b3fb-30271a0f736b
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: Keyboard
+      m_Id: 4b4490df-3ee0-4c9f-a949-580a76d6a9d3
+      m_Path: 2DVector
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Movement Input
+      m_Flags: 4
+    - m_Name: up
+      m_Id: 29ac4cf0-7031-4d15-8b38-3f57aeb83d0f
+      m_Path: <Keyboard>/w
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Movement Input
+      m_Flags: 8
+    - m_Name: down
+      m_Id: e99b9b9b-c31d-475e-a0cc-3e03b7eec059
+      m_Path: <Keyboard>/s
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Movement Input
+      m_Flags: 8
+    - m_Name: left
+      m_Id: a9cc4d28-c5b1-4587-8401-3b8af251b4c6
+      m_Path: <Keyboard>/a
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Movement Input
+      m_Flags: 8
+    - m_Name: right
+      m_Id: ed1788c4-562a-4711-ae17-33d9e53b290f
+      m_Path: <Keyboard>/d
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Movement Input
+      m_Flags: 8
+    m_Flags: 0
+  _cameraXInput:
+    m_Name: Camera X Input
+    m_Type: 0
+    m_ExpectedControlType: Axis
+    m_Id: e417b38e-1e21-4491-a906-50aec19b71ee
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: b7709792-1d19-44a2-a2a0-8da47dbd8cb3
+      m_Path: <Mouse>/delta/x
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Camera X Input
+      m_Flags: 0
+    m_Flags: 0
+  _cameraYInput:
+    m_Name: Camera Y Input
+    m_Type: 0
+    m_ExpectedControlType: Axis
+    m_Id: f2673722-78fd-4c28-b730-5a004339fff4
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: d671e339-2dba-4782-805c-6a2fbd783593
+      m_Path: <Mouse>/delta/y
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Camera Y Input
+      m_Flags: 0
+    m_Flags: 0
+  _interactInput:
+    m_Name: Interact Input
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: 97b1ef6e-9a2a-4dee-ba7c-4f88debb240a
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: ca72502b-a5b3-41d7-acdb-e66242f93662
+      m_Path: <Keyboard>/f
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Interact Input
+      m_Flags: 0
+    m_Flags: 0
+  _setup: 0
+  _canInteractInput: 1
+  _interactInputCurrentCooldown: 0
+  _currentCameraInput: {x: 0, y: 0}
+  _currentMovementInput: {x: 0, y: 0}
+  OnCameraInputChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnMovementInputChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInteractInputPerformed:
+    m_PersistentCalls:
+      m_Calls: []
