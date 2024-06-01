@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 312361843578573223}
   - component: {fileID: 6164663298886641741}
   - component: {fileID: 4704757852479088121}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PlayerPawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
