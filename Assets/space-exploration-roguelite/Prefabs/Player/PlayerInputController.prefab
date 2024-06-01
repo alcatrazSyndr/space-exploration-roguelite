@@ -145,11 +145,63 @@ MonoBehaviour:
       m_Action: Interact Input
       m_Flags: 0
     m_Flags: 0
+  _jumpInput:
+    m_Name: Jump Input
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: e06a8950-65d8-49ca-b499-cdd72be1455b
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  _crouchInput:
+    m_Name: Crouch Input
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: fcb66d6f-9139-4fb2-8b5a-a2c174b9865d
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  _leanInput:
+    m_Name: Lean Input
+    m_Type: 0
+    m_ExpectedControlType: Axis
+    m_Id: 472db5ff-016d-4443-b44a-976e8f16c3d8
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: Keyboard
+      m_Id: 62588348-4713-4ec8-89a1-0dff48f9f2bc
+      m_Path: 1DAxis
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Lean Input
+      m_Flags: 4
+    - m_Name: negative
+      m_Id: 6a430c93-4b9e-48bf-a0df-ddfcc373269d
+      m_Path: <Keyboard>/q
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Lean Input
+      m_Flags: 8
+    - m_Name: positive
+      m_Id: 146364ca-0ac4-43dc-a1df-aa2ce7387994
+      m_Path: <Keyboard>/e
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Lean Input
+      m_Flags: 8
+    m_Flags: 0
   _setup: 0
   _canInteractInput: 1
   _interactInputCurrentCooldown: 0
   _currentCameraInput: {x: 0, y: 0}
   _currentMovementInput: {x: 0, y: 0}
+  _currentLeanInput: 0
   OnCameraInputChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -157,5 +209,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnInteractInputPerformed:
+    m_PersistentCalls:
+      m_Calls: []
+  OnLeanInputChanged:
     m_PersistentCalls:
       m_Calls: []

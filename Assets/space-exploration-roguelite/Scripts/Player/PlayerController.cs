@@ -6,6 +6,10 @@ namespace SpaceExplorationRoguelite
 {
     public class PlayerController : NetworkBehaviour
     {
+        [Header("Data - Client")]
+        [SerializeField] private float _playerCameraPositionSmoothing = 1f;
+        [SerializeField] private float _playerCameraRotationSmoothing = 1f;
+
         [Header("Prefabs - Client")]
         [SerializeField] private GameObject _playerCameraControllerPrefab;
         [SerializeField] private GameObject _playerInputControllerPrefab;
@@ -96,8 +100,8 @@ namespace SpaceExplorationRoguelite
         {
             if (_playerCameraController != null && _playerPawnTransform != null)
             {
-                _playerCameraController.transform.position = _playerPawnTransform.position;
-                _playerCameraController.transform.rotation = _playerPawnTransform.rotation;
+                _playerCameraController.transform.position = Vector3.Lerp(_playerCameraController.transform.position, _playerPawnTransform.position, Time.deltaTime * _playerCameraPositionSmoothing);
+                _playerCameraController.transform.rotation = Quaternion.Lerp(_playerCameraController.transform.rotation, _playerPawnTransform.rotation, Time.deltaTime * _playerCameraRotationSmoothing);
             }
         }
 
@@ -189,6 +193,15 @@ namespace SpaceExplorationRoguelite
             {
                 return;
             }
+
+            if (PlayerPawnController.Value != null && _playerInputController != null && _playerCameraController != null)
+            {
+                var rotationInputVector = new Vector3(-inputDelta.y, inputDelta.x, 0f);
+
+                PlayerPawnController.Value.RotationInputChange(rotationInputVector);
+
+                MovementInputChanged(_playerInputController.CurrentMovementInput);
+            }
         }
 
         private void MovementInputChanged(Vector2 input)
@@ -198,9 +211,10 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (PlayerPawnController.Value != null)
+            if (PlayerPawnController.Value != null && _playerCameraController != null)
             {
-                var movementVector = new Vector3(input.x, 0f, input.y);
+                var movementInputVector = new Vector3(input.x, 0f, input.y);
+                var movementVector = _playerCameraController.CameraRelativeMovementInput(movementInputVector);
 
                 PlayerPawnController.Value.MovementInputChange(movementVector);
             }

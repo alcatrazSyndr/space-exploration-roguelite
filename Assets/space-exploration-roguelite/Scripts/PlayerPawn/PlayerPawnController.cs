@@ -7,7 +7,9 @@ namespace SpaceExplorationRoguelite
     {
         [Header("Data")]
         [SerializeField] private float _moveRate = 1f;
-        [SerializeField] private float _accelerationRate = 1f;
+        [SerializeField] private float _movementAccelerationRate = 1f;
+        [SerializeField] private float _rotationRate = 1f;
+        [SerializeField] private float _rotationDeaccelerationRate = 1f;
 
         [Header("Components")]
         [SerializeField] private Rigidbody _rigidbody;
@@ -16,6 +18,7 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private bool _setup = false;
         [SerializeField] private Vector3 _currentMovementInput = Vector3.zero;
         [SerializeField] private Vector3 _currentMovementVector = Vector3.zero;
+        [SerializeField] private Vector3 _currentRotationInput = Vector3.zero;
         [SerializeField] private float _tickDelta = 0f;
 
         #region Setup/Unsetup/OnTick
@@ -72,10 +75,15 @@ namespace SpaceExplorationRoguelite
                     _currentMovementVector = _currentMovementInput;
                 }
 
-                _currentMovementVector = Vector3.Lerp(_currentMovementVector, _currentMovementInput, _tickDelta * _accelerationRate);
+                _currentMovementVector = Vector3.Lerp(_currentMovementVector, _currentMovementInput, _tickDelta * _movementAccelerationRate);
             }
 
             _rigidbody.velocity = _currentMovementVector * _moveRate;
+
+            if (_rigidbody.angularVelocity != Vector3.zero)
+            {
+                _rigidbody.angularVelocity = Vector3.Lerp(_rigidbody.angularVelocity, Vector3.zero, _tickDelta * _rotationDeaccelerationRate);
+            }
         }
 
         #endregion
@@ -92,6 +100,25 @@ namespace SpaceExplorationRoguelite
             if (_currentMovementInput != movementInput)
             {
                 _currentMovementInput = movementInput;
+            }
+        }
+
+        #endregion
+
+        #region Rotation
+
+        public void RotationInputChange(Vector3 rotationInput)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (_currentRotationInput != rotationInput)
+            {
+                _currentRotationInput = rotationInput;
+
+                _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(_currentRotationInput * _rotationRate));
             }
         }
 

@@ -14,6 +14,9 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private InputAction _cameraXInput;
         [SerializeField] private InputAction _cameraYInput;
         [SerializeField] private InputAction _interactInput;
+        [SerializeField] private InputAction _jumpInput;
+        [SerializeField] private InputAction _crouchInput;
+        [SerializeField] private InputAction _leanInput;
 
         [Header("Runtime")]
         [SerializeField] private bool _setup = false;
@@ -21,11 +24,20 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private float _interactInputCurrentCooldown = 0f;
         [SerializeField] private Vector2 _currentCameraInput = Vector2.zero;
         [SerializeField] private Vector2 _currentMovementInput = Vector2.zero;
+        public Vector2 CurrentMovementInput
+        {
+            get
+            {
+                return _currentMovementInput;
+            }
+        }
+        [SerializeField] private float _currentLeanInput = 0f;
 
         [Header("Events")]
         public UnityEvent<Vector2> OnCameraInputChanged = new UnityEvent<Vector2>();
         public UnityEvent<Vector2> OnMovementInputChanged = new UnityEvent<Vector2>();
         public UnityEvent OnInteractInputPerformed = new UnityEvent();
+        public UnityEvent<float> OnLeanInputChanged = new UnityEvent<float>();
 
         #region Setup/Unsetup/Update
 
@@ -176,6 +188,30 @@ namespace SpaceExplorationRoguelite
             _currentMovementInput = context.ReadValue<Vector2>();
 
             OnMovementInputChanged?.Invoke(_currentMovementInput);
+        }
+
+        #endregion
+
+        #region Lean Input
+
+        private void InitializeLeanInput()
+        {
+
+        }
+
+        private void DeinitializeLeanInput()
+        {
+
+        }
+
+        public void ToggleLeanInput(bool toggle)
+        {
+
+        }
+
+        private void LeanInputChanged(InputAction.CallbackContext context)
+        {
+
         }
 
         #endregion

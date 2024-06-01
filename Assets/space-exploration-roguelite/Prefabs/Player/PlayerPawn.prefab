@@ -219,12 +219,16 @@ MonoBehaviour:
   _componentIndexCache: 1
   _addedNetworkObject: {fileID: 8654876999964684564}
   _networkObjectCache: {fileID: 8654876999964684564}
-  _moveRate: 2
-  _accelerationRate: 5
+  _moveRate: 5
+  _movementAccelerationRate: 5
+  _rotationRate: 0.02
+  _rotationAccelerationRate: 12
   _rigidbody: {fileID: 4704757852479088121}
   _setup: 0
   _currentMovementInput: {x: 0, y: 0, z: 0}
   _currentMovementVector: {x: 0, y: 0, z: 0}
+  _currentRotationInput: {x: 0, y: 0, z: 0}
+  _currentRotationVector: {x: 0, y: 0, z: 0}
   _tickDelta: 0
 --- !u!54 &4704757852479088121
 Rigidbody:

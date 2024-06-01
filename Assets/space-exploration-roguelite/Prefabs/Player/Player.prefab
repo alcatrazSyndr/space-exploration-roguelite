@@ -48,6 +48,8 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 8675458889673068003}
   _networkObjectCache: {fileID: 8675458889673068003}
+  _playerCameraPositionSmoothing: 30
+  _playerCameraRotationSmoothing: 30
   _playerCameraControllerPrefab: {fileID: 6791494623819224354, guid: 5a9a30c8eedbc9745b9858b84ac71cf4,
     type: 3}
   _playerInputControllerPrefab: {fileID: 8217843237535254239, guid: 943ac2a711fdab248943b0bcc89f5eba,
@@ -97,7 +99,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 0
+  <PrefabId>k__BackingField: 1
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
