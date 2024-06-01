@@ -10,6 +10,7 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private float _movementAccelerationRate = 1f;
         [SerializeField] private float _rotationRate = 1f;
         [SerializeField] private float _rotationDeaccelerationRate = 1f;
+        [SerializeField] private float _leanRate = 1f;
 
         [Header("Components")]
         [SerializeField] private Rigidbody _rigidbody;
@@ -19,6 +20,7 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private Vector3 _currentMovementInput = Vector3.zero;
         [SerializeField] private Vector3 _currentMovementVector = Vector3.zero;
         [SerializeField] private Vector3 _currentRotationInput = Vector3.zero;
+        [SerializeField] private float _currentLeanInput = 0f;
         [SerializeField] private float _tickDelta = 0f;
 
         #region Setup/Unsetup/OnTick
@@ -84,6 +86,11 @@ namespace SpaceExplorationRoguelite
             {
                 _rigidbody.angularVelocity = Vector3.Lerp(_rigidbody.angularVelocity, Vector3.zero, _tickDelta * _rotationDeaccelerationRate);
             }
+
+            if (_currentLeanInput != 0f)
+            {
+                _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(new Vector3(0f, 0f, -_currentLeanInput) * _leanRate));
+            }
         }
 
         #endregion
@@ -119,6 +126,19 @@ namespace SpaceExplorationRoguelite
                 _currentRotationInput = rotationInput;
 
                 _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(_currentRotationInput * _rotationRate));
+            }
+        }
+
+        public void LeanInputChange(float leanInput)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (_currentLeanInput != leanInput)
+            {
+                _currentLeanInput = leanInput;
             }
         }
 

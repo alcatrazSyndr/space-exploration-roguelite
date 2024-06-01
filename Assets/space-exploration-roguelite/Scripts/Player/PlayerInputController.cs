@@ -7,7 +7,7 @@ namespace SpaceExplorationRoguelite
     public class PlayerInputController : MonoBehaviour
     {
         [Header("Data")]
-        [SerializeField] private float _interactInputCooldown = 0.5f;
+        [SerializeField] private float _interactInputCooldown = 0.2f;
 
         [Header("Input Actions")]
         [SerializeField] private InputAction _movementInput;
@@ -23,6 +23,13 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private bool _canInteractInput = true;
         [SerializeField] private float _interactInputCurrentCooldown = 0f;
         [SerializeField] private Vector2 _currentCameraInput = Vector2.zero;
+        public Vector2 CurrentCameraInput
+        {
+            get
+            {
+                return _currentCameraInput;
+            }
+        }
         [SerializeField] private Vector2 _currentMovementInput = Vector2.zero;
         public Vector2 CurrentMovementInput
         {
@@ -32,12 +39,37 @@ namespace SpaceExplorationRoguelite
             }
         }
         [SerializeField] private float _currentLeanInput = 0f;
+        public float CurrentLeanInput
+        {
+            get
+            {
+                return _currentLeanInput;
+            }
+        }
+        [SerializeField] private bool _currentJumpInput = false;
+        public bool CurrentJumpInput
+        {
+            get
+            {
+                return _currentJumpInput;
+            }
+        }
+        [SerializeField] private bool _currentCrouchInput = false;
+        public bool CurrentCrouchInput
+        {
+            get
+            {
+                return _currentCrouchInput;
+            }
+        }
 
         [Header("Events")]
         public UnityEvent<Vector2> OnCameraInputChanged = new UnityEvent<Vector2>();
         public UnityEvent<Vector2> OnMovementInputChanged = new UnityEvent<Vector2>();
         public UnityEvent OnInteractInputPerformed = new UnityEvent();
         public UnityEvent<float> OnLeanInputChanged = new UnityEvent<float>();
+        public UnityEvent<bool> OnJumpInputChanged = new UnityEvent<bool>();
+        public UnityEvent<bool> OnCrouchInputChanged = new UnityEvent<bool>();
 
         #region Setup/Unsetup/Update
 
@@ -57,6 +89,15 @@ namespace SpaceExplorationRoguelite
 
             InitializeMovementInput();
             ToggleMovementInput(true);
+
+            InitializeLeanInput();
+            ToggleLeanInput(true);
+
+            InitializeJumpInput();
+            ToggleJumpInput(true);
+
+            InitializeCrouchInput();
+            ToggleCrouchInput(true);
         }
 
         public void Unsetup()
@@ -75,6 +116,15 @@ namespace SpaceExplorationRoguelite
 
             ToggleMovementInput(false);
             DeinitializeMovementInput();
+
+            ToggleLeanInput(false);
+            DeinitializeLeanInput();
+
+            ToggleJumpInput(false);
+            DeinitializeJumpInput();
+
+            ToggleCrouchInput(false);
+            DeinitializeCrouchInput();
         }
 
         private void FixedUpdate()
@@ -196,22 +246,129 @@ namespace SpaceExplorationRoguelite
 
         private void InitializeLeanInput()
         {
-
+            _leanInput.performed += LeanInputChanged;
+            _leanInput.canceled += LeanInputChanged;
         }
 
         private void DeinitializeLeanInput()
         {
-
+            _leanInput.performed -= LeanInputChanged;
+            _leanInput.canceled -= LeanInputChanged;
         }
 
         public void ToggleLeanInput(bool toggle)
         {
+            _currentLeanInput = 0f;
 
+            if (toggle)
+            {
+                _leanInput.Enable();
+            }
+            else
+            {
+                _leanInput.Disable();
+            }
+
+            OnLeanInputChanged?.Invoke(_currentLeanInput);
         }
 
         private void LeanInputChanged(InputAction.CallbackContext context)
         {
+            _currentLeanInput = context.ReadValue<float>();
 
+            OnLeanInputChanged?.Invoke(_currentLeanInput);
+        }
+
+        #endregion
+
+        #region Jump Input
+
+        private void InitializeJumpInput()
+        {
+            _jumpInput.started += JumpInputChanged;
+            _jumpInput.canceled += JumpInputChanged;
+        }
+
+        private void DeinitializeJumpInput()
+        {
+            _jumpInput.started -= JumpInputChanged;
+            _jumpInput.canceled -= JumpInputChanged;
+        }
+
+        public void ToggleJumpInput(bool toggle)
+        {
+            _currentJumpInput = false;
+
+            if (toggle)
+            {
+                _jumpInput.Enable();
+            }
+            else
+            {
+                _jumpInput.Disable();
+            }
+
+            OnJumpInputChanged?.Invoke(_currentJumpInput);
+        }
+
+        private void JumpInputChanged(InputAction.CallbackContext context)
+        {
+            if (context.started)
+            {
+                _currentJumpInput = true;
+            }
+            else if (context.canceled)
+            {
+                _currentJumpInput = false;
+            }
+
+            OnJumpInputChanged?.Invoke(_currentJumpInput);
+        }
+
+        #endregion
+
+        #region Crouch Input
+
+        private void InitializeCrouchInput()
+        {
+            _crouchInput.started += CrouchInputChanged;
+            _crouchInput.canceled += CrouchInputChanged;
+        }
+
+        private void DeinitializeCrouchInput()
+        {
+            _crouchInput.started -= CrouchInputChanged;
+            _crouchInput.canceled -= CrouchInputChanged;
+        }
+
+        public void ToggleCrouchInput(bool toggle)
+        {
+            _currentCrouchInput = false;
+
+            if (toggle)
+            {
+                _crouchInput.Enable();
+            }
+            else
+            {
+                _crouchInput.Disable();
+            }
+
+            OnCrouchInputChanged?.Invoke(_currentCrouchInput);
+        }
+
+        private void CrouchInputChanged(InputAction.CallbackContext context)
+        {
+            if (context.started)
+            {
+                _currentCrouchInput = true;
+            }
+            else if (context.canceled)
+            {
+                _currentCrouchInput = false;
+            }
+
+            OnCrouchInputChanged?.Invoke(_currentCrouchInput);
         }
 
         #endregion
