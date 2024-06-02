@@ -28,7 +28,14 @@ namespace SpaceExplorationRoguelite
         [Server]
         private void LightSwitchInteraction()
         {
-            _lightMeshRenderer.material.color = Random.ColorHSV();
+            var color = Random.ColorHSV();
+            LightSwitchColorChange(color);
+        }
+
+        [ObserversRpc]
+        private void LightSwitchColorChange(Color color)
+        {
+            _lightMeshRenderer.material.color = color;
         }
     }
 }

@@ -1,4 +1,5 @@
 using FishNet.Object;
+using FishNet.Object.Prediction;
 using UnityEngine;
 
 namespace SpaceExplorationRoguelite
@@ -23,7 +24,18 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private float _currentLeanInput = 0f;
         [SerializeField] private float _tickDelta = 0f;
 
-        #region Setup/Unsetup/OnTick
+        #region Setup/Unsetup/OnTick/Update
+
+        private void Update()
+        {
+            if (base.IsOwner)
+            {
+                return;
+            }
+
+            _rigidbody.velocity = Vector3.zero;
+            _rigidbody.angularVelocity = Vector3.zero;
+        }
 
         public void Setup()
         {
