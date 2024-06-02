@@ -54,8 +54,12 @@ MonoBehaviour:
     type: 3}
   _playerInputControllerPrefab: {fileID: 8217843237535254239, guid: 943ac2a711fdab248943b0bcc89f5eba,
     type: 3}
+  _playerMenuControllerSingletonPrefab: {fileID: 2264520593926954276, guid: f510f13a39e2cb94a82107e216493dfc,
+    type: 3}
   _playerCameraController: {fileID: 0}
   _playerInputController: {fileID: 0}
+  _playerInteractionController: {fileID: 0}
+  _playerMenuControllerSingleton: {fileID: 0}
   _playerPawnTransform: {fileID: 0}
 --- !u!114 &8675458889673068003
 MonoBehaviour:
