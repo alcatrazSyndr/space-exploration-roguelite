@@ -14,7 +14,7 @@ TagManager:
   - ShipHull
   - Ship
   - Player
-  - 
+  - InteractableObject
   - 
   - 
   - 

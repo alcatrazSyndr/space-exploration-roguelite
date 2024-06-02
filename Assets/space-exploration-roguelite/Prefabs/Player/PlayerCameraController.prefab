@@ -211,6 +211,7 @@ GameObject:
   m_Component:
   - component: {fileID: 355790039685535422}
   - component: {fileID: 8803207001621092069}
+  - component: {fileID: 6905311017492957354}
   m_Layer: 0
   m_Name: PlayerCameraController
   m_TagString: Untagged
@@ -252,6 +253,25 @@ MonoBehaviour:
   _cameraTransform: {fileID: 4840170741075558799}
   _camera: {fileID: 8139217584201657885}
   _setup: 0
+--- !u!114 &6905311017492957354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6791494623819224354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24241bb00bd5d7e43ab2dfa513279e4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interactableObjectLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
+  _interactableObjectMinDistance: 1
+  _cameraTransform: {fileID: 4840170741075558799}
+  _setup: 0
+  _currentInteractableObjectTarget: {fileID: 0}
 --- !u!1 &8096559494014074575
 GameObject:
   m_ObjectHideFlags: 0

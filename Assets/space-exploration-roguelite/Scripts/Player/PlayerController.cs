@@ -17,6 +17,7 @@ namespace SpaceExplorationRoguelite
         [Header("Runtime - Client")]
         [SerializeField] private PlayerCameraController _playerCameraController = null;
         [SerializeField] private PlayerInputController _playerInputController = null;
+        [SerializeField] private PlayerInteractionController _playerInteractionController = null;
         [SerializeField] private Transform _playerPawnTransform = null;
 
         [Header("Runtime - Network")]
@@ -38,8 +39,8 @@ namespace SpaceExplorationRoguelite
 
                 PlayerPawnController.OnChange += OnPlayerPawnControllerChanged;
 
-                SetupCamera();
-                SetupInput();
+                SetupCameraAndInteractionController();
+                SetupInputController();
             }
         }
 
@@ -57,8 +58,8 @@ namespace SpaceExplorationRoguelite
 
                 PlayerPawnController.OnChange -= OnPlayerPawnControllerChanged;
 
-                UnsetupCamera();
-                UnsetupInput();
+                UnsetupCameraAndInteractionController();
+                UnsetupInputController();
             }
         }
 
@@ -105,7 +106,7 @@ namespace SpaceExplorationRoguelite
             }
         }
 
-        private void SetupCamera()
+        private void SetupCameraAndInteractionController()
         {
             if (!base.IsOwner)
             {
@@ -114,7 +115,7 @@ namespace SpaceExplorationRoguelite
 
             if (_playerCameraController != null)
             {
-                UnsetupCamera();
+                UnsetupCameraAndInteractionController();
             }
 
             var playerCameraControllerGO = Instantiate(_playerCameraControllerPrefab, transform);
@@ -123,15 +124,25 @@ namespace SpaceExplorationRoguelite
             {
                 _playerCameraController.Setup();
             }
+            _playerInteractionController = playerCameraControllerGO.GetComponent<PlayerInteractionController>();
+            if (_playerInteractionController != null)
+            {
+                _playerInteractionController.Setup();
+            }
         }
 
-        private void UnsetupCamera()
+        private void UnsetupCameraAndInteractionController()
         {
             if (!base.IsOwner)
             {
                 return;
             }
 
+            if (_playerInteractionController != null)
+            {
+                _playerInteractionController.Unsetup();
+                _playerInteractionController = null;
+            }
             if (_playerCameraController != null)
             {
                 _playerCameraController.Unsetup();
@@ -144,7 +155,7 @@ namespace SpaceExplorationRoguelite
 
         #region Input
 
-        private void SetupInput()
+        private void SetupInputController()
         {
             if (!base.IsOwner)
             {
@@ -153,7 +164,7 @@ namespace SpaceExplorationRoguelite
 
             if (_playerInputController != null)
             {
-                UnsetupInput();
+                UnsetupInputController();
             }
 
             var playerInputControllerGO = Instantiate(_playerInputControllerPrefab, transform);
@@ -171,7 +182,7 @@ namespace SpaceExplorationRoguelite
             }
         }
 
-        private void UnsetupInput()
+        private void UnsetupInputController()
         {
             if (!base.IsOwner)
             {
@@ -273,6 +284,11 @@ namespace SpaceExplorationRoguelite
             if (!base.IsOwner)
             {
                 return;
+            }
+
+            if (_playerInteractionController != null)
+            {
+                _playerInteractionController.InteractInput();
             }
         }
 
