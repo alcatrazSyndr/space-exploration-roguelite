@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace SpaceExplorationRoguelite
 {
@@ -25,6 +26,9 @@ namespace SpaceExplorationRoguelite
                 return _currentActivePlayerMenuControllerList.Count;
             }
         }
+
+        [Header("Events")]
+        public UnityEvent<PlayerMenuController> OnCurrentTopPlayerMenuChanged = new UnityEvent<PlayerMenuController>();
 
         #region Setup/Unsetup
 
@@ -161,6 +165,20 @@ namespace SpaceExplorationRoguelite
             for (int i = 0; i < _currentActivePlayerMenuControllerList.Count; i++)
             {
                 _currentActivePlayerMenuControllerList[i].SetViewOrderIndex(i);
+            }
+
+            OnCurrentTopPlayerMenuChanged?.Invoke(CurrentTopMenu());
+        }
+
+        public PlayerMenuController GetPlayerMenuController(Enums.PlayerMenuType playerMenuType)
+        {
+            if (_playerMenuTypeControllerDict.ContainsKey(playerMenuType))
+            {
+                return _playerMenuTypeControllerDict[playerMenuType];
+            }
+            else
+            {
+                return null;
             }
         }
 

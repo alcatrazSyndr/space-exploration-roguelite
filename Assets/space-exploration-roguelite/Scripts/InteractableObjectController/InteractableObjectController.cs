@@ -10,6 +10,7 @@ namespace SpaceExplorationRoguelite
     {
         [Header("Data")]
         [SerializeField] private float _interactCooldownTimer = 0f;
+        [SerializeField] private string _defaultInteractActionText = "[F] Interact";
 
         [Header("Runtime")]
         private readonly SyncVar<bool> _interactable = new();
@@ -18,6 +19,14 @@ namespace SpaceExplorationRoguelite
             get
             {
                 return _interactable.Value;
+            }
+        }
+        private readonly SyncVar<string> _interactActionText = new();
+        public string InteractActionText
+        {
+            get
+            {
+                return _interactActionText.Value;
             }
         }
 
@@ -29,6 +38,8 @@ namespace SpaceExplorationRoguelite
             base.OnStartServer();
 
             _interactable.Value = true;
+
+            SetInteractActionText(_defaultInteractActionText);
         }
 
         public override void OnStopServer()
@@ -62,6 +73,12 @@ namespace SpaceExplorationRoguelite
             _interactable.Value = true;
 
             yield break;
+        }
+
+        [Server]
+        public void SetInteractActionText(string text)
+        {
+            _interactActionText.Value = text;
         }
     }
 }

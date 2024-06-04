@@ -27,6 +27,11 @@ namespace SpaceExplorationRoguelite
             }
 
             _setup = true;
+
+            if (PlayerMenuControllerSingleton.Instance != null)
+            {
+                PlayerMenuControllerSingleton.Instance.OnCurrentTopPlayerMenuChanged.AddListener(CurrentTopPlayerMenuChanged);
+            }
         }
 
         public void Unsetup()
@@ -37,6 +42,11 @@ namespace SpaceExplorationRoguelite
             }
 
             _setup = false;
+
+            if (PlayerMenuControllerSingleton.Instance != null)
+            {
+                PlayerMenuControllerSingleton.Instance.OnCurrentTopPlayerMenuChanged.RemoveListener(CurrentTopPlayerMenuChanged);
+            }
         }
 
         private void Update()
@@ -107,7 +117,25 @@ namespace SpaceExplorationRoguelite
 
         private void InteractableObjectChanged()
         {
+            if (PlayerMenuControllerSingleton.Instance != null)
+            {
+                var hudMenu = PlayerMenuControllerSingleton.Instance.GetPlayerMenuController(Enums.PlayerMenuType.HUD);
+                var currentTopMenu = PlayerMenuControllerSingleton.Instance.CurrentTopMenu();
 
+                if (currentTopMenu == hudMenu && _currentInteractableObjectTarget != null)
+                {
+                    (hudMenu as PlayerMenuHUDController).ToggleInteractText(true, _currentInteractableObjectTarget.InteractActionText);
+                }
+                else
+                {
+                    (hudMenu as PlayerMenuHUDController).ToggleInteractText(false);
+                }
+            }
+        }
+
+        private void CurrentTopPlayerMenuChanged(PlayerMenuController topMenu)
+        {
+            InteractableObjectChanged();
         }
 
         #endregion
