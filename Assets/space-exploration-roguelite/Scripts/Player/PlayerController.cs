@@ -147,8 +147,10 @@ namespace SpaceExplorationRoguelite
         {
             if (_playerCameraController != null && _playerPawnTransform != null)
             {
-                _playerCameraController.transform.position = Vector3.Lerp(_playerCameraController.transform.position, _playerPawnTransform.position, Time.deltaTime * _playerCameraPositionSmoothing);
-                _playerCameraController.transform.rotation = Quaternion.Lerp(_playerCameraController.transform.rotation, _playerPawnTransform.rotation, Time.deltaTime * _playerCameraRotationSmoothing);
+                //_playerCameraController.transform.position = Vector3.Lerp(_playerCameraController.transform.position, _playerPawnTransform.position, Time.deltaTime * _playerCameraPositionSmoothing);
+                //_playerCameraController.transform.rotation = Quaternion.Lerp(_playerCameraController.transform.rotation, _playerPawnTransform.rotation, Time.deltaTime * _playerCameraRotationSmoothing);
+                _playerCameraController.transform.position = _playerPawnTransform.position;
+                _playerCameraController.transform.rotation = _playerPawnTransform.rotation;
             }
         }
 
@@ -294,7 +296,7 @@ namespace SpaceExplorationRoguelite
             if (PlayerPawnController.Value != null && _playerCameraController != null && _playerInputController != null)
             {
                 var upDownModifier = (_playerInputController.CurrentJumpInput ? 1f : 0f) + (_playerInputController.CurrentCrouchInput ? -1f : 0f);
-                var movementInputVector = new Vector3(input.x, upDownModifier, input.y);
+                var movementInputVector = new Vector3(input.x, PlayerPawnController.Value.ArtificialGravityController != null ? 0f : upDownModifier, input.y);
                 var movementVector = _playerCameraController.CameraRelativeMovementInput(movementInputVector).normalized;
 
                 PlayerPawnController.Value.MovementInputChange(movementVector);
