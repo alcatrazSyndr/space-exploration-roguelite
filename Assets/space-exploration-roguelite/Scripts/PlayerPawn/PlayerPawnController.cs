@@ -8,14 +8,12 @@ namespace SpaceExplorationRoguelite
     {
         [Header("Data")]
         [SerializeField] private float _moveRate = 1f;
-        [SerializeField] private float _movementAccelerationRate = 1f;
-        [SerializeField] private float _artificialGravityMoveRate = 1f;
+        [SerializeField] private float _moveAcceleration = 1f;
         [SerializeField] private float _rotationRate = 1f;
-        [SerializeField] private float _rotationDeaccelerationRate = 1f;
         [SerializeField] private float _leanRate = 1f;
-
-        [Header("Components")]
-        [SerializeField] private Rigidbody _rigidbody;
+        [SerializeField] private LayerMask _physicsColliderLayerMasks;
+        [SerializeField] private float _physicsCollisionCheckCapsuleRadius = 0.5f;
+        [SerializeField] private float _physicsCollisionCheckCapsuleOffset = 0.5f;
 
         [Header("Runtime")]
         [SerializeField] private bool _setup = false;
@@ -23,7 +21,7 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private Vector3 _currentMovementVector = Vector3.zero;
         [SerializeField] private Vector3 _currentRotationInput = Vector3.zero;
         [SerializeField] private float _currentLeanInput = 0f;
-        [SerializeField] private float _tickDelta = 0f;
+        [SerializeField] private float _tickRate = 0f;
         [SerializeField] private ArtificialGravityController _artificialGravityController = null;
         public ArtificialGravityController ArtificialGravityController
         {
@@ -32,20 +30,8 @@ namespace SpaceExplorationRoguelite
                 return _artificialGravityController;
             }
         }
-        [SerializeField] private Vector3 _currentArtificialGravityControllerPositionOffset = Vector3.zero;
 
-        #region Setup/Unsetup/OnTick/Update
-
-        private void Update()
-        {
-            if (base.IsOwner)
-            {
-                return;
-            }
-
-            _rigidbody.velocity = Vector3.zero;
-            _rigidbody.angularVelocity = Vector3.zero;
-        }
+        #region Setup/Unsetup/OnTick
 
         public void Setup()
         {
@@ -59,9 +45,6 @@ namespace SpaceExplorationRoguelite
                 return;
             }
             _setup = true;
-
-            _tickDelta = (float)TimeManager.TickDelta;
-            TimeManager.OnTick += OnTick;
         }
 
         public void Unsetup()
@@ -76,6 +59,29 @@ namespace SpaceExplorationRoguelite
                 return;
             }
             _setup = false;
+        }
+
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
+
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            _tickRate = (float)TimeManager.TickDelta;
+            TimeManager.OnTick += OnTick;
+        }
+
+        public override void OnStopClient()
+        {
+            base.OnStopClient();
+
+            if (!base.IsOwner)
+            {
+                return;
+            }
 
             TimeManager.OnTick -= OnTick;
         }
@@ -92,42 +98,7 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (_currentMovementVector != _currentMovementInput)
-            {
-                if ((_currentMovementVector - _currentMovementInput).sqrMagnitude <= 0.01f)
-                {
-                    _currentMovementVector = _currentMovementInput;
-                }
-
-                _currentMovementVector = Vector3.Lerp(_currentMovementVector, _currentMovementInput, _tickDelta * _movementAccelerationRate);
-            }
-
-            if (_artificialGravityController == null)
-            {
-                _rigidbody.velocity = _currentMovementVector * _moveRate;
-
-                if (_rigidbody.angularVelocity != Vector3.zero)
-                {
-                    _rigidbody.angularVelocity = Vector3.Lerp(_rigidbody.angularVelocity, Vector3.zero, _tickDelta * _rotationDeaccelerationRate);
-                }
-
-                if (_currentLeanInput != 0f)
-                {
-                    _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(new Vector3(0f, 0f, -_currentLeanInput) * _leanRate));
-                }
-            }
-            else
-            {
-                //_rigidbody.angularVelocity = Vector3.zero;
-                //_rigidbody.velocity = Vector3.zero;
-
-                _rigidbody.velocity = _artificialGravityController.Rigidbody.velocity + (_currentMovementInput * _moveRate);
-                _rigidbody.angularVelocity = _artificialGravityController.Rigidbody.angularVelocity;
-
-                var forwardProjection = Vector3.ProjectOnPlane(_rigidbody.transform.forward, _artificialGravityController.Rigidbody.transform.up);
-                var currentArtificialGravityControllerRotationOffset = Quaternion.LookRotation(forwardProjection, _artificialGravityController.Rigidbody.transform.up);
-                _rigidbody.MoveRotation(currentArtificialGravityControllerRotationOffset);
-            }
+            PlayerPawnPhysics();
         }
 
         #endregion
@@ -164,11 +135,16 @@ namespace SpaceExplorationRoguelite
 
                 if (_artificialGravityController == null)
                 {
-                    _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(_currentRotationInput * _rotationRate));
+                    var oldRotation = transform.rotation;
+                    var oldPosition = transform.position;
+
+                    PlayerPawnRotation(Quaternion.Euler(new Vector3(_currentRotationInput.x * _rotationRate, _currentRotationInput.y * _rotationRate, 0f) * _rotationRate * _tickRate));
+
+                    CollisionCheck(oldPosition, oldRotation);
                 }
                 else
                 {
-                    transform.rotation = transform.rotation * Quaternion.Euler(new Vector3(0f, _currentRotationInput.y, 0f) * _rotationRate);
+
                 }
             }
         }
@@ -198,19 +174,76 @@ namespace SpaceExplorationRoguelite
             }
 
             _artificialGravityController = artificialGravityController;
+        }
 
-            if (_artificialGravityController != null)
+        #endregion
+
+        #region Physics
+
+        private void PlayerPawnRotation(Quaternion rotation)
+        {
+            transform.rotation *= rotation;
+        }
+
+        private void PlayerPawnPhysics()
+        {
+            if (!base.IsOwner)
             {
-                _currentArtificialGravityControllerPositionOffset = _artificialGravityController.transform.InverseTransformPoint(_rigidbody.position);
+                return;
+            }
 
-                var forwardProjection = Vector3.ProjectOnPlane(_rigidbody.transform.forward, _artificialGravityController.Rigidbody.transform.up);
-                var currentArtificialGravityControllerRotationOffset = Quaternion.LookRotation(forwardProjection, _artificialGravityController.Rigidbody.transform.up);
-                _rigidbody.MoveRotation(currentArtificialGravityControllerRotationOffset);
+            var oldPosition = transform.position;
+            var oldRotation = transform.rotation;
+
+            if (_artificialGravityController == null)
+            {
+                if ((_currentMovementVector - _currentMovementInput).sqrMagnitude <= 0.01f)
+                {
+                    _currentMovementVector = _currentMovementInput;
+                }
+                else
+                {
+                    _currentMovementVector = Vector3.Lerp(_currentMovementVector, _currentMovementInput, _tickRate * _moveAcceleration);
+                }
+
+                if (_currentLeanInput != 0f)
+                {
+                    PlayerPawnRotation(Quaternion.Euler(new Vector3(0f, 0f, -_currentLeanInput) * _leanRate * _tickRate));
+                }
+
+                if (_currentMovementVector != Vector3.zero)
+                {
+                    transform.position = transform.position + (_currentMovementVector * _tickRate * _moveRate);
+                }
             }
             else
             {
-                _currentArtificialGravityControllerPositionOffset = Vector3.zero;
+
             }
+
+            if (_currentLeanInput != 0f || _currentMovementVector != Vector3.zero)
+            {
+                CollisionCheck(oldPosition, oldRotation);
+            }
+        }
+
+        private void CollisionCheck(Vector3 previousPosition, Quaternion previousRotation)
+        {
+            var collision = Physics.CheckCapsule(transform.position + (transform.up * _physicsCollisionCheckCapsuleOffset), transform.position + (-transform.up * _physicsCollisionCheckCapsuleOffset), _physicsCollisionCheckCapsuleRadius, _physicsColliderLayerMasks);
+
+            if (collision)
+            {
+                transform.position = previousPosition;
+                transform.rotation = previousRotation;
+            }
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+
+            Gizmos.DrawWireSphere(transform.position + (transform.up * _physicsCollisionCheckCapsuleOffset), _physicsCollisionCheckCapsuleRadius);
+            Gizmos.DrawWireSphere(transform.position + (-transform.up * _physicsCollisionCheckCapsuleOffset), _physicsCollisionCheckCapsuleRadius);
         }
 
         #endregion

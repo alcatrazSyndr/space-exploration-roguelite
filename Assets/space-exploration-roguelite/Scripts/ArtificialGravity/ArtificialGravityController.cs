@@ -6,16 +6,6 @@ namespace SpaceExplorationRoguelite
 {
     public class ArtificialGravityController : MonoBehaviour
     {
-        [Header("Components")]
-        [SerializeField] private Rigidbody _rigidbody;
-        public Rigidbody Rigidbody
-        {
-            get
-            {
-                return _rigidbody;
-            }
-        }
-
         [Header("Runtime")]
         [SerializeField] private List<Collider> _playerPawnColliderList = new List<Collider>();
 
