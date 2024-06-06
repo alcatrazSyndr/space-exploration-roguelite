@@ -218,19 +218,23 @@ MonoBehaviour:
   _componentIndexCache: 1
   _addedNetworkObject: {fileID: 8654876999964684564}
   _networkObjectCache: {fileID: 8654876999964684564}
-  _moveRate: 3
+  _moveRate: 5
   _moveAcceleration: 5
   _rotationRate: 1
+  _artificialGravityRotationAdaptRate: 5
   _leanRate: 60
   _physicsColliderLayerMasks:
     serializedVersion: 2
     m_Bits: 2048
   _physicsCollisionCheckCapsuleRadius: 0.5
   _physicsCollisionCheckCapsuleOffset: 0.5
+  _physicsGravityRayCheckDistance: 1.01
+  _physicsGravityFallRate: 0.1
   _setup: 0
   _currentMovementInput: {x: 0, y: 0, z: 0}
   _currentMovementVector: {x: 0, y: 0, z: 0}
   _currentRotationInput: {x: 0, y: 0, z: 0}
   _currentLeanInput: 0
   _tickRate: 0
+  _currentGravityVelocity: 0
   _artificialGravityController: {fileID: 0}

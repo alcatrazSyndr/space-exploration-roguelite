@@ -21,6 +21,7 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private PlayerInteractionController _playerInteractionController = null;
         [SerializeField] private PlayerMenuControllerSingleton _playerMenuControllerSingleton = null;
         [SerializeField] private Transform _playerPawnTransform = null;
+        [SerializeField] private float _tickRate = 0f;
 
         [Header("Runtime - Network")]
         public readonly SyncVar<PlayerPawnController> PlayerPawnController = new();
@@ -46,6 +47,8 @@ namespace SpaceExplorationRoguelite
                 SetupInputController();
 
                 _playerMenuControllerSingleton.OpenPlayerMenu(Enums.PlayerMenuType.HUD);
+
+                _tickRate = (float)TimeManager.TickDelta;
             }
         }
 
@@ -268,6 +271,20 @@ namespace SpaceExplorationRoguelite
                 PlayerPawnController.Value.RotationInputChange(rotationInputVector);
 
                 MovementInputChanged(_playerInputController.CurrentMovementInput);
+
+                if (PlayerPawnController.Value.ArtificialGravityController != null)
+                {
+                    if (!_playerCameraController.SetupForArtificialGravity)
+                    {
+                        _playerCameraController.SetupArtificialGravity();
+                    }
+
+                    _playerCameraController.RotateCameraOnLocalXAxis(inputDelta.y * _tickRate);
+                }
+                else if (_playerCameraController.SetupForArtificialGravity)
+                {
+                    _playerCameraController.UnsetupArtificialGravity();
+                }
             }
         }
 
@@ -295,11 +312,18 @@ namespace SpaceExplorationRoguelite
 
             if (PlayerPawnController.Value != null && _playerCameraController != null && _playerInputController != null)
             {
-                var upDownModifier = (_playerInputController.CurrentJumpInput ? 1f : 0f) + (_playerInputController.CurrentCrouchInput ? -1f : 0f);
-                var movementInputVector = new Vector3(input.x, PlayerPawnController.Value.ArtificialGravityController != null ? 0f : upDownModifier, input.y);
-                var movementVector = _playerCameraController.CameraRelativeMovementInput(movementInputVector).normalized;
+                if (PlayerPawnController.Value.ArtificialGravityController == null)
+                {
+                    var upDownModifier = (_playerInputController.CurrentJumpInput ? 1f : 0f) + (_playerInputController.CurrentCrouchInput ? -1f : 0f);
+                    var movementInputVector = new Vector3(input.x, PlayerPawnController.Value.ArtificialGravityController != null ? 0f : upDownModifier, input.y);
+                    var movementVector = _playerCameraController.CameraRelativeMovementInput(movementInputVector).normalized;
 
-                PlayerPawnController.Value.MovementInputChange(movementVector);
+                    PlayerPawnController.Value.MovementInputChange(movementVector);
+                }
+                else
+                {
+                    PlayerPawnController.Value.MovementInputChange(new Vector3(input.x, 0f, input.y));
+                }
             }
         }
 

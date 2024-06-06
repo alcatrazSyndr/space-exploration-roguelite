@@ -10,10 +10,13 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private float _moveRate = 1f;
         [SerializeField] private float _moveAcceleration = 1f;
         [SerializeField] private float _rotationRate = 1f;
+        [SerializeField] private float _artificialGravityRotationAdaptRate = 1f;
         [SerializeField] private float _leanRate = 1f;
         [SerializeField] private LayerMask _physicsColliderLayerMasks;
         [SerializeField] private float _physicsCollisionCheckCapsuleRadius = 0.5f;
         [SerializeField] private float _physicsCollisionCheckCapsuleOffset = 0.5f;
+        [SerializeField] private float _physicsGravityRayCheckDistance = 1.01f;
+        [SerializeField] private float _physicsGravityFallRate = 1f;
 
         [Header("Runtime")]
         [SerializeField] private bool _setup = false;
@@ -22,6 +25,7 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private Vector3 _currentRotationInput = Vector3.zero;
         [SerializeField] private float _currentLeanInput = 0f;
         [SerializeField] private float _tickRate = 0f;
+        [SerializeField] private float _currentGravityVelocity = 0f;
         [SerializeField] private ArtificialGravityController _artificialGravityController = null;
         public ArtificialGravityController ArtificialGravityController
         {
@@ -133,18 +137,20 @@ namespace SpaceExplorationRoguelite
             {
                 _currentRotationInput = rotationInput;
 
+                var oldRotation = transform.rotation;
+                var oldPosition = transform.position;
+
                 if (_artificialGravityController == null)
                 {
-                    var oldRotation = transform.rotation;
-                    var oldPosition = transform.position;
-
                     PlayerPawnRotation(Quaternion.Euler(new Vector3(_currentRotationInput.x * _rotationRate, _currentRotationInput.y * _rotationRate, 0f) * _rotationRate * _tickRate));
 
-                    CollisionCheck(oldPosition, oldRotation);
+                    //CollisionCheck(oldPosition, oldRotation);
                 }
                 else
                 {
+                    PlayerPawnRotation((Quaternion.Euler(new Vector3(0f, _currentRotationInput.y * _rotationRate, 0f) * _rotationRate * _tickRate)));
 
+                    //CollisionCheck(oldPosition, oldRotation);
                 }
             }
         }
@@ -218,12 +224,56 @@ namespace SpaceExplorationRoguelite
             }
             else
             {
+                var forwardProjection = Vector3.ProjectOnPlane(transform.forward, _artificialGravityController.transform.up);
+                var rightProjection = Vector3.ProjectOnPlane(transform.right, _artificialGravityController.transform.up);
+                var currentArtificialGravityControllerRotationOffset = Quaternion.LookRotation(forwardProjection, _artificialGravityController.transform.up);
 
+                transform.rotation = Quaternion.Lerp(transform.rotation, currentArtificialGravityControllerRotationOffset, _tickRate * _rotationRate * _artificialGravityRotationAdaptRate);
+
+                var gravityVector = _artificialGravityController.transform.up;
+
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, -transform.up, out hit, _physicsGravityRayCheckDistance, _physicsColliderLayerMasks))
+                {
+                    if (hit.distance <= (_physicsGravityRayCheckDistance - 0.02f))
+                    {
+                        if (_currentGravityVelocity > 0f)
+                        {
+                            _currentGravityVelocity = 0f;
+                        }
+                        _currentGravityVelocity -= _physicsGravityFallRate;
+                    }
+                    else if (_currentGravityVelocity != 0f)
+                    {
+                        _currentGravityVelocity = 0f;
+                    }
+                }
+                else
+                {
+                    _currentGravityVelocity += _physicsGravityFallRate;
+                }
+
+                gravityVector *= (-_currentGravityVelocity);
+
+                transform.position = Vector3.Lerp(transform.position, transform.position + gravityVector, _tickRate * _moveRate);
+
+                var currentMovementVector = forwardProjection.normalized * _currentMovementInput.z + rightProjection.normalized * _currentMovementInput.x;
+                currentMovementVector.Normalize();
+
+                if (_currentMovementVector != currentMovementVector)
+                {
+                    _currentMovementVector = currentMovementVector;
+                }
+
+                if (_currentMovementVector != Vector3.zero)
+                {
+                    transform.position = transform.position + (_currentMovementVector * _tickRate * _moveRate);
+                }
             }
 
             if (_currentLeanInput != 0f || _currentMovementVector != Vector3.zero)
             {
-                CollisionCheck(oldPosition, oldRotation);
+                //CollisionCheck(oldPosition, oldRotation);
             }
         }
 
