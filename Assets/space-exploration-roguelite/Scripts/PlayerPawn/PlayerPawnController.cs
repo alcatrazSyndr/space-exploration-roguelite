@@ -1,5 +1,6 @@
 using FishNet.Object;
 using FishNet.Object.Prediction;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SpaceExplorationRoguelite
@@ -270,19 +271,32 @@ namespace SpaceExplorationRoguelite
 
         private void MoveWithCollisionCheck(Vector3 targetDirection)
         {
-            var hits = Physics.SphereCastAll(transform.position, _physicsCollisionCheckSphereRadius + 0.2f, targetDirection.normalized, targetDirection.magnitude, _physicsColliderLayerMasks);
+            var hits = new List<RaycastHit>(Physics.SphereCastAll(transform.position, _physicsCollisionCheckSphereRadius + 0.2f, targetDirection.normalized, targetDirection.magnitude, _physicsColliderLayerMasks));
 
-            if (hits.Length == 1)
+            for (int i = hits.Count - 1; i >= 0; i--)
+            {
+                if (hits[i].collider.gameObject == gameObject)
+                {
+                    hits.RemoveAt(i);
+                }
+            }
+
+            if (hits.Count == 1)
             {
                 foreach (var hit in hits)
                 {
+                    if (hit.collider.gameObject == gameObject)
+                    {
+                        continue;
+                    }
+
                     var projectedDirection = Vector3.ProjectOnPlane(targetDirection.normalized, hit.normal);
                     Debug.DrawRay(hit.point, projectedDirection.normalized, Color.blue, 1f);
 
                     transform.position += (projectedDirection * _tickRate * _moveRate * (_artificialGravityController == null ? _currentMovementVector.magnitude : 1f));
                 }
             }
-            else if (hits.Length == 0)
+            else if (hits.Count == 0)
             {
                 transform.position += targetDirection;
             }
