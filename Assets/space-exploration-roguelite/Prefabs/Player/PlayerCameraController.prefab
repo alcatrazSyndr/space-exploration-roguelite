@@ -194,7 +194,7 @@ Transform:
   m_GameObject: {fileID: 3360711276301470845}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.75, z: 0}
+  m_LocalPosition: {x: 0, y: 0.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -247,12 +247,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee5b4e5388d30444bbd9d5097af86e70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _artificialGravityResetTimer: 0.5
+  _rotationRate: 1
   _cameraY: {fileID: 5562406433537878385}
   _cameraX: {fileID: 1864220113607837136}
   _cameraZ: {fileID: 1264429994047390442}
   _cameraTransform: {fileID: 4840170741075558799}
   _camera: {fileID: 8139217584201657885}
   _setup: 0
+  _setupForArtificialGravity: 0
 --- !u!114 &6905311017492957354
 MonoBehaviour:
   m_ObjectHideFlags: 0

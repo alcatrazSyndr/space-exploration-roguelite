@@ -137,20 +137,13 @@ namespace SpaceExplorationRoguelite
             {
                 _currentRotationInput = rotationInput;
 
-                var oldRotation = transform.rotation;
-                var oldPosition = transform.position;
-
                 if (_artificialGravityController == null)
                 {
                     PlayerPawnRotation(Quaternion.Euler(new Vector3(_currentRotationInput.x * _rotationRate, _currentRotationInput.y * _rotationRate, 0f) * _rotationRate * _tickRate));
-
-                    //CollisionCheck(oldPosition, oldRotation);
                 }
                 else
                 {
                     PlayerPawnRotation((Quaternion.Euler(new Vector3(0f, _currentRotationInput.y * _rotationRate, 0f) * _rotationRate * _tickRate)));
-
-                    //CollisionCheck(oldPosition, oldRotation);
                 }
             }
         }
@@ -198,11 +191,13 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            var oldPosition = transform.position;
-            var oldRotation = transform.rotation;
-
             if (_artificialGravityController == null)
             {
+                if (_currentGravityVelocity != 0f)
+                {
+                    _currentGravityVelocity = 0f;
+                }
+
                 if ((_currentMovementVector - _currentMovementInput).sqrMagnitude <= 0.01f)
                 {
                     _currentMovementVector = _currentMovementInput;
@@ -219,7 +214,8 @@ namespace SpaceExplorationRoguelite
 
                 if (_currentMovementVector != Vector3.zero)
                 {
-                    transform.position = transform.position + (_currentMovementVector * _tickRate * _moveRate);
+                    //transform.position = transform.position + (_currentMovementVector * _tickRate * _moveRate);
+                    MoveWithCollisionCheck((_currentMovementVector * _tickRate * _moveRate));
                 }
             }
             else
@@ -255,7 +251,7 @@ namespace SpaceExplorationRoguelite
 
                 gravityVector *= (-_currentGravityVelocity);
 
-                transform.position = Vector3.Lerp(transform.position, transform.position + gravityVector, _tickRate * _moveRate);
+                //transform.position = Vector3.Lerp(transform.position, transform.position + gravityVector, _tickRate * _moveRate);
 
                 var currentMovementVector = forwardProjection.normalized * _currentMovementInput.z + rightProjection.normalized * _currentMovementInput.x;
                 currentMovementVector.Normalize();
@@ -265,26 +261,40 @@ namespace SpaceExplorationRoguelite
                     _currentMovementVector = currentMovementVector;
                 }
 
-                if (_currentMovementVector != Vector3.zero)
+                if (_currentMovementVector != Vector3.zero || gravityVector != Vector3.zero)
                 {
-                    transform.position = transform.position + (_currentMovementVector * _tickRate * _moveRate);
+                    //transform.position = transform.position + (_currentMovementVector * _tickRate * _moveRate) + (gravityVector * _tickRate * _moveRate);
+                    MoveWithCollisionCheck((_currentMovementVector * _tickRate * _moveRate) + (gravityVector * _tickRate * _moveRate));
                 }
-            }
-
-            if (_currentLeanInput != 0f || _currentMovementVector != Vector3.zero)
-            {
-                //CollisionCheck(oldPosition, oldRotation);
             }
         }
 
-        private void CollisionCheck(Vector3 previousPosition, Quaternion previousRotation)
+        private void MoveWithCollisionCheck(Vector3 targetDirection)
         {
-            var collision = Physics.CheckCapsule(transform.position + (transform.up * _physicsCollisionCheckCapsuleOffset), transform.position + (-transform.up * _physicsCollisionCheckCapsuleOffset), _physicsCollisionCheckCapsuleRadius, _physicsColliderLayerMasks);
+            var collision = Physics.CheckCapsule(transform.position + targetDirection + (transform.up * _physicsCollisionCheckCapsuleOffset), transform.position + targetDirection + (-transform.up * _physicsCollisionCheckCapsuleOffset), _physicsCollisionCheckCapsuleRadius, _physicsColliderLayerMasks);
 
             if (collision)
             {
-                transform.position = previousPosition;
-                transform.rotation = previousRotation;
+                var hits = Physics.SphereCastAll(transform.position, _physicsCollisionCheckCapsuleRadius + 0.2f, targetDirection.normalized, targetDirection.magnitude, _physicsColliderLayerMasks);
+
+                if (hits.Length > 0)
+                {
+                    foreach (var hit in hits)
+                    {
+                        var projectedDirection = Vector3.ProjectOnPlane(targetDirection.normalized, hit.normal);
+                        Debug.DrawRay(hit.point, projectedDirection.normalized, Color.blue);
+
+                        transform.position += (projectedDirection * _tickRate * _moveRate * (_artificialGravityController == null ? _currentMovementVector.magnitude : 1f));
+                    }
+                }
+                else
+                {
+                    transform.position += targetDirection;
+                }
+            }
+            else
+            {
+                transform.position += targetDirection;
             }
         }
 
@@ -294,6 +304,10 @@ namespace SpaceExplorationRoguelite
 
             Gizmos.DrawWireSphere(transform.position + (transform.up * _physicsCollisionCheckCapsuleOffset), _physicsCollisionCheckCapsuleRadius);
             Gizmos.DrawWireSphere(transform.position + (-transform.up * _physicsCollisionCheckCapsuleOffset), _physicsCollisionCheckCapsuleRadius);
+
+            Gizmos.color = Color.green;
+
+            Gizmos.DrawWireSphere(transform.position, _physicsCollisionCheckCapsuleRadius);
         }
 
         #endregion

@@ -226,7 +226,7 @@ MonoBehaviour:
   _physicsColliderLayerMasks:
     serializedVersion: 2
     m_Bits: 2048
-  _physicsCollisionCheckCapsuleRadius: 0.5
+  _physicsCollisionCheckCapsuleRadius: 0.7
   _physicsCollisionCheckCapsuleOffset: 0.5
   _physicsGravityRayCheckDistance: 1.01
   _physicsGravityFallRate: 0.1
