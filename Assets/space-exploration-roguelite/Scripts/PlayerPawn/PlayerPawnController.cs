@@ -13,8 +13,7 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private float _artificialGravityRotationAdaptRate = 1f;
         [SerializeField] private float _leanRate = 1f;
         [SerializeField] private LayerMask _physicsColliderLayerMasks;
-        [SerializeField] private float _physicsCollisionCheckCapsuleRadius = 0.5f;
-        [SerializeField] private float _physicsCollisionCheckCapsuleOffset = 0.5f;
+        [SerializeField] private float _physicsCollisionCheckSphereRadius = 0.5f;
         [SerializeField] private float _physicsGravityRayCheckDistance = 1.01f;
         [SerializeField] private float _physicsGravityFallRate = 1f;
 
@@ -271,28 +270,19 @@ namespace SpaceExplorationRoguelite
 
         private void MoveWithCollisionCheck(Vector3 targetDirection)
         {
-            var collision = Physics.CheckCapsule(transform.position + targetDirection + (transform.up * _physicsCollisionCheckCapsuleOffset), transform.position + targetDirection + (-transform.up * _physicsCollisionCheckCapsuleOffset), _physicsCollisionCheckCapsuleRadius, _physicsColliderLayerMasks);
+            var hits = Physics.SphereCastAll(transform.position, _physicsCollisionCheckSphereRadius + 0.2f, targetDirection.normalized, targetDirection.magnitude, _physicsColliderLayerMasks);
 
-            if (collision)
+            if (hits.Length == 1)
             {
-                var hits = Physics.SphereCastAll(transform.position, _physicsCollisionCheckCapsuleRadius + 0.2f, targetDirection.normalized, targetDirection.magnitude, _physicsColliderLayerMasks);
-
-                if (hits.Length > 0)
+                foreach (var hit in hits)
                 {
-                    foreach (var hit in hits)
-                    {
-                        var projectedDirection = Vector3.ProjectOnPlane(targetDirection.normalized, hit.normal);
-                        Debug.DrawRay(hit.point, projectedDirection.normalized, Color.blue);
+                    var projectedDirection = Vector3.ProjectOnPlane(targetDirection.normalized, hit.normal);
+                    Debug.DrawRay(hit.point, projectedDirection.normalized, Color.blue, 1f);
 
-                        transform.position += (projectedDirection * _tickRate * _moveRate * (_artificialGravityController == null ? _currentMovementVector.magnitude : 1f));
-                    }
-                }
-                else
-                {
-                    transform.position += targetDirection;
+                    transform.position += (projectedDirection * _tickRate * _moveRate * (_artificialGravityController == null ? _currentMovementVector.magnitude : 1f));
                 }
             }
-            else
+            else if (hits.Length == 0)
             {
                 transform.position += targetDirection;
             }
@@ -300,14 +290,9 @@ namespace SpaceExplorationRoguelite
 
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.red;
-
-            Gizmos.DrawWireSphere(transform.position + (transform.up * _physicsCollisionCheckCapsuleOffset), _physicsCollisionCheckCapsuleRadius);
-            Gizmos.DrawWireSphere(transform.position + (-transform.up * _physicsCollisionCheckCapsuleOffset), _physicsCollisionCheckCapsuleRadius);
-
             Gizmos.color = Color.green;
 
-            Gizmos.DrawWireSphere(transform.position, _physicsCollisionCheckCapsuleRadius);
+            Gizmos.DrawWireSphere(transform.position, _physicsCollisionCheckSphereRadius);
         }
 
         #endregion
