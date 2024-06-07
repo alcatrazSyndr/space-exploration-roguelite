@@ -1,4 +1,5 @@
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,64 +8,36 @@ namespace SpaceExplorationRoguelite
 {
     public class DebugShipController : NetworkBehaviour
     {
-        [Header("Data")]
-        [SerializeField] private Vector3 _shipVelocity = Vector3.zero;
-        [SerializeField] private Vector3 _shipAngularVelocity = Vector3.zero;
-        [SerializeField] private float _shipMoveRate = 1f;
-        [SerializeField] private float _shipRotationRate = 1f;
-
         [Header("Components")]
-        [SerializeField] private InteractableObjectController _interactableSwitch;
-        [SerializeField] private Rigidbody _shipRigidbody;
+        [SerializeField] private InteractableObjectController _doorInteractableObjectController;
+        [SerializeField] private Transform _doorTransform;
+        [SerializeField] private Transform _doorClosedTransform;
+        [SerializeField] private Transform _doorOpenedTransform;
 
         [Header("Runtime")]
-        [SerializeField] private bool _shipToggle = false;
-        [SerializeField] private Vector3 _currentShipVelocity = Vector3.zero;
-        [SerializeField] private Vector3 _currentShipAngularVelocity = Vector3.zero;
-        [SerializeField] private float _tickDelta = 0f;
+        private readonly SyncVar<bool> _doorOpened = new();
 
         public override void OnStartServer()
         {
             base.OnStartServer();
 
-            _tickDelta = (float)TimeManager.TickDelta;
-            TimeManager.OnTick += OnTick;
-
-            _interactableSwitch.OnInteracted.AddListener(ShipToggleInteraction);
+            _doorInteractableObjectController.OnInteracted.AddListener(ToggleShipDoor);
         }
 
         public override void OnStopServer()
         {
             base.OnStopServer();
 
-            TimeManager.OnTick -= OnTick;
-
-            _interactableSwitch.OnInteracted.RemoveListener(ShipToggleInteraction);
+            _doorInteractableObjectController.OnInteracted.RemoveListener(ToggleShipDoor);
         }
 
         [Server]
-        private void ShipToggleInteraction()
+        private void ToggleShipDoor()
         {
-            _shipToggle = !_shipToggle;
-        }
+            _doorOpened.Value = !_doorOpened.Value;
 
-        [Server]
-        private void OnTick()
-        {
-            var targetVelocityVector = _shipToggle ? _shipVelocity : Vector3.zero;
-            var targetAngularVelocityVector = _shipToggle ? _shipAngularVelocity : Vector3.zero;
-
-            _currentShipVelocity = Vector3.Lerp(_currentShipVelocity, targetVelocityVector, _tickDelta * _shipMoveRate);
-            _currentShipAngularVelocity = Vector3.Lerp(_currentShipAngularVelocity, targetAngularVelocityVector, _tickDelta * _shipRotationRate);
-
-            var shipForward = transform.forward.normalized;
-            var shipRight = transform.right.normalized;
-            var shipUp = transform.up.normalized;
-
-            var shipHeadingVector = shipForward * _currentShipVelocity.z + shipRight * _currentShipVelocity.x + shipUp * _currentShipVelocity.y;
-
-            _shipRigidbody.velocity = shipHeadingVector;
-            _shipRigidbody.angularVelocity = _currentShipAngularVelocity;
+            _doorTransform.position = _doorOpened.Value ? _doorOpenedTransform.position : _doorClosedTransform.position;
+            _doorTransform.rotation = _doorOpened.Value ? _doorOpenedTransform.rotation : _doorClosedTransform.rotation;
         }
     }
 }

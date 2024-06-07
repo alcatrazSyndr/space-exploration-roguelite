@@ -269,7 +269,7 @@ namespace SpaceExplorationRoguelite
             }
         }
 
-        private void MoveWithCollisionCheck(Vector3 targetDirection)
+        private void MoveWithCollisionCheck(Vector3 targetDirection, bool firstTry = true)
         {
             var hits = new List<RaycastHit>(Physics.SphereCastAll(transform.position, _physicsCollisionCheckSphereRadius + 0.2f, targetDirection.normalized, targetDirection.magnitude, _physicsColliderLayerMasks));
 
@@ -283,18 +283,26 @@ namespace SpaceExplorationRoguelite
 
             if (hits.Count == 1)
             {
+                var hit = hits[0];
+                var projectedDirection = Vector3.ProjectOnPlane(targetDirection.normalized, hit.normal);
+
+                transform.position += (projectedDirection * _tickRate * _moveRate * (_artificialGravityController == null ? _currentMovementVector.magnitude : 1f));
+            }
+            else if (hits.Count > 1 && firstTry)
+            {
+                var additiveProjectedDirection = Vector3.zero;
+
                 foreach (var hit in hits)
                 {
-                    if (hit.collider.gameObject == gameObject)
-                    {
-                        continue;
-                    }
-
                     var projectedDirection = Vector3.ProjectOnPlane(targetDirection.normalized, hit.normal);
-                    Debug.DrawRay(hit.point, projectedDirection.normalized, Color.blue, 1f);
-
-                    transform.position += (projectedDirection * _tickRate * _moveRate * (_artificialGravityController == null ? _currentMovementVector.magnitude : 1f));
+                    additiveProjectedDirection += projectedDirection;
                 }
+
+                additiveProjectedDirection.Normalize();
+                additiveProjectedDirection *= _tickRate * _moveRate * (_artificialGravityController == null ? _currentMovementVector.magnitude : 1f);
+
+                MoveWithCollisionCheck(additiveProjectedDirection, false);
+                return;
             }
             else if (hits.Count == 0)
             {
