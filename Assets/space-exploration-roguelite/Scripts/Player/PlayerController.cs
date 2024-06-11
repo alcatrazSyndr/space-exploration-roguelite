@@ -6,10 +6,6 @@ namespace SpaceExplorationRoguelite
 {
     public class PlayerController : NetworkBehaviour
     {
-        [Header("Data - Client")]
-        [SerializeField] private float _playerCameraPositionSmoothing = 1f;
-        [SerializeField] private float _playerCameraRotationSmoothing = 1f;
-
         [Header("Prefabs - Client")]
         [SerializeField] private GameObject _playerCameraControllerPrefab;
         [SerializeField] private GameObject _playerInputControllerPrefab;
