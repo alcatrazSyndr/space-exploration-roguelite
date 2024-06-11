@@ -43,6 +43,7 @@ namespace SpaceExplorationRoguelite
             }
         }
         [SerializeField] private float _currentJumpCooldown = 0f;
+        [SerializeField] private Vector3 _previousPositionInArtificialGravitySpace = Vector3.zero;
 
         #region Setup/Unsetup/OnTick
 
@@ -116,6 +117,8 @@ namespace SpaceExplorationRoguelite
 
             if (_artificialGravityController != null)
             {
+                //_rigidbody.MovePosition(_artificialGravityController.transform.TransformPoint(_previousPositionInArtificialGravitySpace));
+
                 var projectedForwardDirection = Vector3.ProjectOnPlane(_rigidbody.transform.forward, _artificialGravityController.transform.up).normalized;
                 var projectedRightDirection = Vector3.ProjectOnPlane(_rigidbody.transform.right, _artificialGravityController.transform.up).normalized;
 
@@ -254,6 +257,15 @@ namespace SpaceExplorationRoguelite
             _artificialGravityController = artificialGravityController;
 
             _playerController.ArtificialGravityControllerChanged();
+
+            if (_artificialGravityController == null)
+            {
+                _previousPositionInArtificialGravitySpace = Vector3.zero;
+            }
+            else
+            {
+                _previousPositionInArtificialGravitySpace = _artificialGravityController.transform.InverseTransformPoint(transform.position);
+            }
         }
 
         #endregion
