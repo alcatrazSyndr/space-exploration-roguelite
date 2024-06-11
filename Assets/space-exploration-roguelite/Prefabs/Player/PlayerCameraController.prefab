@@ -271,7 +271,7 @@ MonoBehaviour:
   _interactableObjectLayerMask:
     serializedVersion: 2
     m_Bits: 512
-  _interactableObjectMinDistance: 1
+  _interactableObjectMinDistance: 2
   _cameraTransform: {fileID: 4840170741075558799}
   _setup: 0
   _currentInteractableObjectTarget: {fileID: 0}
