@@ -20,8 +20,10 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private float _gravityRotationFixRate = 10;
         [SerializeField] private float _zeroGravityXRotationRate = 0.1f;
         [SerializeField] private float _zeroGravityYRotationRate = 0.1f;
+        [SerializeField] private float _artificialGravityYRotationRate = 100f;
 
         [Header("Runtime")]
+        [SerializeField] private PlayerController _playerController = null;
         [SerializeField] private bool _setup = false;
         [SerializeField] private Vector2 _currentMovementInput = Vector2.zero;
         [SerializeField] private Vector2 _currentRotationInput = Vector2.zero;
@@ -40,7 +42,7 @@ namespace SpaceExplorationRoguelite
 
         #region Setup/Unsetup/OnTick
 
-        public void Setup()
+        public void Setup(PlayerController playerController)
         {
             if (!base.IsOwner)
             {
@@ -51,6 +53,9 @@ namespace SpaceExplorationRoguelite
             {
                 return;
             }
+
+            _playerController = playerController;
+
             _setup = true;
         }
 
@@ -115,8 +120,21 @@ namespace SpaceExplorationRoguelite
 
                 var targetRotation = Quaternion.LookRotation(projectedForwardDirection, _artificialGravityController.transform.up);
                 var currentRotation = _rigidbody.transform.rotation;
-                var quaternionProduct = targetRotation * Quaternion.Inverse(currentRotation);
-                _rigidbody.AddTorque(new Vector3(quaternionProduct.x, quaternionProduct.y, quaternionProduct.z) * (_leanRate * _gravityRotationFixRate) * _tickRate, ForceMode.Impulse);
+                var angle = Quaternion.Angle(targetRotation, currentRotation);
+
+                if (angle > 0f)
+                {
+                    var quaternionProduct = targetRotation * Quaternion.Inverse(currentRotation);
+                    _rigidbody.AddTorque(new Vector3(quaternionProduct.x, quaternionProduct.y, quaternionProduct.z) * _leanRate * _gravityRotationFixRate * _tickRate, ForceMode.Impulse);
+                }
+                else if (_playerController.CameraTransform != null)
+                {
+                    var projectedCameraTransformForwardDirection = Vector3.ProjectOnPlane(_playerController.CameraTransform.forward, _artificialGravityController.transform.up).normalized;
+                    targetRotation = Quaternion.LookRotation(projectedCameraTransformForwardDirection, _artificialGravityController.transform.up);
+
+                    var quaternionProduct = targetRotation * Quaternion.Inverse(currentRotation);
+                    _rigidbody.AddTorque(new Vector3(quaternionProduct.x, quaternionProduct.y, quaternionProduct.z) * _artificialGravityYRotationRate * _tickRate, ForceMode.Force);
+                }
 
                 var grounded = Physics.CheckSphere(_rigidbody.transform.position + (-_rigidbody.transform.up.normalized * _groundCheckPositionOffset), _groundCheckSize, _groundCheckLayerMask);
 

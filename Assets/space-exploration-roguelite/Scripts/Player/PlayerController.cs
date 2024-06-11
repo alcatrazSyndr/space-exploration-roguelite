@@ -17,6 +17,20 @@ namespace SpaceExplorationRoguelite
 
         [Header("Runtime - Client")]
         [SerializeField] private PlayerCameraController _playerCameraController = null;
+        public Transform CameraTransform
+        {
+            get
+            {
+                if (_playerCameraController != null)
+                {
+                    return _playerCameraController.transform;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
         [SerializeField] private PlayerInputController _playerInputController = null;
         [SerializeField] private PlayerInteractionController _playerInteractionController = null;
         [SerializeField] private PlayerMenuControllerSingleton _playerMenuControllerSingleton = null;
@@ -36,7 +50,7 @@ namespace SpaceExplorationRoguelite
             {
                 if (PlayerPawnController.Value != null)
                 {
-                    PlayerPawnController.Value.Setup();
+                    PlayerPawnController.Value.Setup(this);
                     _playerPawnTransform = PlayerPawnController.Value.transform;
                 }
 
@@ -87,7 +101,7 @@ namespace SpaceExplorationRoguelite
 
             if (next != null)
             {
-                next.Setup();
+                next.Setup(this);
                 _playerPawnTransform = next.transform;
             }
         }
@@ -160,7 +174,7 @@ namespace SpaceExplorationRoguelite
                     var angle = Quaternion.Angle(targetRotation, currentRotation);
 
                     _playerCameraController.transform.position = _playerPawnTransform.position;
-                    if (angle > 1f)
+                    if (angle > 0f)
                     {
                         _playerCameraController.transform.rotation = _playerPawnTransform.rotation;
                     }
