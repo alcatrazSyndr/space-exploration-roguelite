@@ -8,6 +8,13 @@ namespace SpaceExplorationRoguelite
         [Header("Data")]
         [SerializeField] private float _artificialGravityResetTimer = 0.5f;
         [SerializeField] private float _rotationRate = 1f;
+        public float RotationRate
+        {
+            get
+            {
+                return _rotationRate;
+            }
+        }
 
         [Header("Components")]
         [SerializeField] private Transform _cameraY;

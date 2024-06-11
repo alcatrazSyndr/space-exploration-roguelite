@@ -248,7 +248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _artificialGravityResetTimer: 0.5
-  _rotationRate: 1
+  _rotationRate: 0.02
   _cameraY: {fileID: 5562406433537878385}
   _cameraX: {fileID: 1864220113607837136}
   _cameraZ: {fileID: 1264429994047390442}
