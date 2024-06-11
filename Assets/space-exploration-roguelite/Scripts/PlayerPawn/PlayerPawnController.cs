@@ -21,6 +21,9 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private float _zeroGravityXRotationRate = 0.1f;
         [SerializeField] private float _zeroGravityYRotationRate = 0.1f;
         [SerializeField] private float _artificialGravityYRotationRate = 100f;
+        [SerializeField] private float _artificialGravityJumpForce = 100f;
+        [SerializeField] private float _jumpCooldown = 0.5f;
+        [SerializeField] private float _jumpMinAngle = 3f;
 
         [Header("Runtime")]
         [SerializeField] private PlayerController _playerController = null;
@@ -39,6 +42,7 @@ namespace SpaceExplorationRoguelite
                 return _artificialGravityController;
             }
         }
+        [SerializeField] private float _currentJumpCooldown = 0f;
 
         #region Setup/Unsetup/OnTick
 
@@ -122,7 +126,7 @@ namespace SpaceExplorationRoguelite
                 var currentRotation = _rigidbody.transform.rotation;
                 var angle = Quaternion.Angle(targetRotation, currentRotation);
 
-                if (angle > 0f)
+                if (angle > 2f)
                 {
                     var quaternionProduct = targetRotation * Quaternion.Inverse(currentRotation);
                     _rigidbody.AddTorque(new Vector3(quaternionProduct.x, quaternionProduct.y, quaternionProduct.z) * quaternionProduct.w * _leanRate * _gravityRotationFixRate * _tickRate, ForceMode.Impulse);
@@ -141,6 +145,22 @@ namespace SpaceExplorationRoguelite
                 {
                     var gravityVector = -_artificialGravityController.transform.up.normalized;
                     _rigidbody.AddForce(gravityVector * _gravityModifier, ForceMode.Impulse);
+                }
+                else if (grounded && _currentJumpCooldown <= 0f && angle <= _jumpMinAngle && _currentJumpInput)
+                {
+                    _currentJumpCooldown = _jumpCooldown;
+
+                    var jumpVector = _artificialGravityController.transform.up.normalized;
+                    _rigidbody.AddForce(jumpVector * _artificialGravityJumpForce, ForceMode.Impulse);
+                }
+
+                if (_currentJumpCooldown > 0f)
+                {
+                    _currentJumpCooldown -= _tickRate;
+                }
+                else
+                {
+                    _currentJumpCooldown = 0f;
                 }
             }
             else
