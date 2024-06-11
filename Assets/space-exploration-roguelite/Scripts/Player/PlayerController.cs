@@ -162,25 +162,33 @@ namespace SpaceExplorationRoguelite
 
         private void CameraTransformFollow()
         {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
             if (_playerCameraController != null && _playerPawnTransform != null)
             {
                 if (PlayerPawnController.Value != null && PlayerPawnController.Value.ArtificialGravityController != null && _playerInputController != null)
                 {
-                    var projectedForwardDirection = Vector3.ProjectOnPlane(_playerPawnTransform.forward, PlayerPawnController.Value.ArtificialGravityController.transform.up).normalized;
-
-                    var targetRotation = Quaternion.LookRotation(projectedForwardDirection, PlayerPawnController.Value.ArtificialGravityController.transform.up);
-                    var currentRotation = _playerPawnTransform.rotation;
-
-                    var angle = Quaternion.Angle(targetRotation, currentRotation);
-
                     _playerCameraController.transform.position = _playerPawnTransform.position;
-                    if (angle > 0f)
+
+                    var rotationInArtificialGravityTransform = (_playerCameraController.transform.rotation * Quaternion.Inverse(PlayerPawnController.Value.ArtificialGravityController.Rigidbody.rotation)).eulerAngles;
+
+                    if (rotationInArtificialGravityTransform.x > 1f || rotationInArtificialGravityTransform.z > 1f)
                     {
                         _playerCameraController.transform.rotation = _playerPawnTransform.rotation;
                     }
                     else
                     {
-                        _playerCameraController.transform.rotation *= Quaternion.Euler(0f, _playerCameraController.RotationRate * _playerInputController.CurrentCameraInput.x, 0f);
+                        rotationInArtificialGravityTransform.x = 0f;
+                        rotationInArtificialGravityTransform.z = 0f;
+
+                        var targetRotation = PlayerPawnController.Value.ArtificialGravityController.transform.rotation * 
+                            Quaternion.Euler(rotationInArtificialGravityTransform) * 
+                            Quaternion.Euler(0f, _playerCameraController.RotationRate * _playerInputController.CurrentCameraInput.x, 0f);
+
+                        _playerCameraController.transform.rotation = targetRotation;
                     }
                 }
                 else
@@ -239,6 +247,11 @@ namespace SpaceExplorationRoguelite
 
         public void ArtificialGravityControllerChanged()
         {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
             if (PlayerPawnController.Value != null && _playerCameraController != null)
             {
                 if (PlayerPawnController.Value.ArtificialGravityController != null)

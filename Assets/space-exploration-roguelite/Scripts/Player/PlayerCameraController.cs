@@ -64,16 +64,6 @@ namespace SpaceExplorationRoguelite
             _cameraX.localRotation *= Quaternion.Euler(new Vector3(-value * _rotationRate, 0f, 0f));
         }
 
-        public Vector3 CameraRelativeMovementInput(Vector3 movementInput)
-        {
-            var forward = _cameraTransform.forward;
-            var right = _cameraTransform.right;
-            var up = _cameraTransform.up;
-
-            var desiredInputDirection = forward.normalized * movementInput.z + right.normalized * movementInput.x + up.normalized * movementInput.y;
-            return new Vector3(desiredInputDirection.x, desiredInputDirection.y, desiredInputDirection.z);
-        }
-
         public void SetupArtificialGravity()
         {
             if (_setupForArtificialGravity)

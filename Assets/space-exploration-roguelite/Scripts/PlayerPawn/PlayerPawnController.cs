@@ -125,14 +125,14 @@ namespace SpaceExplorationRoguelite
                 if (angle > 0f)
                 {
                     var quaternionProduct = targetRotation * Quaternion.Inverse(currentRotation);
-                    _rigidbody.AddTorque(new Vector3(quaternionProduct.x, quaternionProduct.y, quaternionProduct.z) * _leanRate * _gravityRotationFixRate * _tickRate, ForceMode.Impulse);
+                    _rigidbody.AddTorque(new Vector3(quaternionProduct.x, quaternionProduct.y, quaternionProduct.z) * quaternionProduct.w * _leanRate * _gravityRotationFixRate * _tickRate, ForceMode.Impulse);
                 }
                 else if (_playerController.CameraTransform != null)
                 {
                     targetRotation = Quaternion.LookRotation(_playerController.CameraTransform.forward, _artificialGravityController.transform.up);
 
                     var quaternionProduct = targetRotation * Quaternion.Inverse(currentRotation);
-                    _rigidbody.AddTorque(new Vector3(quaternionProduct.x, quaternionProduct.y, quaternionProduct.z) * _artificialGravityYRotationRate * _tickRate, ForceMode.Force);
+                    _rigidbody.AddTorque(new Vector3(quaternionProduct.x, quaternionProduct.y, quaternionProduct.z) * quaternionProduct.w * _artificialGravityYRotationRate * _tickRate, ForceMode.Force);
                 }
 
                 var grounded = Physics.CheckSphere(_rigidbody.transform.position + (-_rigidbody.transform.up.normalized * _groundCheckPositionOffset), _groundCheckSize, _groundCheckLayerMask);
@@ -232,15 +232,10 @@ namespace SpaceExplorationRoguelite
             }
 
             _artificialGravityController = artificialGravityController;
+
+            _playerController.ArtificialGravityControllerChanged();
         }
 
         #endregion
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.red;
-
-            Gizmos.DrawWireSphere(_rigidbody.transform.position + (-_rigidbody.transform.up.normalized * _groundCheckPositionOffset), _groundCheckSize);
-        }
     }
 }
