@@ -61,7 +61,13 @@ namespace SpaceExplorationRoguelite
 
         public void RotateCameraOnLocalXAxis(float value)
         {
-            _cameraX.localRotation *= Quaternion.Euler(new Vector3(-value * _rotationRate, 0f, 0f));
+            var targetXLocalRotation = _cameraX.localRotation * Quaternion.Euler(new Vector3(-value * _rotationRate, 0f, 0f));
+            var targetXLocalEuler = targetXLocalRotation.eulerAngles;
+
+            if ((targetXLocalEuler.x >= 275f || targetXLocalEuler.x <= 85f) && targetXLocalEuler.y == 0f && targetXLocalEuler.z == 0f)
+            {
+                _cameraX.localRotation = targetXLocalRotation;
+            }
         }
 
         public void SetupArtificialGravity()
