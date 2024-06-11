@@ -171,7 +171,7 @@ namespace SpaceExplorationRoguelite
 
                     var rotationInArtificialGravityTransform = (_playerCameraController.transform.rotation * Quaternion.Inverse(PlayerPawnController.Value.ArtificialGravityController.Rigidbody.rotation)).eulerAngles;
 
-                    if ((rotationInArtificialGravityTransform.x <= 2f || rotationInArtificialGravityTransform.x >= 358f) || (rotationInArtificialGravityTransform.z <= 2f || rotationInArtificialGravityTransform.z >= 358f))
+                    if ((rotationInArtificialGravityTransform.x <= 0.1f || rotationInArtificialGravityTransform.x >= 359.9f) || (rotationInArtificialGravityTransform.z <= 0.1f || rotationInArtificialGravityTransform.z >= 359.9f))
                     {
                         rotationInArtificialGravityTransform.x = 0f;
                         rotationInArtificialGravityTransform.z = 0f;
