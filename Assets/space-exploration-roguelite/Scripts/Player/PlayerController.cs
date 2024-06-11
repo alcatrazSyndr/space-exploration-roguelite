@@ -17,10 +17,25 @@ namespace SpaceExplorationRoguelite
 
         [Header("Runtime - Client")]
         [SerializeField] private PlayerCameraController _playerCameraController = null;
+        public Transform CameraTransform
+        {
+            get
+            {
+                if (_playerCameraController != null)
+                {
+                    return _playerCameraController.transform;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
         [SerializeField] private PlayerInputController _playerInputController = null;
         [SerializeField] private PlayerInteractionController _playerInteractionController = null;
         [SerializeField] private PlayerMenuControllerSingleton _playerMenuControllerSingleton = null;
         [SerializeField] private Transform _playerPawnTransform = null;
+        [SerializeField] private float _tickRate = 0f;
 
         [Header("Runtime - Network")]
         public readonly SyncVar<PlayerPawnController> PlayerPawnController = new();
@@ -35,7 +50,7 @@ namespace SpaceExplorationRoguelite
             {
                 if (PlayerPawnController.Value != null)
                 {
-                    PlayerPawnController.Value.Setup();
+                    PlayerPawnController.Value.Setup(this);
                     _playerPawnTransform = PlayerPawnController.Value.transform;
                 }
 
@@ -46,6 +61,8 @@ namespace SpaceExplorationRoguelite
                 SetupInputController();
 
                 _playerMenuControllerSingleton.OpenPlayerMenu(Enums.PlayerMenuType.HUD);
+
+                _tickRate = (float)TimeManager.TickDelta;
             }
         }
 
@@ -84,7 +101,7 @@ namespace SpaceExplorationRoguelite
 
             if (next != null)
             {
-                next.Setup();
+                next.Setup(this);
                 _playerPawnTransform = next.transform;
             }
         }
@@ -145,12 +162,40 @@ namespace SpaceExplorationRoguelite
 
         private void CameraTransformFollow()
         {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
             if (_playerCameraController != null && _playerPawnTransform != null)
             {
-                //_playerCameraController.transform.position = Vector3.Lerp(_playerCameraController.transform.position, _playerPawnTransform.position, Time.deltaTime * _playerCameraPositionSmoothing);
-                //_playerCameraController.transform.rotation = Quaternion.Lerp(_playerCameraController.transform.rotation, _playerPawnTransform.rotation, Time.deltaTime * _playerCameraRotationSmoothing);
-                _playerCameraController.transform.position = _playerPawnTransform.position;
-                _playerCameraController.transform.rotation = _playerPawnTransform.rotation;
+                if (PlayerPawnController.Value != null && PlayerPawnController.Value.ArtificialGravityController != null && _playerInputController != null)
+                {
+                    _playerCameraController.transform.position = _playerPawnTransform.position;
+
+                    var rotationInArtificialGravityTransform = (_playerCameraController.transform.rotation * Quaternion.Inverse(PlayerPawnController.Value.ArtificialGravityController.Rigidbody.rotation)).eulerAngles;
+
+                    if (rotationInArtificialGravityTransform.x > 1f || rotationInArtificialGravityTransform.z > 1f)
+                    {
+                        _playerCameraController.transform.rotation = _playerPawnTransform.rotation;
+                    }
+                    else
+                    {
+                        rotationInArtificialGravityTransform.x = 0f;
+                        rotationInArtificialGravityTransform.z = 0f;
+
+                        var targetRotation = PlayerPawnController.Value.ArtificialGravityController.transform.rotation * 
+                            Quaternion.Euler(rotationInArtificialGravityTransform) * 
+                            Quaternion.Euler(0f, _playerCameraController.RotationRate * _playerInputController.CurrentCameraInput.x, 0f);
+
+                        _playerCameraController.transform.rotation = targetRotation;
+                    }
+                }
+                else
+                {
+                    _playerCameraController.transform.position = _playerPawnTransform.position;
+                    _playerCameraController.transform.rotation = _playerPawnTransform.rotation;
+                }
             }
         }
 
@@ -197,6 +242,26 @@ namespace SpaceExplorationRoguelite
                 _playerCameraController.Unsetup();
                 Destroy(playerCameraControllerGO);
                 _playerCameraController = null;
+            }
+        }
+
+        public void ArtificialGravityControllerChanged()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (PlayerPawnController.Value != null && _playerCameraController != null)
+            {
+                if (PlayerPawnController.Value.ArtificialGravityController != null)
+                {
+                    _playerCameraController.SetupArtificialGravity();
+                }
+                else
+                {
+                    _playerCameraController.UnsetupArtificialGravity();
+                }
             }
         }
 
@@ -261,13 +326,16 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (PlayerPawnController.Value != null && _playerInputController != null && _playerCameraController != null)
+            if (PlayerPawnController.Value != null)
             {
-                var rotationInputVector = new Vector3(-inputDelta.y, inputDelta.x, _playerInputController.CurrentLeanInput);
-
-                PlayerPawnController.Value.RotationInputChange(rotationInputVector);
-
-                MovementInputChanged(_playerInputController.CurrentMovementInput);
+                if (PlayerPawnController.Value.ArtificialGravityController != null && _playerCameraController != null)
+                {
+                    _playerCameraController.RotateCameraOnLocalXAxis(inputDelta.y);
+                }
+                else
+                {
+                    PlayerPawnController.Value.RotationInputChange(inputDelta);
+                }
             }
         }
 
@@ -278,11 +346,9 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (PlayerPawnController.Value != null && _playerInputController != null)
+            if (PlayerPawnController.Value != null)
             {
                 PlayerPawnController.Value.LeanInputChange(leanValue);
-
-                MovementInputChanged(_playerInputController.CurrentMovementInput);
             }
         }
 
@@ -293,13 +359,9 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (PlayerPawnController.Value != null && _playerCameraController != null && _playerInputController != null)
+            if (PlayerPawnController.Value != null)
             {
-                var upDownModifier = (_playerInputController.CurrentJumpInput ? 1f : 0f) + (_playerInputController.CurrentCrouchInput ? -1f : 0f);
-                var movementInputVector = new Vector3(input.x, PlayerPawnController.Value.ArtificialGravityController != null ? 0f : upDownModifier, input.y);
-                var movementVector = _playerCameraController.CameraRelativeMovementInput(movementInputVector).normalized;
-
-                PlayerPawnController.Value.MovementInputChange(movementVector);
+                PlayerPawnController.Value.MovementInputChange(input);
             }
         }
 
@@ -310,9 +372,9 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (_playerInputController != null)
+            if (PlayerPawnController.Value != null)
             {
-                MovementInputChanged(_playerInputController.CurrentMovementInput);
+                PlayerPawnController.Value.CrouchInputChanged(crouch);
             }
         }
 
@@ -323,9 +385,9 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (_playerInputController != null)
+            if (PlayerPawnController.Value != null)
             {
-                MovementInputChanged(_playerInputController.CurrentMovementInput);
+                PlayerPawnController.Value.JumpInputChanged(jump);
             }
         }
 

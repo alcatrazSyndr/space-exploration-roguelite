@@ -16,6 +16,7 @@ namespace SpaceExplorationRoguelite
 
         [Header("Components")]
         [SerializeField] private Transform _playerPawnSpawnPosition;
+        [SerializeField] private Transform _worldTransformOrigin;
 
         [Header("Prefabs")]
         [SerializeField] private GameObject _playerPawnPrefab;
@@ -93,7 +94,7 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            var playerControllerInstance = Instantiate(_playerPrefab);
+            var playerControllerInstance = Instantiate(_playerPrefab, _worldTransformOrigin);
             playerControllerInstance.transform.position = Vector3.zero;
             var playerController = playerControllerInstance.GetComponent<PlayerController>();
 
@@ -108,7 +109,7 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            var playerPawnInstance = Instantiate(_playerPawnPrefab);
+            var playerPawnInstance = Instantiate(_playerPawnPrefab, _worldTransformOrigin);
             playerPawnInstance.transform.position = _playerPawnSpawnPosition.position;
             var playerPawnController = playerPawnInstance.GetComponent<PlayerPawnController>();
 
