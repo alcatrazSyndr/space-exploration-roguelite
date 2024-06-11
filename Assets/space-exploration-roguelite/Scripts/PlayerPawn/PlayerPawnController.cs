@@ -43,7 +43,8 @@ namespace SpaceExplorationRoguelite
             }
         }
         [SerializeField] private float _currentJumpCooldown = 0f;
-        [SerializeField] private Vector3 _previousPositionInArtificialGravitySpace = Vector3.zero;
+        [SerializeField] private Vector3 _previousArtificialGravitySpacePosition = Vector3.zero;
+        [SerializeField] private Vector3 _previousArtificialGravityControllerPosition = Vector3.zero;
 
         #region Setup/Unsetup/OnTick
 
@@ -88,7 +89,9 @@ namespace SpaceExplorationRoguelite
             }
 
             _tickRate = (float)TimeManager.TickDelta;
+            TimeManager.OnPreTick += OnPreTick;
             TimeManager.OnTick += OnTick;
+            TimeManager.OnPostTick += OnPostTick;
         }
 
         public override void OnStopClient()
@@ -100,7 +103,58 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
+            TimeManager.OnPreTick -= OnPreTick;
             TimeManager.OnTick -= OnTick;
+            TimeManager.OnPostTick -= OnPostTick;
+        }
+
+        private void OnPostTick()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (!_setup)
+            {
+                return;
+            }
+
+            if (_artificialGravityController != null)
+            {
+                var artificialGravityControllerOffset = _artificialGravityController.transform.position - _previousArtificialGravityControllerPosition;
+                print("Current Artificial Gravity Controller Position Change: " + artificialGravityControllerOffset.ToString());
+
+                var currentOffset = _artificialGravityController.transform.InverseTransformPoint(_rigidbody.position) - _previousArtificialGravitySpacePosition;
+                print("Current Local Position Offset: " + currentOffset);
+
+                _previousArtificialGravitySpacePosition += new Vector3(currentOffset.x + artificialGravityControllerOffset.x, currentOffset.y + artificialGravityControllerOffset.y, currentOffset.z + artificialGravityControllerOffset.z);
+                transform.position = (_artificialGravityController.transform.TransformPoint(_previousArtificialGravitySpacePosition));
+
+                //_previousArtificialGravitySpacePosition = _artificialGravityController.Rigidbody.transform.InverseTransformPoint(_rigidbody.position);
+
+                //_rigidbody.MovePosition(_rigidbody.position + _artificialGravityController.transform.TransformPoint(currentOffset));
+                //print(_rigidbody.position);
+                //_previousArtificialGravitySpacePosition = currentOffset;
+            }
+        }
+
+        private void OnPreTick()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (!_setup)
+            {
+                return;
+            }
+
+            if (_artificialGravityController != null)
+            {
+                _previousArtificialGravityControllerPosition = _artificialGravityController.transform.position;
+            }
         }
 
         private void OnTick()
@@ -117,7 +171,7 @@ namespace SpaceExplorationRoguelite
 
             if (_artificialGravityController != null)
             {
-                //_rigidbody.MovePosition(_artificialGravityController.transform.TransformPoint(_previousPositionInArtificialGravitySpace));
+                transform.position = _artificialGravityController.transform.TransformPoint(_previousArtificialGravitySpacePosition);
 
                 var projectedForwardDirection = Vector3.ProjectOnPlane(_rigidbody.transform.forward, _artificialGravityController.transform.up).normalized;
                 var projectedRightDirection = Vector3.ProjectOnPlane(_rigidbody.transform.right, _artificialGravityController.transform.up).normalized;
@@ -255,17 +309,18 @@ namespace SpaceExplorationRoguelite
             }
 
             _artificialGravityController = artificialGravityController;
-
-            _playerController.ArtificialGravityControllerChanged();
-
-            if (_artificialGravityController == null)
+            if (_artificialGravityController != null)
             {
-                _previousPositionInArtificialGravitySpace = Vector3.zero;
+                _previousArtificialGravityControllerPosition = _artificialGravityController.transform.position;
+                _previousArtificialGravitySpacePosition = _artificialGravityController.transform.InverseTransformPoint(_rigidbody.position);
             }
             else
             {
-                _previousPositionInArtificialGravitySpace = _artificialGravityController.transform.InverseTransformPoint(transform.position);
+                _previousArtificialGravitySpacePosition = Vector3.zero;
+                _previousArtificialGravityControllerPosition = Vector3.zero;
             }
+
+            _playerController.ArtificialGravityControllerChanged();
         }
 
         #endregion
