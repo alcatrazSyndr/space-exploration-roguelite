@@ -231,6 +231,8 @@ MonoBehaviour:
   _gravityRotationFixRate: 20
   _zeroGravityXRotationRate: 0.1
   _zeroGravityYRotationRate: 0.025
+  _artificialGravityYRotationRate: 1000000
+  _playerController: {fileID: 0}
   _setup: 0
   _currentMovementInput: {x: 0, y: 0}
   _currentRotationInput: {x: 0, y: 0}

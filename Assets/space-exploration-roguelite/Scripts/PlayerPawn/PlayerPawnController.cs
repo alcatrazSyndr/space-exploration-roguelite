@@ -129,8 +129,7 @@ namespace SpaceExplorationRoguelite
                 }
                 else if (_playerController.CameraTransform != null)
                 {
-                    var projectedCameraTransformForwardDirection = Vector3.ProjectOnPlane(_playerController.CameraTransform.forward, _artificialGravityController.transform.up).normalized;
-                    targetRotation = Quaternion.LookRotation(projectedCameraTransformForwardDirection, _artificialGravityController.transform.up);
+                    targetRotation = Quaternion.LookRotation(_playerController.CameraTransform.forward, _artificialGravityController.transform.up);
 
                     var quaternionProduct = targetRotation * Quaternion.Inverse(currentRotation);
                     _rigidbody.AddTorque(new Vector3(quaternionProduct.x, quaternionProduct.y, quaternionProduct.z) * _artificialGravityYRotationRate * _tickRate, ForceMode.Force);
