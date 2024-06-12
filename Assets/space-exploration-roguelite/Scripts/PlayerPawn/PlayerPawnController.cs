@@ -9,6 +9,7 @@ namespace SpaceExplorationRoguelite
     {
         [Header("Components")]
         [SerializeField] private Rigidbody _rigidbody;
+        [SerializeField] private Collider _collider;
 
         [Header("Data")]
         [SerializeField] private float _groundCheckPositionOffset = 1f;
@@ -43,8 +44,8 @@ namespace SpaceExplorationRoguelite
             }
         }
         [SerializeField] private float _currentJumpCooldown = 0f;
-        [SerializeField] private Vector3 _previousArtificialGravitySpacePosition = Vector3.zero;
-        [SerializeField] private Vector3 _previousArtificialGravityControllerPosition = Vector3.zero;
+        [SerializeField] private Vector3 _previousRigidbodyLocalPosition = Vector3.zero;
+        [SerializeField] private Quaternion _previousRigidbodyLocalRotation = Quaternion.identity;
 
         #region Setup/Unsetup/OnTick
 
@@ -122,20 +123,11 @@ namespace SpaceExplorationRoguelite
 
             if (_artificialGravityController != null)
             {
-                var artificialGravityControllerOffset = _artificialGravityController.transform.position - _previousArtificialGravityControllerPosition;
-                print("Current Artificial Gravity Controller Position Change: " + artificialGravityControllerOffset.ToString());
-
-                var currentOffset = _artificialGravityController.transform.InverseTransformPoint(_rigidbody.position) - _previousArtificialGravitySpacePosition;
-                print("Current Local Position Offset: " + currentOffset);
-
-                _previousArtificialGravitySpacePosition += new Vector3(currentOffset.x + artificialGravityControllerOffset.x, currentOffset.y + artificialGravityControllerOffset.y, currentOffset.z + artificialGravityControllerOffset.z);
-                transform.position = (_artificialGravityController.transform.TransformPoint(_previousArtificialGravitySpacePosition));
-
-                //_previousArtificialGravitySpacePosition = _artificialGravityController.Rigidbody.transform.InverseTransformPoint(_rigidbody.position);
-
-                //_rigidbody.MovePosition(_rigidbody.position + _artificialGravityController.transform.TransformPoint(currentOffset));
-                //print(_rigidbody.position);
-                //_previousArtificialGravitySpacePosition = currentOffset;
+                if (!_artificialGravityController.Rigidbody.isKinematic && _rigidbody.isKinematic)
+                {
+                    transform.position = _artificialGravityController.transform.TransformPoint(_previousRigidbodyLocalPosition);
+                    transform.rotation = _artificialGravityController.transform.rotation * _previousRigidbodyLocalRotation;
+                }
             }
         }
 
@@ -153,7 +145,11 @@ namespace SpaceExplorationRoguelite
 
             if (_artificialGravityController != null)
             {
-                _previousArtificialGravityControllerPosition = _artificialGravityController.transform.position;
+                if (!_artificialGravityController.Rigidbody.isKinematic && _rigidbody.isKinematic)
+                {
+                    _rigidbody.MovePosition(_artificialGravityController.transform.TransformPoint(_previousRigidbodyLocalPosition));
+                    _rigidbody.MoveRotation(_artificialGravityController.transform.rotation * _previousRigidbodyLocalRotation);
+                }
             }
         }
 
@@ -171,53 +167,71 @@ namespace SpaceExplorationRoguelite
 
             if (_artificialGravityController != null)
             {
-                transform.position = _artificialGravityController.transform.TransformPoint(_previousArtificialGravitySpacePosition);
-
-                var projectedForwardDirection = Vector3.ProjectOnPlane(_rigidbody.transform.forward, _artificialGravityController.transform.up).normalized;
-                var projectedRightDirection = Vector3.ProjectOnPlane(_rigidbody.transform.right, _artificialGravityController.transform.up).normalized;
-
-                var targetMovementDirection = projectedForwardDirection * _currentMovementInput.y + projectedRightDirection * _currentMovementInput.x;
-                _rigidbody.AddForce(targetMovementDirection.normalized * _tickRate * _moveRate, ForceMode.Impulse);
-
-                var targetRotation = Quaternion.LookRotation(projectedForwardDirection, _artificialGravityController.transform.up);
-                var currentRotation = _rigidbody.transform.rotation;
-                var angle = Quaternion.Angle(targetRotation, currentRotation);
-
-                if (angle > 2f)
+                if (_artificialGravityController.Rigidbody.isKinematic && !_rigidbody.isKinematic)
                 {
-                    var quaternionProduct = targetRotation * Quaternion.Inverse(currentRotation);
-                    _rigidbody.AddTorque(new Vector3(quaternionProduct.x, quaternionProduct.y, quaternionProduct.z) * quaternionProduct.w * _leanRate * _gravityRotationFixRate * _tickRate, ForceMode.Impulse);
+                    var projectedForwardDirection = Vector3.ProjectOnPlane(_rigidbody.transform.forward, _artificialGravityController.transform.up).normalized;
+                    var projectedRightDirection = Vector3.ProjectOnPlane(_rigidbody.transform.right, _artificialGravityController.transform.up).normalized;
+
+                    var targetMovementDirection = projectedForwardDirection * _currentMovementInput.y + projectedRightDirection * _currentMovementInput.x;
+                    _rigidbody.AddForce(targetMovementDirection.normalized * _tickRate * _moveRate, ForceMode.Impulse);
+
+                    var targetRotation = Quaternion.LookRotation(projectedForwardDirection, _artificialGravityController.transform.up);
+                    var currentRotation = _rigidbody.rotation;
+                    var angle = Quaternion.Angle(targetRotation, currentRotation);
+
+                    if (angle > 2f)
+                    {
+                        var quaternionProduct = targetRotation * Quaternion.Inverse(currentRotation);
+                        _rigidbody.AddTorque(new Vector3(quaternionProduct.x, quaternionProduct.y, quaternionProduct.z) * quaternionProduct.w * _leanRate * _gravityRotationFixRate * _tickRate, ForceMode.Impulse);
+                    }
+                    else if (_playerController.CameraTransform != null)
+                    {
+                        targetRotation = Quaternion.LookRotation(_playerController.CameraTransform.forward, _artificialGravityController.transform.up);
+
+                        var quaternionProduct = targetRotation * Quaternion.Inverse(currentRotation);
+                        _rigidbody.AddTorque(new Vector3(quaternionProduct.x, quaternionProduct.y, quaternionProduct.z) * quaternionProduct.w * _artificialGravityYRotationRate * _tickRate, ForceMode.Force);
+                    }
+
+                    var grounded = Physics.CheckSphere(_rigidbody.transform.position + (-_rigidbody.transform.up.normalized * _groundCheckPositionOffset), _groundCheckSize, _groundCheckLayerMask);
+
+                    if (!grounded)
+                    {
+                        var gravityVector = -_artificialGravityController.transform.up.normalized;
+                        _rigidbody.AddForce(gravityVector * _gravityModifier, ForceMode.Impulse);
+                    }
+                    else if (grounded && _currentJumpCooldown <= 0f && angle <= _jumpMinAngle && _currentJumpInput)
+                    {
+                        _currentJumpCooldown = _jumpCooldown;
+
+                        var jumpVector = _artificialGravityController.transform.up.normalized;
+                        _rigidbody.AddForce(jumpVector * _artificialGravityJumpForce, ForceMode.Impulse);
+                    }
+
+                    if (_currentJumpCooldown > 0f)
+                    {
+                        _currentJumpCooldown -= _tickRate;
+                    }
+                    else
+                    {
+                        _currentJumpCooldown = 0f;
+                    }
                 }
-                else if (_playerController.CameraTransform != null)
+                else if (!_artificialGravityController.Rigidbody.isKinematic && _rigidbody.isKinematic)
                 {
-                    targetRotation = Quaternion.LookRotation(_playerController.CameraTransform.forward, _artificialGravityController.transform.up);
+                    var projectedForwardDirection = Vector3.ProjectOnPlane(_rigidbody.transform.forward, _artificialGravityController.transform.up).normalized;
+                    var projectedRightDirection = Vector3.ProjectOnPlane(_rigidbody.transform.right, _artificialGravityController.transform.up).normalized;
 
-                    var quaternionProduct = targetRotation * Quaternion.Inverse(currentRotation);
-                    _rigidbody.AddTorque(new Vector3(quaternionProduct.x, quaternionProduct.y, quaternionProduct.z) * quaternionProduct.w * _artificialGravityYRotationRate * _tickRate, ForceMode.Force);
-                }
+                    var targetRotation = Quaternion.LookRotation(projectedForwardDirection, _artificialGravityController.transform.up);
+                    var currentRotation = _rigidbody.rotation;
+                    var angle = Quaternion.Angle(targetRotation, currentRotation);
+                    if (angle <= 2f && _playerController.CameraTransform != null)
+                    {
+                        targetRotation = Quaternion.LookRotation(_playerController.CameraTransform.forward, _artificialGravityController.transform.up);
+                    }
+                    _rigidbody.rotation = Quaternion.Lerp(_rigidbody.rotation, targetRotation, _tickRate * _gravityRotationFixRate);
+                    _previousRigidbodyLocalRotation = Quaternion.Inverse(_artificialGravityController.transform.rotation) * _rigidbody.rotation;
 
-                var grounded = Physics.CheckSphere(_rigidbody.transform.position + (-_rigidbody.transform.up.normalized * _groundCheckPositionOffset), _groundCheckSize, _groundCheckLayerMask);
-
-                if (!grounded)
-                {
-                    var gravityVector = -_artificialGravityController.transform.up.normalized;
-                    _rigidbody.AddForce(gravityVector * _gravityModifier, ForceMode.Impulse);
-                }
-                else if (grounded && _currentJumpCooldown <= 0f && angle <= _jumpMinAngle && _currentJumpInput)
-                {
-                    _currentJumpCooldown = _jumpCooldown;
-
-                    var jumpVector = _artificialGravityController.transform.up.normalized;
-                    _rigidbody.AddForce(jumpVector * _artificialGravityJumpForce, ForceMode.Impulse);
-                }
-
-                if (_currentJumpCooldown > 0f)
-                {
-                    _currentJumpCooldown -= _tickRate;
-                }
-                else
-                {
-                    _currentJumpCooldown = 0f;
+                    //var grounded = Physics.CheckSphere(_rigidbody.transform.position + (-_rigidbody.transform.up.normalized * _groundCheckPositionOffset), _groundCheckSize, _groundCheckLayerMask);
                 }
             }
             else
@@ -308,19 +322,43 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
+            if (_artificialGravityController == artificialGravityController)
+            {
+                return;
+            }
+
             _artificialGravityController = artificialGravityController;
+
+            _playerController.ArtificialGravityControllerChanged();
+
             if (_artificialGravityController != null)
             {
-                _previousArtificialGravityControllerPosition = _artificialGravityController.transform.position;
-                _previousArtificialGravitySpacePosition = _artificialGravityController.transform.InverseTransformPoint(_rigidbody.position);
+                if (_artificialGravityController.Rigidbody.isKinematic)
+                {
+                    _rigidbody.isKinematic = false;
+                    _previousRigidbodyLocalPosition = Vector3.zero;
+                    _previousRigidbodyLocalRotation = Quaternion.identity;
+                }
+                else
+                {
+                    _collider.enabled = false;
+                    _rigidbody.isKinematic = true;
+
+                    _previousRigidbodyLocalPosition = _artificialGravityController.transform.InverseTransformPoint(_rigidbody.position);
+                    _previousRigidbodyLocalRotation = Quaternion.Inverse(_artificialGravityController.transform.rotation) * _rigidbody.rotation;
+
+                    _rigidbody.MovePosition(_artificialGravityController.transform.TransformPoint(_previousRigidbodyLocalPosition));
+                    _rigidbody.MoveRotation(_artificialGravityController.transform.rotation * _previousRigidbodyLocalRotation);
+
+                    _collider.enabled = true;
+                }
             }
             else
             {
-                _previousArtificialGravitySpacePosition = Vector3.zero;
-                _previousArtificialGravityControllerPosition = Vector3.zero;
+                _rigidbody.isKinematic = false;
+                _previousRigidbodyLocalPosition = Vector3.zero;
+                _previousRigidbodyLocalRotation = Quaternion.identity;
             }
-
-            _playerController.ArtificialGravityControllerChanged();
         }
 
         #endregion

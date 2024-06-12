@@ -220,6 +220,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 8654876999964684564}
   _networkObjectCache: {fileID: 8654876999964684564}
   _rigidbody: {fileID: 18710226159831050}
+  _collider: {fileID: 4135526275607862717}
   _groundCheckPositionOffset: 0.7
   _groundCheckSize: 0.49
   _groundCheckLayerMask:
@@ -245,6 +246,7 @@ MonoBehaviour:
   _tickRate: 0
   _artificialGravityController: {fileID: 0}
   _currentJumpCooldown: 0
+  _previousRigidbodyLocalPosition: {x: 0, y: 0, z: 0}
 --- !u!54 &18710226159831050
 Rigidbody:
   m_ObjectHideFlags: 0
