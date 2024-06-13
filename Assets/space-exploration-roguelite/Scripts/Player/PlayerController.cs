@@ -165,33 +165,8 @@ namespace SpaceExplorationRoguelite
 
             if (_playerCameraController != null && _playerPawnTransform != null)
             {
-                if (PlayerPawnController.Value != null && PlayerPawnController.Value.ArtificialGravityController != null && _playerInputController != null)
-                {
-                    _playerCameraController.transform.position = _playerPawnTransform.position;
-
-                    var rotationInArtificialGravityTransform = (Quaternion.Inverse(PlayerPawnController.Value.ArtificialGravityController.Rigidbody.rotation) * _playerCameraController.transform.rotation).eulerAngles;
-
-                    if ((rotationInArtificialGravityTransform.x <= 0.1f || rotationInArtificialGravityTransform.x >= 359.9f) || (rotationInArtificialGravityTransform.z <= 0.1f || rotationInArtificialGravityTransform.z >= 359.9f))
-                    {
-                        rotationInArtificialGravityTransform.x = 0f;
-                        rotationInArtificialGravityTransform.z = 0f;
-
-                        var targetRotation = PlayerPawnController.Value.ArtificialGravityController.transform.rotation *
-                            Quaternion.Euler(rotationInArtificialGravityTransform) *
-                            Quaternion.Euler(0f, _playerCameraController.RotationRate * _playerInputController.CurrentCameraInput.x, 0f);
-
-                        _playerCameraController.transform.rotation = targetRotation;
-                    }
-                    else
-                    {
-                        _playerCameraController.transform.rotation = _playerPawnTransform.rotation;
-                    }
-                }
-                else
-                {
-                    _playerCameraController.transform.position = _playerPawnTransform.position;
-                    _playerCameraController.transform.rotation = _playerPawnTransform.rotation;
-                }
+                _playerCameraController.transform.position = _playerPawnTransform.position;
+                _playerCameraController.transform.rotation = _playerPawnTransform.rotation;
             }
         }
 
@@ -328,10 +303,8 @@ namespace SpaceExplorationRoguelite
                 {
                     _playerCameraController.RotateCameraOnLocalXAxis(inputDelta.y);
                 }
-                else
-                {
-                    PlayerPawnController.Value.RotationInputChange(inputDelta);
-                }
+
+                PlayerPawnController.Value.RotationInputChange(inputDelta);
             }
         }
 

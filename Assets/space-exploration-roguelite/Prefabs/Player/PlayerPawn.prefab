@@ -11,11 +11,10 @@ GameObject:
   - component: {fileID: 7855057643438409672}
   - component: {fileID: 5443726258134705875}
   - component: {fileID: 8486579343949191364}
-  - component: {fileID: 4135526275607862717}
   - component: {fileID: 8654876999964684564}
   - component: {fileID: 312361843578573223}
   - component: {fileID: 6164663298886641741}
-  - component: {fileID: 18710226159831050}
+  - component: {fileID: 3617837411676257057}
   m_Layer: 8
   m_Name: PlayerPawn
   m_TagString: Untagged
@@ -88,29 +87,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &4135526275607862717
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3210243001918237489}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8654876999964684564
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,23 +195,20 @@ MonoBehaviour:
   _componentIndexCache: 1
   _addedNetworkObject: {fileID: 8654876999964684564}
   _networkObjectCache: {fileID: 8654876999964684564}
-  _rigidbody: {fileID: 18710226159831050}
-  _collider: {fileID: 4135526275607862717}
-  _groundCheckPositionOffset: 0.7
-  _groundCheckSize: 0.49
-  _groundCheckLayerMask:
+  _noGravityMoveRate: 0
+  _noGravityRotateRate: 0
+  _noGravityLeanRate: 0
+  _artificialGravityCheckLayerMask:
     serializedVersion: 2
     m_Bits: 128
-  _gravityModifier: 80
-  _moveRate: 5000
-  _leanRate: 500
-  _gravityRotationFixRate: 20
-  _zeroGravityXRotationRate: 0.1
-  _zeroGravityYRotationRate: 0.025
-  _artificialGravityYRotationRate: 1000000
-  _artificialGravityJumpForce: 1500
-  _jumpCooldown: 0.5
-  _jumpMinAngle: 2
+  _artificialGravityForce: 0
+  _artificialGravityMoveRate: 0
+  _artificialGravityRotateRate: 0
+  _artificialGravityEntryUpDirectionFixTimer: 0
+  _artificialGravityCheckLineOffset: 0
+  _artificialGravityCheckLineLength: 0
+  _artificialGravityCheckLineTargetLengthMax: 0
+  _artificialGravityCheckLineTargetLengthMin: 0
   _playerController: {fileID: 0}
   _setup: 0
   _currentMovementInput: {x: 0, y: 0}
@@ -245,32 +218,26 @@ MonoBehaviour:
   _currentCrouchInput: 0
   _tickRate: 0
   _artificialGravityController: {fileID: 0}
-  _currentJumpCooldown: 0
-  _previousRigidbodyLocalPosition: {x: 0, y: 0, z: 0}
---- !u!54 &18710226159831050
-Rigidbody:
+--- !u!136 &3617837411676257057
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3210243001918237489}
-  serializedVersion: 4
-  m_Mass: 80
-  m_Drag: 10
-  m_AngularDrag: 10
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}

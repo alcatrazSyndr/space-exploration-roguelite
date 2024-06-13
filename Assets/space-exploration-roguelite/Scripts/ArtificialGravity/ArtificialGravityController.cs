@@ -7,54 +7,57 @@ namespace SpaceExplorationRoguelite
     public class ArtificialGravityController : MonoBehaviour
     {
         [Header("Components")]
-        [SerializeField] private Rigidbody _rigidbody;
-        public Rigidbody Rigidbody
+        [SerializeField] private List<ArtificialGravityBounds> _artificialGravityBounds = new List<ArtificialGravityBounds>();
+
+        public void Start()
         {
-            get
+            foreach (var artificialGravityBounds in _artificialGravityBounds)
             {
-                return _rigidbody;
+                artificialGravityBounds.Setup(this);
             }
         }
 
-        [Header("Runtime")]
-        [SerializeField] private List<Collider> _playerPawnColliderList = new List<Collider>();
-
-        private void OnTriggerStay(Collider other)
+        public void ColliderLeftGravityBounds(ArtificialGravityBounds bounds, Collider collider)
         {
-            if (!_playerPawnColliderList.Contains(other))
+            foreach (var gravityBounds in _artificialGravityBounds)
             {
-                _playerPawnColliderList.Add(other);
-
-                var playerPawnController = other.GetComponent<PlayerPawnController>();
-                if (playerPawnController != null)
+                if (gravityBounds == bounds)
                 {
-                    playerPawnController.SetArtificialGravityController(this);
+                    continue;
                 }
+
+                if (gravityBounds.ContainsCollider(collider))
+                {
+                    return;
+                }
+            }
+
+            var playerPawnController = collider.GetComponent<PlayerPawnController>();
+            if (playerPawnController != null)
+            {
+                playerPawnController.SetArtificialGravityController(null);
             }
         }
 
-        private void OnTriggerExit(Collider other)
+        public void ColliderEnteredGravityBounds(ArtificialGravityBounds bounds, Collider collider)
         {
-            if (_playerPawnColliderList.Contains(other))
+            foreach (var gravityBounds in _artificialGravityBounds)
             {
-                _playerPawnColliderList.Remove(other);
-
-                var playerPawnController = other.GetComponent<PlayerPawnController>();
-                if (playerPawnController != null)
+                if (gravityBounds == bounds)
                 {
-                    playerPawnController.SetArtificialGravityController(null);
+                    continue;
+                }
+
+                if (gravityBounds.ContainsCollider(collider))
+                {
+                    return;
                 }
             }
-        }
 
-        private void FixedUpdate()
-        {
-            for (int i = _playerPawnColliderList.Count - 1; i >= 0; i--)
+            var playerPawnController = collider.GetComponent<PlayerPawnController>();
+            if (playerPawnController != null)
             {
-                if (_playerPawnColliderList[i] == null)
-                {
-                    _playerPawnColliderList.RemoveAt(i);
-                }
+                playerPawnController.SetArtificialGravityController(this);
             }
         }
     }
