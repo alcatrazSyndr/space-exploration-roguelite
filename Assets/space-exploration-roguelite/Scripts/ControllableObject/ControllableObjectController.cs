@@ -8,6 +8,34 @@ namespace SpaceExplorationRoguelite
 {
     public class ControllableObjectController : NetworkBehaviour
     {
+        [Header("Data")]
+        [SerializeField] private Enums.ControllableObjectType _controllableObjectType;
+        public Enums.ControllableObjectType ControllableObjectType
+        {
+            get
+            {
+                return _controllableObjectType;
+            }
+        }
+
+        [Header("Components")]
+        [SerializeField] private Transform _controllableObjectSeatTransform;
+        public Transform ControllableObjectSeatTransform
+        {
+            get
+            {
+                return _controllableObjectSeatTransform;
+            }
+        }
+        [SerializeField] private Transform _controllableObjectExitTransform;
+        public Transform ControllableObjectExitTransform
+        {
+            get
+            {
+                return _controllableObjectExitTransform;
+            }
+        }
+
         [Header("Runtime")]
         [SerializeField] private Vector2 _currentMovementInput = Vector2.zero;
         public Vector2 CurrentMovementInput
@@ -60,6 +88,16 @@ namespace SpaceExplorationRoguelite
             }
 
             return new Vector3(_currentMovementInput.x, (_currentJumpInput ? 1f : 0f) + (_currentCrouchInput ? -1f : 0f), _currentMovementInput.y).normalized;
+        }
+
+        public Vector3 GetCurrentTargetRotationInput()
+        {
+            if (!base.IsOwner)
+            {
+                return Vector3.zero;
+            }
+
+            return new Vector3(-_currentRotationInput.y, _currentRotationInput.x, -_currentLeanInput);
         }
 
         public void MovementInputChanged(Vector2 input)

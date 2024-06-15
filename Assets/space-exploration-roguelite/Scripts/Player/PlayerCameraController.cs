@@ -70,6 +70,11 @@ namespace SpaceExplorationRoguelite
             }
         }
 
+        public void ResetCameraOnLocalXAxis()
+        {
+            _cameraX.localRotation = Quaternion.identity;
+        }
+
         public void SetupArtificialGravity()
         {
             if (_setupForArtificialGravity)

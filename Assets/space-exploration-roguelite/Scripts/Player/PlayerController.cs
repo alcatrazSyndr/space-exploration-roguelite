@@ -306,9 +306,15 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (_currentControlledObject != null && _currentControlledObject.Owner == base.Owner)
+            if (_currentControlledObject != null && _currentControlledObject.Owner == base.Owner && _playerMenuControllerSingleton != null)
             {
-                _currentControlledObject.RotationInputChanged(inputDelta);
+                var shipHudMenu = _playerMenuControllerSingleton.GetPlayerMenuController(Enums.PlayerMenuType.ShipHUD);
+                if (shipHudMenu != null)
+                {
+                    (shipHudMenu as PlayerMenuShipHUDController).FlightTargetInputChange(inputDelta);
+
+                    _currentControlledObject.RotationInputChanged((shipHudMenu as PlayerMenuShipHUDController).GetCurrentFlightTargetPosition());
+                }
             }
             else if (PlayerPawnController.Value != null)
             {
@@ -417,7 +423,38 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
+            if (_currentControlledObject != null && controllableObject == null && PlayerPawnController.Value != null && _currentControlledObject.ControllableObjectExitTransform != null)
+            {
+                PlayerPawnController.Value.transform.position = _currentControlledObject.ControllableObjectExitTransform.position;
+                PlayerPawnController.Value.transform.rotation = _currentControlledObject.ControllableObjectExitTransform.rotation;
+            }
+            else if (_currentControlledObject == null && controllableObject != null && PlayerPawnController.Value != null && controllableObject.ControllableObjectSeatTransform != null)
+            {
+                PlayerPawnController.Value.transform.position = controllableObject.ControllableObjectSeatTransform.position;
+                PlayerPawnController.Value.transform.rotation = controllableObject.ControllableObjectSeatTransform.rotation;
+            }
+
+            if (_playerCameraController != null)
+            {
+                _playerCameraController.ResetCameraOnLocalXAxis();
+            }
+
             _currentControlledObject = controllableObject;
+
+            if (_currentControlledObject != null)
+            {
+                if (_playerMenuControllerSingleton != null)
+                {
+                    _playerMenuControllerSingleton.OpenPlayerMenu(Enums.PlayerMenuType.ShipHUD);
+                }
+            }
+            else
+            {
+                if (_playerMenuControllerSingleton != null)
+                {
+                    _playerMenuControllerSingleton.ClosePlayerMenu(Enums.PlayerMenuType.ShipHUD);
+                }
+            }
         }
 
         private void ReleaseControlledObjectOwnership()

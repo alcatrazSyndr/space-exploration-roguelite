@@ -12,6 +12,8 @@ namespace SpaceExplorationRoguelite
         [Header("Data")]
         [SerializeField] private float _movementAccelerationRate;
         [SerializeField] private float _movementVelocityRate;
+        [SerializeField] private float _rotationAccelerationRate;
+        [SerializeField] private float _rotationVelocityRate;
 
         [Header("Components")]
         [SerializeField] private InteractableObjectController _pilotSeatInteractableObjectController;
@@ -21,6 +23,8 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private float _tickRate = 0f;
         [SerializeField] private Vector3 _currentMovementInput = Vector3.zero;
         [SerializeField] private Vector3 _currentMovementVector = Vector3.zero;
+        [SerializeField] private Vector3 _currentRotationInput = Vector3.zero;
+        [SerializeField] private Vector3 _currentRotationVector = Vector3.zero;
 
         #region Setup/OnTick
 
@@ -63,12 +67,30 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            var currentMovementInput = _pilotSeatControllableObjectController.GetCurrentTargetMovementInput();
+            var currentRotationInput = _pilotSeatControllableObjectController.GetCurrentTargetRotationInput();
+            if (_currentRotationInput != currentRotationInput)
+            {
+                _currentRotationInput = currentRotationInput;
+            }
 
+            if ((_currentRotationInput - _currentRotationVector).sqrMagnitude <= 0.00001f)
+            {
+                _currentRotationVector = _currentRotationInput;
+            }
+            else
+            {
+                _currentRotationVector = Vector3.Lerp(_currentRotationVector, _currentRotationInput, _rotationAccelerationRate * _tickRate);
+            }
+
+            if (_currentRotationVector != Vector3.zero)
+            {
+                transform.rotation *= Quaternion.Euler(_currentRotationVector * _rotationAccelerationRate);
+            }
+
+            var currentMovementInput = _pilotSeatControllableObjectController.GetCurrentTargetMovementInput();
             if (_currentMovementInput != currentMovementInput)
             {
                 _currentMovementInput = currentMovementInput;
-                //MovementInputChange(base.Owner, currentMovementInput);
             }
 
             if ((_currentMovementInput - _currentMovementVector).sqrMagnitude <= 0.00001f)

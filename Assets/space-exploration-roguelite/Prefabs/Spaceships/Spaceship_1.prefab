@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &759035138722077600
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4377529211253413171}
+  m_Layer: 0
+  m_Name: PilotSeatExitTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4377529211253413171
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 759035138722077600}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.17, z: 0.32}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 155939299467810945}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &843855049435284084
 GameObject:
   m_ObjectHideFlags: 0
@@ -37,6 +68,8 @@ Transform:
   - {fileID: 208681452486936877}
   - {fileID: 4274102055204277464}
   - {fileID: 3435732824101265054}
+  - {fileID: 4377529211253413171}
+  - {fileID: 5112898882067161553}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6021673013183508119
@@ -70,11 +103,15 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 2183624448256876757}
   _movementAccelerationRate: 1
   _movementVelocityRate: 0.2
+  _rotationAccelerationRate: 1.5
+  _rotationVelocityRate: 0.8
   _pilotSeatInteractableObjectController: {fileID: 7961608524880645774}
   _pilotSeatControllableObjectController: {fileID: 8647238013497041351}
   _tickRate: 0
   _currentMovementInput: {x: 0, y: 0, z: 0}
   _currentMovementVector: {x: 0, y: 0, z: 0}
+  _currentRotationInput: {x: 0, y: 0, z: 0}
+  _currentRotationVector: {x: 0, y: 0, z: 0}
 --- !u!114 &2183624448256876757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,6 +177,9 @@ MonoBehaviour:
   _componentIndexCache: 1
   _addedNetworkObject: {fileID: 2183624448256876757}
   _networkObjectCache: {fileID: 2183624448256876757}
+  _controllableObjectType: 0
+  _controllableObjectSeatTransform: {fileID: 5112898882067161553}
+  _controllableObjectExitTransform: {fileID: 4377529211253413171}
   _currentMovementInput: {x: 0, y: 0}
   _currentRotationInput: {x: 0, y: 0}
   _currentLeanInput: 0
@@ -190,6 +230,37 @@ MonoBehaviour:
     X: 0
     Y: 0
     Z: 0
+--- !u!1 &1257506307516418631
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5112898882067161553}
+  m_Layer: 0
+  m_Name: PilotSeatTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5112898882067161553
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1257506307516418631}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.35, z: 2.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 155939299467810945}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8124063623074960658
 GameObject:
   m_ObjectHideFlags: 0
@@ -393,6 +464,11 @@ PrefabInstance:
         type: 3}
       propertyPath: _interactActionText
       value: '[F] Control Ship'
+      objectReference: {fileID: 0}
+    - target: {fileID: 5918836761412659164, guid: 0a1012ac753040a4ebb9692a2ed3c8cb,
+        type: 3}
+      propertyPath: _scenePathHash
+      value: 2753596468
       objectReference: {fileID: 0}
     - target: {fileID: 5918836761412659164, guid: 0a1012ac753040a4ebb9692a2ed3c8cb,
         type: 3}

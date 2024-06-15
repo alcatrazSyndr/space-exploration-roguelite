@@ -7,7 +7,14 @@ namespace SpaceExplorationRoguelite
         public enum PlayerMenuType
         {
             None,
-            HUD
+            HUD,
+            ShipHUD
+        }
+
+        public enum ControllableObjectType
+        {
+            None,
+            Ship
         }
     }
 }

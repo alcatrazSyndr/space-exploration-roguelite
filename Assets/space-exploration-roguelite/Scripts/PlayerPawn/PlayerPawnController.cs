@@ -278,6 +278,11 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
+            if (_playerController.CurrentControlledObject != null)
+            {
+                return;
+            }
+
             transform.localRotation *= rotationDelta;
         }
 
@@ -289,6 +294,11 @@ namespace SpaceExplorationRoguelite
             }
 
             if (!_setup)
+            {
+                return;
+            }
+
+            if (_playerController.CurrentControlledObject != null)
             {
                 return;
             }
