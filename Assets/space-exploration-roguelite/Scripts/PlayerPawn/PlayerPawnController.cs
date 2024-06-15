@@ -1,3 +1,4 @@
+using FishNet.Component.Transforming;
 using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Prediction;
@@ -40,7 +41,6 @@ namespace SpaceExplorationRoguelite
             }
         }
         private IEnumerator _fixPlayerUpDirectionCRT = null;
-        public readonly SyncVar<Transform> CurrentParentTransform = new();
 
         #region Setup/Unsetup/OnTick
 
@@ -511,16 +511,44 @@ namespace SpaceExplorationRoguelite
 
             if (_artificialGravityController != null)
             {
+                SetPlayerPawnParent(base.Owner, _artificialGravityController.transform);
+
                 StartFixPlayerUpDirectionProcess();
-                transform.SetParent(_artificialGravityController.transform);
-                _playerController.PlayerPawnParentChange(base.Owner, this, _artificialGravityController.transform);
             }
             else
             {
+                SetPlayerPawnParent(base.Owner, null);
+
                 ResetFixPlayerUpDirectionProcess();
-                transform.SetParent(null);
-                CurrentParentTransform.Value = null;
-                _playerController.PlayerPawnParentChange(base.Owner, this, null);
+            }
+        }
+
+        [ServerRpc]
+        private void SetPlayerPawnParent(NetworkConnection playerConnection, Transform newParent)
+        {
+            if (base.Owner != playerConnection)
+            {
+                return;
+            }
+
+            var thisNO = this.GetComponent<NetworkObject>();
+            var newParentNO = newParent != null ? newParent.GetComponent<NetworkObject>() : null;
+
+            if (thisNO != null)
+            {
+                if (thisNO.RuntimeParentNetworkBehaviour == newParentNO)
+                {
+                    return;
+                }
+
+                if (newParentNO == null)
+                {
+                    thisNO.UnsetParent();
+                }
+                else
+                {
+                    thisNO.SetParent(newParentNO);
+                }
             }
         }
 
