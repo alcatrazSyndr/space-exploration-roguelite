@@ -363,6 +363,7 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 758281883}
   _networkObjectCache: {fileID: 404482238}
+  _pilotSeatInteractableObjectController: {fileID: 0}
   _tickRate: 0
 --- !u!1 &410087039
 GameObject:
@@ -622,6 +623,7 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 758281883}
   _networkObjectCache: {fileID: 425512170}
+  _pilotSeatInteractableObjectController: {fileID: 0}
   _tickRate: 0
 --- !u!1001 &758281882
 PrefabInstance:

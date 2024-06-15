@@ -8,7 +8,18 @@ namespace SpaceExplorationRoguelite
 {
     public class InteractableObjectController : NetworkBehaviour
     {
+        [Header("Components")]
+        [SerializeField] private ControllableObjectController _controllableObject = null;
+        public ControllableObjectController ControllableObject
+        {
+            get
+            {
+                return _controllableObject;
+            }
+        }
+
         [Header("Data")]
+        [SerializeField] private bool _interactCooldown = false;
         [SerializeField] private float _interactCooldownTimer = 0f;
         [SerializeField] private string _defaultInteractActionText = "[F] Interact";
 
@@ -59,11 +70,14 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            _interactable.Value = false;
+            SetInteractable(false);
 
             OnInteracted?.Invoke();
 
-            StartCoroutine(InteractCooldownCRT());
+            if (_interactCooldown)
+            {
+                StartCoroutine(InteractCooldownCRT());
+            }
         }
 
         private IEnumerator InteractCooldownCRT()
@@ -78,7 +92,23 @@ namespace SpaceExplorationRoguelite
         [Server]
         public void SetInteractActionText(string text)
         {
+            if (!base.IsServerStarted)
+            {
+                return;
+            }
+
             _interactActionText.Value = text;
+        }
+
+        [Server]
+        public void SetInteractable(bool interactable)
+        {
+            if (!base.IsServerStarted)
+            {
+                return;
+            }
+
+            _interactable.Value = interactable;
         }
     }
 }

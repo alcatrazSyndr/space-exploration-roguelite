@@ -118,6 +118,25 @@ namespace SpaceExplorationRoguelite
             playerController.PlayerPawnController.Value = playerPawnController;
         }
 
+        public PlayerController GetPlayerConnectionPlayerController(NetworkConnection playerConnection)
+        {
+            if (_playerControllerDictionary.ContainsKey(playerConnection))
+            {
+                if (_playerControllerDictionary[playerConnection] != null)
+                {
+                    return _playerControllerDictionary[playerConnection];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         #endregion
     }
 }

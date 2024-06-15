@@ -16,15 +16,18 @@ namespace SpaceExplorationRoguelite
         [Header("Runtime")]
         [SerializeField] private bool _setup = false;
         [SerializeField] private InteractableObjectController _currentInteractableObjectTarget = null;
+        [SerializeField] private PlayerController _playerController = null;
 
         #region Setup/Unsetup/Update
 
-        public void Setup()
+        public void Setup(PlayerController playerController)
         {
             if (_setup)
             {
                 return;
             }
+
+            _playerController = playerController;
 
             _setup = true;
 
@@ -52,6 +55,16 @@ namespace SpaceExplorationRoguelite
         private void Update()
         {
             if (!_setup)
+            {
+                return;
+            }
+
+            if (_playerController == null)
+            {
+                return;
+            }
+
+            if (_playerController.CurrentControlledObject != null)
             {
                 return;
             }
@@ -109,14 +122,29 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
+            if (_playerController == null)
+            {
+                return;
+            }
+
             if (_currentInteractableObjectTarget != null && _currentInteractableObjectTarget.Interactable)
             {
                 _currentInteractableObjectTarget.Interact();
+
+                if (_currentInteractableObjectTarget.ControllableObject != null)
+                {
+                    _currentInteractableObjectTarget.ControllableObject.ClaimOwnership();
+                }
             }
         }
 
         private void InteractableObjectChanged()
         {
+            if (!_setup)
+            {
+                return;
+            }
+
             if (PlayerMenuControllerSingleton.Instance != null)
             {
                 var hudMenu = PlayerMenuControllerSingleton.Instance.GetPlayerMenuController(Enums.PlayerMenuType.HUD);
@@ -135,6 +163,11 @@ namespace SpaceExplorationRoguelite
 
         private void CurrentTopPlayerMenuChanged(PlayerMenuController topMenu)
         {
+            if (!_setup)
+            {
+                return;
+            }
+
             InteractableObjectChanged();
         }
 

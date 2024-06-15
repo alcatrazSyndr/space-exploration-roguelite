@@ -1,3 +1,4 @@
+using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections;
@@ -8,6 +9,9 @@ namespace SpaceExplorationRoguelite
 {
     public class DebugShipController : NetworkBehaviour
     {
+        [Header("Components")]
+        [SerializeField] private InteractableObjectController _pilotSeatInteractableObjectController;
+
         [Header("Runtime")]
         [SerializeField] private float _tickRate = 0f;
 
@@ -30,6 +34,30 @@ namespace SpaceExplorationRoguelite
         private void OnTick()
         {
 
+        }
+
+        public override void OnOwnershipServer(NetworkConnection prevOwner)
+        {
+            base.OnOwnershipServer(prevOwner);
+
+            if (!base.IsServerStarted)
+            {
+                return;
+            }
+
+            if (_pilotSeatInteractableObjectController == null)
+            {
+                return;
+            }
+
+            if (base.OwnerId == -1)
+            {
+                _pilotSeatInteractableObjectController.SetInteractable(true);
+            }
+            else
+            {
+                _pilotSeatInteractableObjectController.SetInteractable(false);
+            }
         }
     }
 }

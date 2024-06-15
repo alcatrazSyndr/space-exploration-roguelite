@@ -33,6 +33,14 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private PlayerMenuControllerSingleton _playerMenuControllerSingleton = null;
         [SerializeField] private Transform _playerPawnTransform = null;
         [SerializeField] private float _tickRate = 0f;
+        [SerializeField] private ControllableObjectController _currentControlledObject = null;
+        public ControllableObjectController CurrentControlledObject
+        {
+            get
+            {
+                return _currentControlledObject;
+            }
+        }
 
         [Header("Runtime - Network")]
         public readonly SyncVar<PlayerPawnController> PlayerPawnController = new();
@@ -192,7 +200,7 @@ namespace SpaceExplorationRoguelite
             _playerInteractionController = playerCameraControllerGO.GetComponent<PlayerInteractionController>();
             if (_playerInteractionController != null)
             {
-                _playerInteractionController.Setup();
+                _playerInteractionController.Setup(this);
             }
         }
 
@@ -368,9 +376,40 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (_playerInteractionController != null)
+            if (_playerInteractionController != null && _currentControlledObject == null)
             {
                 _playerInteractionController.InteractInput();
+            }
+            else if (_currentControlledObject != null)
+            {
+                ReleaseControlledObjectOwnership();
+            }
+        }
+
+        #endregion
+
+        #region Controlled Object
+
+        public void CurrentControlledObjectChanged(ControllableObjectController controllableObject)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            _currentControlledObject = controllableObject;
+        }
+
+        private void ReleaseControlledObjectOwnership()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (_currentControlledObject != null)
+            {
+                _currentControlledObject.ReleaseOwnership();
             }
         }
 
