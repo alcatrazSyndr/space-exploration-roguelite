@@ -8,6 +8,129 @@ namespace SpaceExplorationRoguelite
 {
     public class ControllableObjectController : NetworkBehaviour
     {
+        [Header("Runtime")]
+        [SerializeField] private Vector2 _currentMovementInput = Vector2.zero;
+        public Vector2 CurrentMovementInput
+        {
+            get
+            {
+                return _currentMovementInput;
+            }
+        }
+        [SerializeField] private Vector2 _currentRotationInput = Vector2.zero;
+        public Vector2 CurrentRotationInput
+        {
+            get
+            {
+                return _currentRotationInput;
+            }
+        }
+        [SerializeField] private float _currentLeanInput = 0f;
+        public float CurrentLeanInput
+        {
+            get
+            {
+                return _currentLeanInput;
+            }
+        }
+        [SerializeField] private bool _currentJumpInput = false;
+        public bool CurrentJumpInput
+        {
+            get
+            {
+                return _currentJumpInput;
+            }
+        }
+        [SerializeField] private bool _currentCrouchInput = false;
+        public bool CurrentCrouchInput
+        {
+            get
+            {
+                return _currentCrouchInput;
+            }
+        }
+
+        #region Input
+
+        public Vector3 GetCurrentTargetMovementInput()
+        {
+            if (!base.IsOwner)
+            {
+                return Vector3.zero;
+            }
+
+            return new Vector3(_currentMovementInput.x, (_currentJumpInput ? 1f : 0f) + (_currentCrouchInput ? 1f : 0f), _currentMovementInput.y).normalized;
+        }
+
+        public void MovementInputChanged(Vector2 input)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (_currentMovementInput != input)
+            {
+                _currentMovementInput = input;
+            }
+        }
+
+        public void RotationInputChanged(Vector2 input)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (_currentRotationInput != input)
+            {
+                _currentRotationInput = input;
+            }
+        }
+
+        public void LeanInputChanged(float input)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (_currentLeanInput != input)
+            {
+                _currentLeanInput = input;
+            }
+        }
+
+        public void JumpInputChanged(bool input)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (_currentJumpInput != input)
+            {
+                _currentJumpInput = input;
+            }
+        }
+
+        public void CrouchInputChanged(bool input)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (_currentCrouchInput != input)
+            {
+                _currentCrouchInput = input;
+            }
+        }
+
+        #endregion
+
+        #region Ownership
+
         public void ReleaseOwnership()
         {
             if (base.Owner.ClientId != ClientManager.Connection.ClientId)
@@ -71,5 +194,7 @@ namespace SpaceExplorationRoguelite
                 }
             }
         }
+
+        #endregion
     }
 }

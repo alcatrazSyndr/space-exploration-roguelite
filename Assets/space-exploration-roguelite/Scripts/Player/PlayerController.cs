@@ -306,7 +306,11 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (PlayerPawnController.Value != null)
+            if (_currentControlledObject != null && _currentControlledObject.Owner == base.Owner)
+            {
+                _currentControlledObject.RotationInputChanged(inputDelta);
+            }
+            else if (PlayerPawnController.Value != null)
             {
                 if (PlayerPawnController.Value.ArtificialGravityController != null && _playerCameraController != null)
                 {
@@ -324,7 +328,11 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (PlayerPawnController.Value != null)
+            if (_currentControlledObject != null && _currentControlledObject.Owner == base.Owner)
+            {
+                _currentControlledObject.LeanInputChanged(leanValue);
+            }
+            else if (PlayerPawnController.Value != null)
             {
                 PlayerPawnController.Value.LeanInputChange(leanValue);
             }
@@ -337,7 +345,11 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (PlayerPawnController.Value != null)
+            if (_currentControlledObject != null && _currentControlledObject.Owner == base.Owner)
+            {
+                _currentControlledObject.MovementInputChanged(input);
+            }
+            else if (PlayerPawnController.Value != null)
             {
                 PlayerPawnController.Value.MovementInputChange(input);
             }
@@ -350,7 +362,11 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (PlayerPawnController.Value != null)
+            if (_currentControlledObject != null && _currentControlledObject.Owner == base.Owner)
+            {
+                _currentControlledObject.CrouchInputChanged(crouch);
+            }
+            else if (PlayerPawnController.Value != null)
             {
                 PlayerPawnController.Value.CrouchInputChanged(crouch);
             }
@@ -363,7 +379,11 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (PlayerPawnController.Value != null)
+            if (_currentControlledObject != null && _currentControlledObject.Owner == base.Owner)
+            {
+                _currentControlledObject.JumpInputChanged(jump);
+            }
+            else if (PlayerPawnController.Value != null)
             {
                 PlayerPawnController.Value.JumpInputChanged(jump);
             }

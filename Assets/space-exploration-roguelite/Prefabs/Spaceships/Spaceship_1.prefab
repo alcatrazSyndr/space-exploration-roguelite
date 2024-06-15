@@ -67,8 +67,13 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 2183624448256876757}
   _networkObjectCache: {fileID: 2183624448256876757}
+  _movementAccelerationRate: 0.1
+  _movementVelocityRate: 0.5
   _pilotSeatInteractableObjectController: {fileID: 7961608524880645774}
+  _pilotSeatControllableObjectController: {fileID: 8647238013497041351}
   _tickRate: 0
+  _currentMovementInput: {x: 0, y: 0, z: 0}
+  _currentMovementVector: {x: 0, y: 0, z: 0}
 --- !u!114 &2183624448256876757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,6 +138,11 @@ MonoBehaviour:
   _componentIndexCache: 1
   _addedNetworkObject: {fileID: 2183624448256876757}
   _networkObjectCache: {fileID: 2183624448256876757}
+  _currentMovementInput: {x: 0, y: 0}
+  _currentRotationInput: {x: 0, y: 0}
+  _currentLeanInput: 0
+  _currentJumpInput: 0
+  _currentCrouchInput: 0
 --- !u!1 &8124063623074960658
 GameObject:
   m_ObjectHideFlags: 0
@@ -332,6 +342,11 @@ PrefabInstance:
       propertyPath: _controllableObject
       value: 
       objectReference: {fileID: 8647238013497041351}
+    - target: {fileID: 3199973801491368839, guid: 0a1012ac753040a4ebb9692a2ed3c8cb,
+        type: 3}
+      propertyPath: _interactActionText
+      value: '[F] Control Ship'
+      objectReference: {fileID: 0}
     - target: {fileID: 5918836761412659164, guid: 0a1012ac753040a4ebb9692a2ed3c8cb,
         type: 3}
       propertyPath: <SceneId>k__BackingField

@@ -15,6 +15,6 @@ namespace SpaceExplorationRoguelite
         public static float PLAYERPAWN_ARTIFICIAL_GRAVITY_CHECK_LINE_TARGET_LENGTH_MAX = 0.52f;
         public static float PLAYERPAWN_ARTIFICIAL_GRAVITY_CHECK_LINE_TARGET_LENGTH_MIN = 0.51f;
         public static float PLAYERPAWN_ARTIFICIAL_GRAVITY_CHECK_LINE_OFFSET = 1.5f;
-        public static float PLAYERPAWN_ARTIFICIAL_GRAVITY_FORCE = 9.81f;
+        public static float PLAYERPAWN_ARTIFICIAL_GRAVITY_FORCE = 12f;
     }
 }
