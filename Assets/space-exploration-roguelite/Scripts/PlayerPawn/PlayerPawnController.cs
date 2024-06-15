@@ -1,5 +1,7 @@
+using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Prediction;
+using FishNet.Object.Synchronizing;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,6 +40,7 @@ namespace SpaceExplorationRoguelite
             }
         }
         private IEnumerator _fixPlayerUpDirectionCRT = null;
+        public readonly SyncVar<Transform> CurrentParentTransform = new();
 
         #region Setup/Unsetup/OnTick
 
@@ -510,11 +513,14 @@ namespace SpaceExplorationRoguelite
             {
                 StartFixPlayerUpDirectionProcess();
                 transform.SetParent(_artificialGravityController.transform);
+                _playerController.PlayerPawnParentChange(base.Owner, this, _artificialGravityController.transform);
             }
             else
             {
                 ResetFixPlayerUpDirectionProcess();
                 transform.SetParent(null);
+                CurrentParentTransform.Value = null;
+                _playerController.PlayerPawnParentChange(base.Owner, this, null);
             }
         }
 

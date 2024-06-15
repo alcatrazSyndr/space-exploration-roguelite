@@ -1,3 +1,4 @@
+using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using UnityEngine;
@@ -371,6 +372,37 @@ namespace SpaceExplorationRoguelite
             {
                 _playerInteractionController.InteractInput();
             }
+        }
+
+        #endregion
+
+        #region Player Pawn Controller
+
+        [ServerRpc]
+        public void PlayerPawnParentChange(NetworkConnection playerConnection, PlayerPawnController playerPawnController, Transform newParent)
+        {
+            if (playerPawnController != PlayerPawnController.Value)
+            {
+                return;
+            }
+
+            if (playerPawnController.Owner != playerConnection)
+            {
+                return;
+            }
+
+            if (playerPawnController.transform.parent == newParent)
+            {
+                return;
+            }
+
+            PlayerPawnParentChangeObservers(newParent);
+        }
+
+        [ObserversRpc(ExcludeOwner = true, BufferLast = true)]
+        private void PlayerPawnParentChangeObservers(Transform newParent)
+        {
+            transform.SetParent(newParent);
         }
 
         #endregion
