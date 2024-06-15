@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6497678119333830982}
   - component: {fileID: 2183624448256876757}
   - component: {fileID: 8647238013497041351}
+  - component: {fileID: 8000138955995157158}
   m_Layer: 0
   m_Name: Spaceship_1
   m_TagString: Untagged
@@ -67,8 +68,8 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 2183624448256876757}
   _networkObjectCache: {fileID: 2183624448256876757}
-  _movementAccelerationRate: 0.1
-  _movementVelocityRate: 0.5
+  _movementAccelerationRate: 1
+  _movementVelocityRate: 0.2
   _pilotSeatInteractableObjectController: {fileID: 7961608524880645774}
   _pilotSeatControllableObjectController: {fileID: 8647238013497041351}
   _tickRate: 0
@@ -92,6 +93,7 @@ MonoBehaviour:
   _networkBehaviours:
   - {fileID: 6497678119333830982}
   - {fileID: 8647238013497041351}
+  - {fileID: 8000138955995157158}
   <SerializedRootNetworkBehaviour>k__BackingField: {fileID: 0}
   <NestedRootNetworkBehaviours>k__BackingField:
   - {fileID: 1168166638828053205}
@@ -143,6 +145,51 @@ MonoBehaviour:
   _currentLeanInput: 0
   _currentJumpInput: 0
   _currentCrouchInput: 0
+--- !u!114 &8000138955995157158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 843855049435284084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 2
+  _addedNetworkObject: {fileID: 2183624448256876757}
+  _networkObjectCache: {fileID: 2183624448256876757}
+  _componentConfiguration: 0
+  _synchronizeParent: 1
+  _packing:
+    Position: 1
+    Rotation: 1
+    Scale: 0
+  _interpolation: 2
+  _extrapolation: 2
+  _enableTeleport: 0
+  _teleportThreshold: 1
+  _scaleThreshold: 1
+  _clientAuthoritative: 1
+  _sendToOwner: 1
+  _enableNetworkLod: 1
+  _interval: 1
+  _synchronizePosition: 1
+  _positionSnapping:
+    X: 0
+    Y: 0
+    Z: 0
+  _synchronizeRotation: 1
+  _rotationSnapping:
+    X: 0
+    Y: 0
+    Z: 0
+  _synchronizeScale: 1
+  _scaleSnapping:
+    X: 0
+    Y: 0
+    Z: 0
 --- !u!1 &8124063623074960658
 GameObject:
   m_ObjectHideFlags: 0

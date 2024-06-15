@@ -64,11 +64,6 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (_playerController.CurrentControlledObject != null)
-            {
-                return;
-            }
-
             RaycastHit[] hits;
 
             hits = Physics.RaycastAll(_cameraTransform.position, _cameraTransform.forward.normalized, _interactableObjectMinDistance, _interactableObjectLayerMask);
@@ -86,7 +81,7 @@ namespace SpaceExplorationRoguelite
                     var hit = hitList[i];
 
                     var interactableObjectController = hit.collider.GetComponent<InteractableObjectController>();
-                    if (interactableObjectController != null && interactableObjectController.Interactable)
+                    if (interactableObjectController != null && interactableObjectController.Interactable.Value)
                     {
                         firstHit = interactableObjectController;
                         break;
@@ -127,12 +122,17 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (_currentInteractableObjectTarget != null && _currentInteractableObjectTarget.Interactable)
+            if (_currentInteractableObjectTarget != null && _currentInteractableObjectTarget.Interactable.Value)
             {
                 _currentInteractableObjectTarget.Interact();
 
                 if (_currentInteractableObjectTarget.ControllableObject != null)
                 {
+                    if (_playerController.CurrentControlledObject != null)
+                    {
+                        return;
+                    }
+
                     _currentInteractableObjectTarget.ControllableObject.ClaimOwnership();
                 }
             }

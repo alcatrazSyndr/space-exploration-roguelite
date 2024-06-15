@@ -550,14 +550,21 @@ namespace SpaceExplorationRoguelite
                     thisNO.SetParent(newParentNO);
                 }
 
-                ReconcileSetPlayerPawnParent(transform, newParent);
+                ReconcileSetPlayerPawnParent(thisNO, newParentNO);
             }
         }
 
         [ObserversRpc(ExcludeOwner = false, BufferLast = true)]
-        private void ReconcileSetPlayerPawnParent(Transform pawn, Transform newParent)
+        private void ReconcileSetPlayerPawnParent(NetworkObject pawn, NetworkObject newParent)
         {
-            pawn.SetParent(newParent);
+            if (newParent == null)
+            {
+                pawn.UnsetParent();
+            }
+            else
+            {
+                pawn.SetParent(newParent);
+            }
         }
 
         #endregion

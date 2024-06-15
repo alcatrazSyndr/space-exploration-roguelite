@@ -59,7 +59,7 @@ namespace SpaceExplorationRoguelite
                 return Vector3.zero;
             }
 
-            return new Vector3(_currentMovementInput.x, (_currentJumpInput ? 1f : 0f) + (_currentCrouchInput ? 1f : 0f), _currentMovementInput.y).normalized;
+            return new Vector3(_currentMovementInput.x, (_currentJumpInput ? 1f : 0f) + (_currentCrouchInput ? -1f : 0f), _currentMovementInput.y).normalized;
         }
 
         public void MovementInputChanged(Vector2 input)
@@ -165,12 +165,10 @@ namespace SpaceExplorationRoguelite
         [ServerRpc(RequireOwnership = false)]
         private void ClaimOwnershipRPC(NetworkConnection playerConnection)
         {
-            if (!base.HasAuthority)
+            if (base.HasAuthority && base.IsServerInitialized)
             {
-                return;
+                base.GiveOwnership(playerConnection);
             }
-
-            base.GiveOwnership(playerConnection);
         }
 
         public override void OnOwnershipClient(NetworkConnection prevOwner)

@@ -31,14 +31,7 @@ namespace SpaceExplorationRoguelite
         }
 
         [Header("Runtime")]
-        private readonly SyncVar<bool> _interactable = new();
-        public bool Interactable
-        {
-            get
-            {
-                return _interactable.Value;
-            }
-        }
+        public readonly SyncVar<bool> Interactable = new();
 
         [Header("Events")]
         public UnityEvent OnInteracted = new UnityEvent();
@@ -47,7 +40,7 @@ namespace SpaceExplorationRoguelite
         {
             base.OnStartServer();
 
-            _interactable.Value = true;
+            Interactable.Value = true;
         }
 
         public override void OnStopServer()
@@ -56,13 +49,13 @@ namespace SpaceExplorationRoguelite
 
             StopAllCoroutines();
 
-            _interactable.Value = false;
+            Interactable.Value = false;
         }
 
         [ServerRpc(RequireOwnership = false)]
         public void Interact()
         {
-            if (!_interactable.Value)
+            if (!Interactable.Value)
             {
                 return;
             }
@@ -81,7 +74,7 @@ namespace SpaceExplorationRoguelite
         {
             yield return new WaitForSecondsRealtime(_interactCooldownTimer);
 
-            _interactable.Value = true;
+            Interactable.Value = true;
 
             yield break;
         }
@@ -105,7 +98,7 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            _interactable.Value = interactable;
+            Interactable.Value = interactable;
         }
     }
 }
