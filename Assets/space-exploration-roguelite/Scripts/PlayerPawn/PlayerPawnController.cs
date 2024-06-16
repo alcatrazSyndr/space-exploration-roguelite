@@ -41,6 +41,8 @@ namespace SpaceExplorationRoguelite
             }
         }
         private IEnumerator _fixPlayerUpDirectionCRT = null;
+        [SerializeField] private Vector3 _previousArtificialGravityLocalPosition = Vector3.zero;
+        [SerializeField] private Quaternion _previousArtificialGravityLocalRotation = Quaternion.identity;
 
         #region Setup/Unsetup/OnTick
 
@@ -99,6 +101,7 @@ namespace SpaceExplorationRoguelite
 
             _tickRate = (float)TimeManager.TickDelta;
             TimeManager.OnTick += OnTick;
+            TimeManager.OnPostTick += OnPostTick;
         }
 
         public override void OnStopClient()
@@ -111,26 +114,7 @@ namespace SpaceExplorationRoguelite
             }
 
             TimeManager.OnTick -= OnTick;
-        }
-
-        private void OnPreTick()
-        {
-            if (!base.IsOwner)
-            {
-                return;
-            }
-
-            if (!_setup)
-            {
-                return;
-            }
-
-            if (_artificialGravityController != null)
-            {
-            }
-            else
-            {
-            }
+            TimeManager.OnPostTick -= OnPostTick;
         }
 
         private void OnTick()
@@ -145,8 +129,33 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
+            if (_artificialGravityController == null)
+            {
+                var targetLeanRotation = Quaternion.Euler(0f, 0f, -_currentLeanInput * _noGravityLeanRate);
+                RotatePlayerPawnNoGravity(targetLeanRotation);
+
+                var targetMovementPosition = new Vector3(_currentMovementInput.x, (_currentJumpInput ? 1f : 0f) + (_currentCrouchInput ? -1f : 0f), _currentMovementInput.y).normalized;
+                MovePlayerPawnNoGravity(targetMovementPosition);
+            }
+        }
+
+        private void OnPostTick()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (!_setup)
+            {
+                return;
+            }
+
             if (_artificialGravityController != null)
             {
+                ApplyCachedArtificialGravityLocalPosition();
+                ApplyCachedArtificialGravityLocalRotation();
+
                 var gravityValue = 0f;
                 var gravityModifier = 1f;
 
@@ -191,34 +200,6 @@ namespace SpaceExplorationRoguelite
 
                 var targetMovementPosition = new Vector3(_currentMovementInput.x, 0f, _currentMovementInput.y).normalized;
                 MovePlayerPawnArtificialGravity(targetMovementPosition);
-            }
-            else
-            {
-                var targetLeanRotation = Quaternion.Euler(0f, 0f, -_currentLeanInput * _noGravityLeanRate);
-                RotatePlayerPawnNoGravity(targetLeanRotation);
-
-                var targetMovementPosition = new Vector3(_currentMovementInput.x, (_currentJumpInput ? 1f : 0f) + (_currentCrouchInput ? -1f : 0f), _currentMovementInput.y).normalized;
-                MovePlayerPawnNoGravity(targetMovementPosition);
-            }
-        }
-
-        private void OnPostTick()
-        {
-            if (!base.IsOwner)
-            {
-                return;
-            }
-
-            if (!_setup)
-            {
-                return;
-            }
-
-            if (_artificialGravityController != null)
-            {
-            }
-            else
-            {
             }
         }
 
@@ -266,6 +247,126 @@ namespace SpaceExplorationRoguelite
 
         #region Player Pawn Manipulation Artificial Gravity
 
+        private void ApplyCachedArtificialGravityLocalPosition()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (!_setup)
+            {
+                return;
+            }
+
+            if (_artificialGravityController == null)
+            {
+                return;
+            }
+
+            transform.position = _artificialGravityController.transform.TransformPoint(_previousArtificialGravityLocalPosition);
+        }
+
+        public void CacheCurrentArtificialGravityLocalPosition()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (!_setup)
+            {
+                return;
+            }
+
+            if (_artificialGravityController == null)
+            {
+                return;
+            }
+
+            _previousArtificialGravityLocalPosition = _artificialGravityController.transform.InverseTransformPoint(transform.position);
+        }
+
+        private void ResetCurrentArtificialGravityLocalPosition()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (!_setup)
+            {
+                return;
+            }
+
+            if (_artificialGravityController != null)
+            {
+                return;
+            }
+
+            _previousArtificialGravityLocalPosition = Vector3.zero;
+        }
+
+        private void ApplyCachedArtificialGravityLocalRotation()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (!_setup)
+            {
+                return;
+            }
+
+            if (_artificialGravityController == null)
+            {
+                return;
+            }
+
+            transform.rotation = _artificialGravityController.transform.rotation * _previousArtificialGravityLocalRotation;
+        }
+
+        public void CacheCurrentArtificialGravityLocalRotation()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (!_setup)
+            {
+                return;
+            }
+
+            if (_artificialGravityController == null)
+            {
+                return;
+            }
+
+            _previousArtificialGravityLocalRotation = transform.rotation * Quaternion.Inverse(_artificialGravityController.transform.rotation);
+        }
+
+        private void ResetCurrentArtificialGravityLocalRotation()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (!_setup)
+            {
+                return;
+            }
+
+            if (_artificialGravityController == null)
+            {
+                return;
+            }
+
+            _previousArtificialGravityLocalRotation = Quaternion.identity;
+        }
+
         private void RotatePlayerPawnArtificialGravity(Quaternion rotationDelta)
         {
             if (!base.IsOwner)
@@ -278,12 +379,19 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
+            if (_artificialGravityController == null)
+            {
+                return;
+            }
+
             if (_playerController.CurrentControlledObject != null)
             {
                 return;
             }
 
-            transform.localRotation *= rotationDelta;
+            //transform.localRotation *= rotationDelta;
+            _previousArtificialGravityLocalRotation *= rotationDelta;
+            ApplyCachedArtificialGravityLocalRotation();
         }
 
         private void MovePlayerPawnArtificialGravity(Vector3 positionDelta, float modifier = 1f)
@@ -294,6 +402,11 @@ namespace SpaceExplorationRoguelite
             }
 
             if (!_setup)
+            {
+                return;
+            }
+
+            if (_artificialGravityController == null)
             {
                 return;
             }
@@ -309,7 +422,9 @@ namespace SpaceExplorationRoguelite
 
             var direction = (forward + right + up).normalized;
 
-            transform.position += (direction * _artificialGravityMoveRate * modifier);
+            //transform.position += (direction * _artificialGravityMoveRate * modifier);
+            _previousArtificialGravityLocalPosition += (_artificialGravityController.transform.InverseTransformDirection(direction) * _artificialGravityMoveRate * modifier);
+            ApplyCachedArtificialGravityLocalPosition();
         }
 
         private void StartFixPlayerUpDirectionProcess()
@@ -373,15 +488,19 @@ namespace SpaceExplorationRoguelite
 
                 endRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(transform.forward, _artificialGravityController.transform.up));
 
+                ApplyCachedArtificialGravityLocalRotation();
                 transform.rotation = Quaternion.Lerp(transform.rotation, endRotation, interpolation);
+                CacheCurrentArtificialGravityLocalRotation();
 
                 timer += _tickRate;
 
                 yield return new WaitForSecondsRealtime(_tickRate);
             }
 
+            ApplyCachedArtificialGravityLocalRotation();
             endRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(transform.forward, _artificialGravityController.transform.up));
             transform.rotation = endRotation;
+            CacheCurrentArtificialGravityLocalRotation();
 
             _fixPlayerUpDirectionCRT = null;
             yield break;
@@ -521,12 +640,18 @@ namespace SpaceExplorationRoguelite
 
             if (_artificialGravityController != null)
             {
+                CacheCurrentArtificialGravityLocalPosition();
+                CacheCurrentArtificialGravityLocalRotation();
+
                 SetPlayerPawnParent(base.Owner, _artificialGravityController.transform);
 
                 StartFixPlayerUpDirectionProcess();
             }
             else
             {
+                ResetCurrentArtificialGravityLocalPosition();
+                ResetCurrentArtificialGravityLocalRotation();
+
                 SetPlayerPawnParent(base.Owner, null);
 
                 ResetFixPlayerUpDirectionProcess();

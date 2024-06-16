@@ -387,6 +387,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57d4e2511e6a2db4eb7d127012b84c44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: 404482238}
+  _networkObjectCache: {fileID: 404482238}
   _artificialGravityBounds:
   - {fileID: 955425661}
 --- !u!4 &404482237
@@ -422,6 +425,7 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
+  - {fileID: 404482236}
   - {fileID: 404482239}
   <SerializedRootNetworkBehaviour>k__BackingField: {fileID: 0}
   <NestedRootNetworkBehaviours>k__BackingField: []
@@ -465,7 +469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18785456c0b396448ae04ecace3b14c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 0
+  _componentIndexCache: 1
   _addedNetworkObject: {fileID: 758281883}
   _networkObjectCache: {fileID: 404482238}
   _movementAccelerationRate: 0
@@ -656,6 +660,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57d4e2511e6a2db4eb7d127012b84c44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: 425512170}
+  _networkObjectCache: {fileID: 425512170}
   _artificialGravityBounds:
   - {fileID: 2040965437}
 --- !u!4 &425512169
@@ -691,6 +698,7 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
+  - {fileID: 425512168}
   - {fileID: 425512171}
   <SerializedRootNetworkBehaviour>k__BackingField: {fileID: 0}
   <NestedRootNetworkBehaviours>k__BackingField: []
@@ -734,7 +742,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18785456c0b396448ae04ecace3b14c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 0
+  _componentIndexCache: 1
   _addedNetworkObject: {fileID: 758281883}
   _networkObjectCache: {fileID: 425512170}
   _movementAccelerationRate: 0

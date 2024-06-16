@@ -433,6 +433,8 @@ namespace SpaceExplorationRoguelite
                 PlayerPawnController.Value.transform.position = controllableObject.ControllableObjectSeatTransform.position;
                 PlayerPawnController.Value.transform.rotation = controllableObject.ControllableObjectSeatTransform.rotation;
             }
+            PlayerPawnController.Value.CacheCurrentArtificialGravityLocalPosition();
+            PlayerPawnController.Value.CacheCurrentArtificialGravityLocalRotation();
 
             if (_playerCameraController != null)
             {

@@ -50,8 +50,6 @@ namespace SpaceExplorationRoguelite
             var playerPawnController = collider.GetComponent<PlayerPawnController>();
             if (playerPawnController != null)
             {
-                Debug.LogError("Left");
-
                 playerPawnController.SetArtificialGravityController(null);
             }
         }

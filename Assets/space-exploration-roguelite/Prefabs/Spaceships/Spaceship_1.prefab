@@ -84,6 +84,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57d4e2511e6a2db4eb7d127012b84c44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: 2183624448256876757}
+  _networkObjectCache: {fileID: 2183624448256876757}
   _artificialGravityBounds:
   - {fileID: 1668386787245035272}
 --- !u!114 &6497678119333830982
@@ -98,7 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18785456c0b396448ae04ecace3b14c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 0
+  _componentIndexCache: 1
   _addedNetworkObject: {fileID: 2183624448256876757}
   _networkObjectCache: {fileID: 2183624448256876757}
   _movementAccelerationRate: 1
@@ -128,6 +131,7 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
+  - {fileID: 6021673013183508119}
   - {fileID: 6497678119333830982}
   - {fileID: 8647238013497041351}
   - {fileID: 8000138955995157158}
@@ -174,7 +178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b82d39d5f76a0314facd5e686afb9b90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 1
+  _componentIndexCache: 2
   _addedNetworkObject: {fileID: 2183624448256876757}
   _networkObjectCache: {fileID: 2183624448256876757}
   _controllableObjectType: 0
@@ -197,7 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 2
+  _componentIndexCache: 3
   _addedNetworkObject: {fileID: 2183624448256876757}
   _networkObjectCache: {fileID: 2183624448256876757}
   _componentConfiguration: 0
@@ -206,7 +210,7 @@ MonoBehaviour:
     Position: 1
     Rotation: 1
     Scale: 0
-  _interpolation: 2
+  _interpolation: 6
   _extrapolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
@@ -504,7 +508,7 @@ PrefabInstance:
         type: 3}
       propertyPath: <SerializedRootNetworkBehaviour>k__BackingField
       value: 
-      objectReference: {fileID: 6497678119333830982}
+      objectReference: {fileID: 6021673013183508119}
     - target: {fileID: 7907172224010558359, guid: 0a1012ac753040a4ebb9692a2ed3c8cb,
         type: 3}
       propertyPath: m_LocalPosition.x

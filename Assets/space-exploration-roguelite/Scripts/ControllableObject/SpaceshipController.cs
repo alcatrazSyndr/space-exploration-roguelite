@@ -28,22 +28,6 @@ namespace SpaceExplorationRoguelite
 
         #region Setup/OnTick
 
-        public override void OnStartServer()
-        {
-            base.OnStartServer();
-
-            _tickRate = (float)TimeManager.TickDelta;
-
-            //TimeManager.OnTick += OnServerTick;
-        }
-
-        public override void OnStopServer()
-        {
-            base.OnStopServer();
-
-            //TimeManager.OnTick -= OnServerTick;
-        }
-
         public override void OnStartClient()
         {
             base.OnStartClient();
@@ -113,41 +97,6 @@ namespace SpaceExplorationRoguelite
                 transform.position += positionOffset;
             }
         }
-
-        /*
-        [ServerRpc]
-        public void MovementInputChange(NetworkConnection playerConnection, Vector3 movementInput)
-        {
-            if (base.Owner == playerConnection)
-            {
-                _currentMovementInput = movementInput;
-            }
-        }
-
-        [Server]
-        private void OnServerTick()
-        {
-            if ((_currentMovementInput - _currentMovementVector).sqrMagnitude <= 0.00001f)
-            {
-                _currentMovementVector = _currentMovementInput;
-            }
-            else
-            {
-                _currentMovementVector = Vector3.Lerp(_currentMovementVector, _currentMovementInput, _movementAccelerationRate * _tickRate);
-            }
-
-            if (_currentMovementVector != Vector3.zero)
-            {
-                var forward = transform.forward * _currentMovementVector.z;
-                var right = transform.right * _currentMovementVector.x;
-                var up = transform.up * _currentMovementVector.y;
-
-                var positionOffset = (forward + right + up) * _movementVelocityRate;
-
-                transform.position += positionOffset;
-            }
-        }
-        */
 
         #endregion
 
