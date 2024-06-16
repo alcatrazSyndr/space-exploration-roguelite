@@ -389,7 +389,6 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            //transform.localRotation *= rotationDelta;
             _previousArtificialGravityLocalRotation *= rotationDelta;
             ApplyCachedArtificialGravityLocalRotation();
         }
@@ -422,7 +421,6 @@ namespace SpaceExplorationRoguelite
 
             var direction = (forward + right + up).normalized;
 
-            //transform.position += (direction * _artificialGravityMoveRate * modifier);
             _previousArtificialGravityLocalPosition += (_artificialGravityController.transform.InverseTransformDirection(direction) * _artificialGravityMoveRate * modifier);
             ApplyCachedArtificialGravityLocalPosition();
         }
@@ -479,28 +477,25 @@ namespace SpaceExplorationRoguelite
             float timer = 0f;
             float interpolation = 0f;
 
-            var endRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(transform.forward, _artificialGravityController.transform.up));
-            var startRotation = transform.rotation;
+            _previousArtificialGravityLocalRotation = Quaternion.Inverse(_artificialGravityController.transform.rotation) * transform.rotation;
+            var startLocalRotation = _previousArtificialGravityLocalRotation;
+            var endLocalRotation = Quaternion.Euler(0f, _previousArtificialGravityLocalRotation.eulerAngles.y, 0f);
 
             while (timer < _artificialGravityEntryUpDirectionFixTimer)
             {
                 interpolation = Mathf.Clamp01(timer / _artificialGravityEntryUpDirectionFixTimer);
 
-                endRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(transform.forward, _artificialGravityController.transform.up));
+                endLocalRotation = Quaternion.Euler(0f, _previousArtificialGravityLocalRotation.eulerAngles.y, 0f);
+                var targetCurrentRotation = Quaternion.Lerp(startLocalRotation, endLocalRotation, interpolation);
 
-                ApplyCachedArtificialGravityLocalRotation();
-                transform.rotation = Quaternion.Lerp(transform.rotation, endRotation, interpolation);
-                CacheCurrentArtificialGravityLocalRotation();
+                _previousArtificialGravityLocalRotation = Quaternion.Euler(targetCurrentRotation.eulerAngles.x, _previousArtificialGravityLocalRotation.eulerAngles.y, targetCurrentRotation.eulerAngles.z);
 
-                timer += _tickRate;
+                timer += Time.deltaTime;
 
-                yield return new WaitForSecondsRealtime(_tickRate);
+                yield return new WaitForEndOfFrame();
             }
 
-            ApplyCachedArtificialGravityLocalRotation();
-            endRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(transform.forward, _artificialGravityController.transform.up));
-            transform.rotation = endRotation;
-            CacheCurrentArtificialGravityLocalRotation();
+            _previousArtificialGravityLocalRotation = endLocalRotation;
 
             _fixPlayerUpDirectionCRT = null;
             yield break;
@@ -641,7 +636,6 @@ namespace SpaceExplorationRoguelite
             if (_artificialGravityController != null)
             {
                 CacheCurrentArtificialGravityLocalPosition();
-                CacheCurrentArtificialGravityLocalRotation();
 
                 SetPlayerPawnParent(base.Owner, _artificialGravityController.transform);
 

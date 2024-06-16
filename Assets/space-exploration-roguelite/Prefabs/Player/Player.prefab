@@ -48,8 +48,7 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: 8675458889673068003}
   _networkObjectCache: {fileID: 8675458889673068003}
-  _playerCameraPositionSmoothing: 30
-  _playerCameraRotationSmoothing: 30
+  _playerCameraRotationSmoothing: 50
   _playerCameraControllerPrefab: {fileID: 6791494623819224354, guid: 5a9a30c8eedbc9745b9858b84ac71cf4,
     type: 3}
   _playerInputControllerPrefab: {fileID: 8217843237535254239, guid: 943ac2a711fdab248943b0bcc89f5eba,
@@ -61,6 +60,8 @@ MonoBehaviour:
   _playerInteractionController: {fileID: 0}
   _playerMenuControllerSingleton: {fileID: 0}
   _playerPawnTransform: {fileID: 0}
+  _tickRate: 0
+  _currentControlledObject: {fileID: 0}
 --- !u!114 &8675458889673068003
 MonoBehaviour:
   m_ObjectHideFlags: 0
