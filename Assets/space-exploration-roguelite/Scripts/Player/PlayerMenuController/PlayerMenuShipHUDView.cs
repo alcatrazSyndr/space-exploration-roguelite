@@ -55,6 +55,11 @@ namespace SpaceExplorationRoguelite
 
         public void ChangeFlightTargetPosition(Vector2 delta)
         {
+            if (!_setup)
+            {
+                return;
+            }
+
             _crosshairFlightTargetRect.anchoredPosition += (delta * _flightTargetMoveSensitivity);
 
             var distanceFromCenter = _crosshairFlightTargetRect.anchoredPosition.magnitude;

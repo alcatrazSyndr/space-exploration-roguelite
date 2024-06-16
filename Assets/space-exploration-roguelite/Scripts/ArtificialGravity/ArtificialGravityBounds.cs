@@ -10,7 +10,7 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private LayerMask _collisionLayerMask;
 
         [Header("Components")]
-        [SerializeField] private Collider _collider;
+        [SerializeField] private BoxCollider _collider;
 
         [Header("Runtime")]
         [SerializeField] private List<Collider> _collidersInBoxcastList = new List<Collider>();
@@ -21,14 +21,19 @@ namespace SpaceExplorationRoguelite
             _artificialGravityController = artificialGravityController;
         }
 
-        private void FixedUpdate()
+        public void Unsetup()
+        {
+            _artificialGravityController = null;
+        }
+
+        public void OnPostTick()
         {
             if (_artificialGravityController == null)
             {
                 return;
             }
 
-            var hits = Physics.BoxCastAll(transform.position, _collider.bounds.extents, transform.forward, transform.rotation, 0f, _collisionLayerMask);
+            var hits = Physics.BoxCastAll(_collider.bounds.center, (new Vector3(_collider.size.x * transform.localScale.x, _collider.size.y * transform.localScale.y, _collider.size.z * transform.localScale.z)) * 0.5f, transform.forward, transform.rotation, 0f, _collisionLayerMask);
             var colliders = new List<Collider>();
 
             foreach (var hit in hits)
