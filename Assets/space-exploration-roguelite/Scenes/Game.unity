@@ -821,13 +821,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1168166638828053205, guid: 6bc5e84d3411bc64088fa649f1ce30ee,
         type: 3}
+      propertyPath: _scenePathHash
+      value: 2753596468
+      objectReference: {fileID: 0}
+    - target: {fileID: 1168166638828053205, guid: 6bc5e84d3411bc64088fa649f1ce30ee,
+        type: 3}
       propertyPath: <SceneId>k__BackingField
-      value: 11826606778154680038
+      value: 11826606776617204390
+      objectReference: {fileID: 0}
+    - target: {fileID: 2183624448256876757, guid: 6bc5e84d3411bc64088fa649f1ce30ee,
+        type: 3}
+      propertyPath: _scenePathHash
+      value: 2753596468
       objectReference: {fileID: 0}
     - target: {fileID: 2183624448256876757, guid: 6bc5e84d3411bc64088fa649f1ce30ee,
         type: 3}
       propertyPath: <SceneId>k__BackingField
-      value: 11826606778361582195
+      value: 11826606777694797630
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
