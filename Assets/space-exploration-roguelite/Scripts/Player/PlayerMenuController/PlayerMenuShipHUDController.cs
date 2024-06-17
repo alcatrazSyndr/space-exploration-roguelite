@@ -13,5 +13,10 @@ namespace SpaceExplorationRoguelite
         {
             return (_view as PlayerMenuShipHUDView).CurrentFlightTargetPosition;
         }
+
+        public void ToggleShipHUD(bool toggle, Enums.ControllableObjectType type)
+        {
+            (_view as PlayerMenuShipHUDView).ToggleShipHUD(toggle, type);
+        }
     }
 }

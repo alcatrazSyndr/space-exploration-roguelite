@@ -6,6 +6,13 @@ using UnityEngine;
 
 namespace SpaceExplorationRoguelite
 {
+    [System.Serializable]
+    public class OptionalCameraTransform
+    {
+        public Transform CameraTransform = null;
+        public bool CanSeeControllerHUD = true;
+    }
+
     public class ControllableObjectController : NetworkBehaviour
     {
         [Header("Data")]
@@ -33,6 +40,24 @@ namespace SpaceExplorationRoguelite
             get
             {
                 return _controllableObjectExitTransform;
+            }
+        }
+        [SerializeField] private List<OptionalCameraTransform> _controllableObjectOptionalCameraTransformList = new List<OptionalCameraTransform>();
+        public Transform ControllableObjectOptionalCameraTransform(int cameraTransformIndex, out bool canSeeControllerHUD)
+        {
+            if (cameraTransformIndex >= _controllableObjectOptionalCameraTransformList.Count || cameraTransformIndex < 0)
+            {
+                var cameraTransform = new OptionalCameraTransform();
+                canSeeControllerHUD = cameraTransform.CanSeeControllerHUD;
+
+                return cameraTransform.CameraTransform;
+            }
+            else
+            {
+                var cameraTransform = _controllableObjectOptionalCameraTransformList[cameraTransformIndex];
+                canSeeControllerHUD = cameraTransform.CanSeeControllerHUD;
+
+                return cameraTransform.CameraTransform;
             }
         }
 

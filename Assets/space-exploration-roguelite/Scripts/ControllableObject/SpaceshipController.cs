@@ -68,7 +68,7 @@ namespace SpaceExplorationRoguelite
 
             if (_currentRotationVector != Vector3.zero)
             {
-                transform.rotation *= Quaternion.Euler(_currentRotationVector * _rotationAccelerationRate);
+                transform.rotation *= Quaternion.Euler(_currentRotationVector * _rotationVelocityRate);
             }
 
             var currentMovementInput = _pilotSeatControllableObjectController.GetCurrentTargetMovementInput();

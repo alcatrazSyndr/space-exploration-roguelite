@@ -41,6 +41,8 @@ namespace SpaceExplorationRoguelite
                 return _currentControlledObject;
             }
         }
+        [SerializeField] private int _previousCameraPerspectiveTransformIndex = -1;
+        [SerializeField] private Transform _currentCameraPerspectiveTransform = null;
 
         [Header("Runtime - Network")]
         public readonly SyncVar<PlayerPawnController> PlayerPawnController = new();
@@ -174,8 +176,8 @@ namespace SpaceExplorationRoguelite
 
             if (_playerCameraController != null && _playerPawnTransform != null)
             {
-                _playerCameraController.transform.position = _playerPawnTransform.position;
-                _playerCameraController.transform.rotation = _playerPawnTransform.rotation;
+                _playerCameraController.transform.position = _currentCameraPerspectiveTransform != null ? _currentCameraPerspectiveTransform.position : _playerPawnTransform.position;
+                _playerCameraController.transform.rotation = _currentCameraPerspectiveTransform != null ? _currentCameraPerspectiveTransform.rotation : _playerPawnTransform.rotation;
             }
         }
 
@@ -273,6 +275,7 @@ namespace SpaceExplorationRoguelite
                 _playerInputController.OnLeanInputChanged.AddListener(LeanInputChanged);
                 _playerInputController.OnJumpInputChanged.AddListener(JumpInputChanged);
                 _playerInputController.OnCrouchInputChanged.AddListener(CrouchInputChanged);
+                _playerInputController.OnCameraPerspectiveInputPerformed.AddListener(CameraPerspectiveInput);
             }
         }
 
@@ -291,6 +294,7 @@ namespace SpaceExplorationRoguelite
                 _playerInputController.OnLeanInputChanged.RemoveListener(LeanInputChanged);
                 _playerInputController.OnJumpInputChanged.RemoveListener(JumpInputChanged);
                 _playerInputController.OnCrouchInputChanged.RemoveListener(CrouchInputChanged);
+                _playerInputController.OnCameraPerspectiveInputPerformed.RemoveListener(CameraPerspectiveInput);
 
                 var playerInputControllerGO = _playerInputController.gameObject;
                 _playerInputController.Unsetup();
@@ -412,6 +416,38 @@ namespace SpaceExplorationRoguelite
             }
         }
 
+        private void CameraPerspectiveInput()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (_currentControlledObject != null)
+            {
+                _previousCameraPerspectiveTransformIndex++;
+
+                var canSeeShipHUD = false;
+                _currentCameraPerspectiveTransform = _currentControlledObject.ControllableObjectOptionalCameraTransform(_previousCameraPerspectiveTransformIndex, out canSeeShipHUD);
+
+                if (_currentCameraPerspectiveTransform == null)
+                {
+                    _previousCameraPerspectiveTransformIndex = -1;
+                }
+
+                var shipHUDMenu = _playerMenuControllerSingleton.GetPlayerMenuController(Enums.PlayerMenuType.ShipHUD);
+                if (shipHUDMenu != null)
+                {
+                    (shipHUDMenu as PlayerMenuShipHUDController).ToggleShipHUD(canSeeShipHUD, _currentControlledObject.ControllableObjectType);
+                }
+
+                if (!canSeeShipHUD && _playerInputController != null)
+                {
+                    _playerInputController.CameraInputChangeOverride(Vector2.zero);
+                }
+            }
+        }
+
         #endregion
 
         #region Controlled Object
@@ -449,6 +485,25 @@ namespace SpaceExplorationRoguelite
                 {
                     _playerMenuControllerSingleton.OpenPlayerMenu(Enums.PlayerMenuType.ShipHUD);
                 }
+
+                var canSeeShipHUD = false;
+                _currentCameraPerspectiveTransform = _currentControlledObject.ControllableObjectOptionalCameraTransform(_previousCameraPerspectiveTransformIndex, out canSeeShipHUD);
+
+                if (_currentCameraPerspectiveTransform == null)
+                {
+                    _previousCameraPerspectiveTransformIndex = -1;
+                }
+
+                var shipHUDMenu = _playerMenuControllerSingleton.GetPlayerMenuController(Enums.PlayerMenuType.ShipHUD);
+                if (shipHUDMenu != null)
+                {
+                    (shipHUDMenu as PlayerMenuShipHUDController).ToggleShipHUD(canSeeShipHUD, _currentControlledObject.ControllableObjectType);
+                }
+
+                if (!canSeeShipHUD && _playerInputController != null)
+                {
+                    _playerInputController.CameraInputChangeOverride(Vector2.zero);
+                }
             }
             else
             {
@@ -456,6 +511,8 @@ namespace SpaceExplorationRoguelite
                 {
                     _playerMenuControllerSingleton.ClosePlayerMenu(Enums.PlayerMenuType.ShipHUD);
                 }
+
+                _currentCameraPerspectiveTransform = null;
             }
         }
 

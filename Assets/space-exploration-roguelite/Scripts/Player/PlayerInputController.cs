@@ -17,6 +17,7 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private InputAction _jumpInput;
         [SerializeField] private InputAction _crouchInput;
         [SerializeField] private InputAction _leanInput;
+        [SerializeField] private InputAction _cameraPerspectiveInput;
 
         [Header("Runtime")]
         [SerializeField] private bool _setup = false;
@@ -70,6 +71,7 @@ namespace SpaceExplorationRoguelite
         public UnityEvent<float> OnLeanInputChanged = new UnityEvent<float>();
         public UnityEvent<bool> OnJumpInputChanged = new UnityEvent<bool>();
         public UnityEvent<bool> OnCrouchInputChanged = new UnityEvent<bool>();
+        public UnityEvent OnCameraPerspectiveInputPerformed = new UnityEvent();
 
         #region Setup/Unsetup/Update
 
@@ -86,6 +88,9 @@ namespace SpaceExplorationRoguelite
 
             InitializeInteractInput();
             ToggleInteractInput(true);
+
+            InitializeCameraPerspectiveInput();
+            ToggleCameraPerspectiveInput(true);
 
             InitializeMovementInput();
             ToggleMovementInput(true);
@@ -113,6 +118,9 @@ namespace SpaceExplorationRoguelite
 
             ToggleInteractInput(false);
             DeinitializeInteractInput();
+
+            ToggleCameraPerspectiveInput(false);
+            DeinitializeCameraPerspectiveInput();
 
             ToggleMovementInput(false);
             DeinitializeMovementInput();
@@ -197,6 +205,13 @@ namespace SpaceExplorationRoguelite
             {
                 _currentCameraInput.y = context.ReadValue<float>();
             }
+
+            OnCameraInputChanged?.Invoke(_currentCameraInput);
+        }
+
+        public void CameraInputChangeOverride(Vector2 inputOverride)
+        {
+            _currentCameraInput = inputOverride;
 
             OnCameraInputChanged?.Invoke(_currentCameraInput);
         }
@@ -382,7 +397,7 @@ namespace SpaceExplorationRoguelite
 
         private void DeinitializeInteractInput()
         {
-            _interactInput.performed += InteractInputPerformed;
+            _interactInput.performed -= InteractInputPerformed;
         }
 
         public void ToggleInteractInput(bool toggle)
@@ -407,6 +422,37 @@ namespace SpaceExplorationRoguelite
             OnInteractInputPerformed?.Invoke();
             _interactInputCurrentCooldown = _interactInputCooldown;
             _canInteractInput = false;
+        }
+
+        #endregion
+
+        #region Camera Perspective Input
+
+        private void InitializeCameraPerspectiveInput()
+        {
+            _cameraPerspectiveInput.performed += CameraPerspectiveInputPerformed;
+        }
+
+        private void DeinitializeCameraPerspectiveInput()
+        {
+            _cameraPerspectiveInput.performed -= CameraPerspectiveInputPerformed;
+        }
+
+        public void ToggleCameraPerspectiveInput(bool toggle)
+        {
+            if (toggle && !_cameraPerspectiveInput.enabled)
+            {
+                _cameraPerspectiveInput.Enable();
+            }
+            else if (!toggle && _cameraPerspectiveInput.enabled)
+            {
+                _cameraPerspectiveInput.Disable();
+            }
+        }
+
+        private void CameraPerspectiveInputPerformed(InputAction.CallbackContext context)
+        {
+            OnCameraPerspectiveInputPerformed?.Invoke();
         }
 
         #endregion

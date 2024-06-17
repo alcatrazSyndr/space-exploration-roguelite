@@ -19,9 +19,11 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private Image _crosshairFlightTargetConnectorImage;
         [SerializeField] private RectTransform _crosshairFlightTargetConnectorRect;
         [SerializeField] private RectTransform _crosshairFlightTargetConnectorRootRect;
+        [SerializeField] private GameObject _shipHUDRootGO;
 
         [Header("Runtime")]
         [SerializeField] private bool _setup = false;
+        [SerializeField] private bool _enableRotation = true;
         [SerializeField] private float _flightTargetBoundsRange = 0f;
         [SerializeField] private Vector2 _currentFlightTargetPosition = Vector2.zero;
         public Vector2 CurrentFlightTargetPosition
@@ -39,9 +41,9 @@ namespace SpaceExplorationRoguelite
             _crosshairFlightTargetRect.anchoredPosition = Vector2.zero;
             _flightTargetBoundsRange = _flightTargetOuterBounds - _flightTargetInnerBounds;
 
-            ChangeFlightTargetPosition(Vector2.zero);
-
             _setup = true;
+
+            ChangeFlightTargetPosition(Vector2.zero);
         }
 
         public override void Hide()
@@ -56,6 +58,11 @@ namespace SpaceExplorationRoguelite
         public void ChangeFlightTargetPosition(Vector2 delta)
         {
             if (!_setup)
+            {
+                return;
+            }
+
+            if (!_enableRotation)
             {
                 return;
             }
@@ -94,6 +101,19 @@ namespace SpaceExplorationRoguelite
             {
                 _currentFlightTargetPosition = flightTargetPosition;
             }
+        }
+
+        public void ToggleShipHUD(bool toggle, Enums.ControllableObjectType type)
+        {
+            _shipHUDRootGO.SetActive(toggle);
+
+            if (!toggle)
+            {
+                _crosshairFlightTargetRect.anchoredPosition = Vector2.zero;
+                ChangeFlightTargetPosition(Vector2.zero);
+            }
+
+            _enableRotation = toggle;
         }
     }
 }
