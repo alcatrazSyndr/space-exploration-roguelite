@@ -34,6 +34,11 @@ namespace SpaceExplorationRoguelite
 
         public void ColliderLeftGravityBounds(ArtificialGravityBounds bounds, Collider collider)
         {
+            if (collider == null)
+            {
+                return;
+            }
+
             foreach (var gravityBounds in _artificialGravityBounds)
             {
                 if (gravityBounds == bounds)

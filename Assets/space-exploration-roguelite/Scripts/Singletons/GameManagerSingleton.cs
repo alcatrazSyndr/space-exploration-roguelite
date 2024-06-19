@@ -2,6 +2,7 @@ using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SpaceExplorationRoguelite
@@ -70,6 +71,15 @@ namespace SpaceExplorationRoguelite
             }
             else if (connectionStateArgs.ConnectionState == RemoteConnectionState.Stopped && _playerControllerDictionary.ContainsKey(playerConnection))
             {
+                var ownedObjectList = new List<NetworkObject>(playerConnection.Objects);
+                for (int i = ownedObjectList.Count - 1; i >= 0; i--)
+                {
+                    if (ownedObjectList[i].GetComponent<SpaceshipController>())
+                    {
+                        ownedObjectList[i].RemoveOwnership();
+                    }
+                }
+
                 var playerController = _playerControllerDictionary[playerConnection];
 
                 if (playerController != null)
