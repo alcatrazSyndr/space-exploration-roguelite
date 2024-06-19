@@ -534,6 +534,7 @@ namespace SpaceExplorationRoguelite
                         _playerMenuControllerSingleton.ClosePlayerMenu(Enums.PlayerMenuType.Inventory);
                     }
 
+                    _playerMenuControllerSingleton.ClosePlayerMenu(Enums.PlayerMenuType.HUD);
                     _playerMenuControllerSingleton.OpenPlayerMenu(Enums.PlayerMenuType.ShipHUD);
 
                     var canSeeShipHUD = false;
@@ -558,6 +559,7 @@ namespace SpaceExplorationRoguelite
                 else
                 {
                     _playerMenuControllerSingleton.ClosePlayerMenu(Enums.PlayerMenuType.ShipHUD);
+                    _playerMenuControllerSingleton.OpenPlayerMenu(Enums.PlayerMenuType.HUD);
 
                     _currentCameraPerspectiveTransform = null;
                 }
