@@ -229,6 +229,23 @@ MonoBehaviour:
       m_Action: Interact Input
       m_Flags: 0
     m_Flags: 0
+  _playerInventoryInput:
+    m_Name: Interact Input
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: 97b1ef6e-9a2a-4dee-ba7c-4f88debb240a
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: ca72502b-a5b3-41d7-acdb-e66242f93662
+      m_Path: <Keyboard>/tab
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Interact Input
+      m_Flags: 0
+    m_Flags: 0
   _setup: 0
   _canInteractInput: 1
   _interactInputCurrentCooldown: 0
@@ -256,5 +273,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnCameraPerspectiveInputPerformed:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPlayerInventoryInputPerformed:
     m_PersistentCalls:
       m_Calls: []

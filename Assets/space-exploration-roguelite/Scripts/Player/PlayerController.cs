@@ -287,6 +287,7 @@ namespace SpaceExplorationRoguelite
                 _playerInputController.OnJumpInputChanged.AddListener(JumpInputChanged);
                 _playerInputController.OnCrouchInputChanged.AddListener(CrouchInputChanged);
                 _playerInputController.OnCameraPerspectiveInputPerformed.AddListener(CameraPerspectiveInput);
+                _playerInputController.OnPlayerInventoryInputPerformed.AddListener(PlayerInventoryInput);
             }
         }
 
@@ -306,6 +307,7 @@ namespace SpaceExplorationRoguelite
                 _playerInputController.OnJumpInputChanged.RemoveListener(JumpInputChanged);
                 _playerInputController.OnCrouchInputChanged.RemoveListener(CrouchInputChanged);
                 _playerInputController.OnCameraPerspectiveInputPerformed.RemoveListener(CameraPerspectiveInput);
+                _playerInputController.OnPlayerInventoryInputPerformed.RemoveListener(PlayerInventoryInput);
 
                 var playerInputControllerGO = _playerInputController.gameObject;
                 _playerInputController.Unsetup();
@@ -459,6 +461,38 @@ namespace SpaceExplorationRoguelite
             }
         }
 
+        private void PlayerInventoryInput()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (_playerMenuControllerSingleton != null)
+            {
+                var inventoryMenuController = _playerMenuControllerSingleton.GetPlayerMenuController(Enums.PlayerMenuType.Inventory);
+
+                if (inventoryMenuController != null)
+                {
+                    if (_currentControlledObject != null)
+                    {
+
+                    }
+                    else
+                    {
+                        if (inventoryMenuController.IsActive)
+                        {
+                            _playerMenuControllerSingleton.ClosePlayerMenu(Enums.PlayerMenuType.Inventory);
+                        }
+                        else
+                        {
+                            _playerMenuControllerSingleton.OpenPlayerMenu(Enums.PlayerMenuType.Inventory);
+                        }
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Controlled Object
@@ -490,40 +524,43 @@ namespace SpaceExplorationRoguelite
 
             _currentControlledObject = controllableObject;
 
-            if (_currentControlledObject != null)
+            if (_playerMenuControllerSingleton != null)
             {
-                if (_playerMenuControllerSingleton != null)
+                if (_currentControlledObject != null)
                 {
+                    var inventoryMenuController = _playerMenuControllerSingleton.GetPlayerMenuController(Enums.PlayerMenuType.Inventory);
+                    if (inventoryMenuController != null && inventoryMenuController.IsActive)
+                    {
+                        _playerMenuControllerSingleton.ClosePlayerMenu(Enums.PlayerMenuType.Inventory);
+                    }
+
                     _playerMenuControllerSingleton.OpenPlayerMenu(Enums.PlayerMenuType.ShipHUD);
-                }
 
-                var canSeeShipHUD = false;
-                _currentCameraPerspectiveTransform = _currentControlledObject.ControllableObjectOptionalCameraTransform(_previousCameraPerspectiveTransformIndex, out canSeeShipHUD);
+                    var canSeeShipHUD = false;
+                    _currentCameraPerspectiveTransform = _currentControlledObject.ControllableObjectOptionalCameraTransform(_previousCameraPerspectiveTransformIndex, out canSeeShipHUD);
 
-                if (_currentCameraPerspectiveTransform == null)
-                {
-                    _previousCameraPerspectiveTransformIndex = -1;
-                }
+                    if (_currentCameraPerspectiveTransform == null)
+                    {
+                        _previousCameraPerspectiveTransformIndex = -1;
+                    }
 
-                var shipHUDMenu = _playerMenuControllerSingleton.GetPlayerMenuController(Enums.PlayerMenuType.ShipHUD);
-                if (shipHUDMenu != null)
-                {
-                    (shipHUDMenu as PlayerMenuShipHUDController).ToggleShipHUD(canSeeShipHUD, _currentControlledObject.ControllableObjectType);
-                }
+                    var shipHUDMenu = _playerMenuControllerSingleton.GetPlayerMenuController(Enums.PlayerMenuType.ShipHUD);
+                    if (shipHUDMenu != null)
+                    {
+                        (shipHUDMenu as PlayerMenuShipHUDController).ToggleShipHUD(canSeeShipHUD, _currentControlledObject.ControllableObjectType);
+                    }
 
-                if (!canSeeShipHUD && _playerInputController != null)
-                {
-                    _playerInputController.CameraInputChangeOverride(Vector2.zero);
+                    if (!canSeeShipHUD && _playerInputController != null)
+                    {
+                        _playerInputController.CameraInputChangeOverride(Vector2.zero);
+                    }
                 }
-            }
-            else
-            {
-                if (_playerMenuControllerSingleton != null)
+                else
                 {
                     _playerMenuControllerSingleton.ClosePlayerMenu(Enums.PlayerMenuType.ShipHUD);
-                }
 
-                _currentCameraPerspectiveTransform = null;
+                    _currentCameraPerspectiveTransform = null;
+                }
             }
         }
 

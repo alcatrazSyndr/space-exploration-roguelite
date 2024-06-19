@@ -18,6 +18,7 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private InputAction _crouchInput;
         [SerializeField] private InputAction _leanInput;
         [SerializeField] private InputAction _cameraPerspectiveInput;
+        [SerializeField] private InputAction _playerInventoryInput;
 
         [Header("Runtime")]
         [SerializeField] private bool _setup = false;
@@ -72,6 +73,7 @@ namespace SpaceExplorationRoguelite
         public UnityEvent<bool> OnJumpInputChanged = new UnityEvent<bool>();
         public UnityEvent<bool> OnCrouchInputChanged = new UnityEvent<bool>();
         public UnityEvent OnCameraPerspectiveInputPerformed = new UnityEvent();
+        public UnityEvent OnPlayerInventoryInputPerformed = new UnityEvent();
 
         #region Setup/Unsetup/Update
 
@@ -91,6 +93,9 @@ namespace SpaceExplorationRoguelite
 
             InitializeCameraPerspectiveInput();
             ToggleCameraPerspectiveInput(true);
+
+            InitializePlayerInventoryInput();
+            TogglePlayerInventoryInput(true);
 
             InitializeMovementInput();
             ToggleMovementInput(true);
@@ -121,6 +126,9 @@ namespace SpaceExplorationRoguelite
 
             ToggleCameraPerspectiveInput(false);
             DeinitializeCameraPerspectiveInput();
+
+            TogglePlayerInventoryInput(false);
+            DeinitializePlayerInventoryInput();
 
             ToggleMovementInput(false);
             DeinitializeMovementInput();
@@ -453,6 +461,37 @@ namespace SpaceExplorationRoguelite
         private void CameraPerspectiveInputPerformed(InputAction.CallbackContext context)
         {
             OnCameraPerspectiveInputPerformed?.Invoke();
+        }
+
+        #endregion
+
+        #region Player Inventory Input
+
+        private void InitializePlayerInventoryInput()
+        {
+            _playerInventoryInput.performed += PlayerInventoryInputPerformed;
+        }
+
+        private void DeinitializePlayerInventoryInput()
+        {
+            _playerInventoryInput.performed -= PlayerInventoryInputPerformed;
+        }
+
+        public void TogglePlayerInventoryInput(bool toggle)
+        {
+            if (toggle && !_playerInventoryInput.enabled)
+            {
+                _playerInventoryInput.Enable();
+            }
+            else if (!toggle && _playerInventoryInput.enabled)
+            {
+                _playerInventoryInput.Disable();
+            }
+        }
+
+        private void PlayerInventoryInputPerformed(InputAction.CallbackContext context)
+        {
+            OnPlayerInventoryInputPerformed?.Invoke();
         }
 
         #endregion

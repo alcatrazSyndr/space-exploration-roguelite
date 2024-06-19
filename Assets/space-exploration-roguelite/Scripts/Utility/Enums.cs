@@ -8,7 +8,8 @@ namespace SpaceExplorationRoguelite
         {
             None,
             HUD,
-            ShipHUD
+            ShipHUD,
+            Inventory
         }
 
         public enum ControllableObjectType
