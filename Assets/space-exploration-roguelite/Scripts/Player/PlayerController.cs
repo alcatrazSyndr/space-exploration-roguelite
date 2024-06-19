@@ -43,6 +43,7 @@ namespace SpaceExplorationRoguelite
         }
         [SerializeField] private int _previousCameraPerspectiveTransformIndex = -1;
         [SerializeField] private Transform _currentCameraPerspectiveTransform = null;
+        [SerializeField] private PlayerViewModelController _playerViewModelController = null;
 
         [Header("Runtime - Network")]
         public readonly SyncVar<PlayerPawnController> PlayerPawnController = new();
@@ -64,7 +65,7 @@ namespace SpaceExplorationRoguelite
                 PlayerPawnController.OnChange += OnPlayerPawnControllerChanged;
 
                 SetupMenuControllerSingleton();
-                SetupCameraAndInteractionController();
+                SetupCameraControllers();
                 SetupInputController();
 
                 _playerMenuControllerSingleton.OpenPlayerMenu(Enums.PlayerMenuType.HUD);
@@ -87,7 +88,7 @@ namespace SpaceExplorationRoguelite
 
                 PlayerPawnController.OnChange -= OnPlayerPawnControllerChanged;
 
-                UnsetupCameraAndInteractionController();
+                UnsetupCameraControllers();
                 UnsetupInputController();
                 UnsetupMenuControllerSingleton();
             }
@@ -181,7 +182,7 @@ namespace SpaceExplorationRoguelite
             }
         }
 
-        private void SetupCameraAndInteractionController()
+        private void SetupCameraControllers()
         {
             if (!base.IsOwner)
             {
@@ -190,7 +191,7 @@ namespace SpaceExplorationRoguelite
 
             if (_playerCameraController != null)
             {
-                UnsetupCameraAndInteractionController();
+                UnsetupCameraControllers();
             }
 
             var playerCameraControllerGO = Instantiate(_playerCameraControllerPrefab, transform);
@@ -204,9 +205,14 @@ namespace SpaceExplorationRoguelite
             {
                 _playerInteractionController.Setup(this);
             }
+            _playerViewModelController = playerCameraControllerGO.GetComponent<PlayerViewModelController>();
+            if (_playerViewModelController != null)
+            {
+                _playerViewModelController.Setup(this);
+            }
         }
 
-        private void UnsetupCameraAndInteractionController()
+        private void UnsetupCameraControllers()
         {
             if (!base.IsOwner)
             {
@@ -217,6 +223,11 @@ namespace SpaceExplorationRoguelite
             {
                 _playerInteractionController.Unsetup();
                 _playerInteractionController = null;
+            }
+            if (_playerViewModelController != null)
+            {
+                _playerViewModelController.Unsetup();
+                _playerViewModelController = null;
             }
             if (_playerCameraController != null)
             {

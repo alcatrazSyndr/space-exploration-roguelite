@@ -141,7 +141,7 @@ MonoBehaviour:
   <NestedRootNetworkBehaviours>k__BackingField:
   - {fileID: 1168166638828053205}
   SerializedTransformProperties:
-    Position: {x: 0, y: 0, z: 0}
+    Position: {x: 16.083, y: 0, z: 0}
     Rotation: {x: 0, y: 0, z: 0, w: 1}
     LocalScale: {x: 1, y: 1, z: 1}
   _isNetworked: 1
@@ -165,7 +165,7 @@ MonoBehaviour:
   _teleportThreshold: 1
   <PrefabId>k__BackingField: 6
   <SpawnableCollectionId>k__BackingField: 0
-  _scenePathHash: 0
+  _scenePathHash: 2753596468
   <SceneId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 8836526275750655213
 --- !u!114 &8647238013497041351
@@ -669,7 +669,7 @@ PrefabInstance:
     - target: {fileID: 5918836761412659164, guid: 0a1012ac753040a4ebb9692a2ed3c8cb,
         type: 3}
       propertyPath: _scenePathHash
-      value: 0
+      value: 2753596468
       objectReference: {fileID: 0}
     - target: {fileID: 5918836761412659164, guid: 0a1012ac753040a4ebb9692a2ed3c8cb,
         type: 3}
