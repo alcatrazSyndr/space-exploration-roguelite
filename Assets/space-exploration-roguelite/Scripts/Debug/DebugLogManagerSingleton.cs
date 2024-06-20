@@ -52,7 +52,28 @@ namespace SpaceExplorationRoguelite
 
         #region Logging
 
-        public void LogMessage(string message, Enums.DebugLogMessageType messageType, bool fromServer)
+        public static void LogMessage(string message, Enums.DebugLogMessageType messageType, bool fromServer)
+        {
+            switch (messageType)
+            {
+                case Enums.DebugLogMessageType.Default:
+                    Debug.Log(message);
+                    break;
+                case Enums.DebugLogMessageType.Error:
+                    Debug.LogError(message);
+                    break;
+                case Enums.DebugLogMessageType.Warning:
+                    Debug.LogWarning(message);
+                    break;
+            }
+
+            if (DebugLogManagerSingleton.Instance != null)
+            {
+                DebugLogManagerSingleton.Instance.LogMessageOnInstance(message, messageType, fromServer);
+            }
+        }
+
+        public void LogMessageOnInstance(string message, Enums.DebugLogMessageType messageType, bool fromServer)
         {
             var color = EnumsUtility.GetDebugMessageColorFromType(messageType);
 

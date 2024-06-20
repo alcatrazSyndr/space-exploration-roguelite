@@ -1,6 +1,8 @@
 using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SpaceExplorationRoguelite
@@ -622,6 +624,11 @@ namespace SpaceExplorationRoguelite
             {
                 _playerInventoryController.Setup(this);
             }
+
+            if (GameManagerSingleton.Instance != null)
+            {
+                GameManagerSingleton.Instance.RequestInitialInventoryDataFromServer(ClientManager.Connection);
+            }
         }
 
         private void UnsetupInventoryController()
@@ -637,6 +644,46 @@ namespace SpaceExplorationRoguelite
                 _playerInventoryController.Unsetup();
                 Destroy(playerInventoryControllerGO);
                 _playerInventoryController = null;
+            }
+        }
+
+        [TargetRpc]
+        public void InventoryItemSlotDataReceiveFromServer(NetworkConnection playerConnection, string itemSlotDataJson)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (_playerInventoryController == null)
+            {
+                return;
+            }
+
+            var itemSlotList = JsonConvert.DeserializeObject<List<ItemSlot>>(itemSlotDataJson);
+            if (itemSlotList != null)
+            {
+                _playerInventoryController.ForceUpdateInventoryDataFromServer(itemSlotList);
+            }
+        }
+
+        [TargetRpc]
+        public void ActionbarItemSlotDataReceiveFromServer(NetworkConnection playerConnection, string itemSlotDataJson)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (_playerInventoryController == null)
+            {
+                return;
+            }
+
+            var itemSlotList = JsonConvert.DeserializeObject<List<ItemSlot>>(itemSlotDataJson);
+            if (itemSlotList != null)
+            {
+                _playerInventoryController.ForceUpdateActionbarDataFromServer(itemSlotList);
             }
         }
 

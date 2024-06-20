@@ -2,6 +2,7 @@ using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -144,6 +145,92 @@ namespace SpaceExplorationRoguelite
             else
             {
                 return null;
+            }
+        }
+
+        #endregion
+
+        #region Player Inventory Management
+
+        [ServerRpc(RequireOwnership = false)]
+        public void RequestInitialInventoryDataFromServer(NetworkConnection playerConnection)
+        {
+            if (_playerControllerDictionary.ContainsKey(playerConnection) && _playerControllerDictionary[playerConnection] != null)
+            {
+                DeliverInventoryDataToClientPlayerController(_playerControllerDictionary[playerConnection]);
+                DeliverActionbarDataToClientPlayerController(_playerControllerDictionary[playerConnection]);
+            }
+        }
+
+        [Server]
+        private void DeliverInventoryDataToClientPlayerController(PlayerController playerController)
+        {
+            var itemSlotList = new List<ItemSlot>();
+
+            // DEBUG
+
+            for (int i = 0; i < Constants.PLAYER_INVENTORY_MAX_CAPACITY; i++)
+            {
+                var itemSlot = new ItemSlot();
+                itemSlot.SlotIndex = i;
+
+                if (i == 3)
+                {
+                    itemSlot.ItemID = "Debug_Item_ID_2";
+                    itemSlot.ItemCount = 2;
+                }
+                else if (i == 5)
+                {
+                    itemSlot.ItemID = "Debug_Item_ID_4";
+                    itemSlot.ItemCount = 4;
+                }
+
+                itemSlotList.Add(itemSlot);
+            }
+
+            // DEBUG
+
+            var itemSlotJson = JsonConvert.SerializeObject(itemSlotList);
+
+            if (playerController != null)
+            {
+                playerController.InventoryItemSlotDataReceiveFromServer(playerController.Owner, itemSlotJson);
+            }
+        }
+
+        [Server]
+        private void DeliverActionbarDataToClientPlayerController(PlayerController playerController)
+        {
+            var itemSlotList = new List<ItemSlot>();
+
+            // DEBUG
+
+            for (int i = 0; i < Constants.PLAYER_ACTIONBAR_MAX_CAPACITY; i++)
+            {
+                var itemSlot = new ItemSlot();
+                itemSlot.SlotIndex = i;
+
+                if (i == 3)
+                {
+                    itemSlot.ItemID = "Debug_Item_ID_2";
+                    itemSlot.ItemCount = 2;
+                }
+                else if (i == 5)
+                {
+                    itemSlot.ItemID = "Debug_Item_ID_4";
+                    itemSlot.ItemCount = 4;
+                }
+
+                itemSlotList.Add(itemSlot);
+            }
+
+            // DEBUG
+
+            var itemSlotJson = JsonConvert.SerializeObject(itemSlotList);
+
+            if (playerController != null)
+            {
+                playerController.ActionbarItemSlotDataReceiveFromServer(playerController.Owner, itemSlotJson);
             }
         }
 
