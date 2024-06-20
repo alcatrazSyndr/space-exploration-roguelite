@@ -15,4 +15,7 @@ MonoBehaviour:
   ItemID: Item_Weapon_LaserRifle
   ItemName: Laser Rifle
   ItemSprite: {fileID: 21300000, guid: 8a47a1fec12df754492f36f97b3ceb57, type: 3}
-  ItemType: 1
+  ItemType: 2
+  Stackable: 0
+  ViewModelPrefab: {fileID: 5572046061620049419, guid: a220dfcf94bfa3041addaec9aa015546,
+    type: 3}

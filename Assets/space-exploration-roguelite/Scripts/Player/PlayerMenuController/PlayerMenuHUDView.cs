@@ -106,8 +106,10 @@ namespace SpaceExplorationRoguelite
             _actionbarSlotControllerList[slotIndex].UpdateItemSlot(itemSlot);
         }
 
-        public void UpdateActionbarSelection(int actionbarSlotIndex)
+        public void UpdateActionbarSelection(int actionbarSlotIndex, out string actionbarSelectionItemID)
         {
+            actionbarSelectionItemID = string.Empty;
+
             for (int i = 0; i < _actionbarSlotControllerList.Count; i++)
             {
                 var actionbarSlotController = _actionbarSlotControllerList[i];
@@ -115,6 +117,8 @@ namespace SpaceExplorationRoguelite
                 if (i == actionbarSlotIndex)
                 {
                     actionbarSlotController.ToggleActionbarSelection(true);
+
+                    actionbarSelectionItemID = actionbarSlotController.ItemSlot != null ? actionbarSlotController.ItemSlot.ItemID : string.Empty;
                 }
                 else
                 {

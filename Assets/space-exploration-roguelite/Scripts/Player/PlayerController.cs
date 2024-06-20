@@ -535,10 +535,16 @@ namespace SpaceExplorationRoguelite
             }
 
             var hudMenuController = _playerMenuControllerSingleton.GetPlayerMenuController(Enums.PlayerMenuType.HUD);
+            var actionbarSelectionItemID = string.Empty;
 
             if (hudMenuController != null)
             {
-                (hudMenuController as PlayerMenuHUDController).UpdateActionbarSelection(selectionInput);
+                (hudMenuController as PlayerMenuHUDController).UpdateActionbarSelection(selectionInput, out actionbarSelectionItemID);
+            }
+
+            if (_playerViewModelController != null)
+            {
+                _playerViewModelController.UpdateViewModel(actionbarSelectionItemID);
             }
         }
 

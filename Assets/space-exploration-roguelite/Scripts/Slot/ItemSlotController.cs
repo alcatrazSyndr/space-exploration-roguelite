@@ -9,11 +9,23 @@ namespace SpaceExplorationRoguelite
     public class ItemSlotController : SlotController
     {
         [Header("Components")]
-        [SerializeField] private Image _itemImage;
-        [SerializeField] private TextMeshProUGUI _itemCountText;
+        [SerializeField] protected Image _itemImage;
+        [SerializeField] protected TextMeshProUGUI _itemCountText;
+
+        [Header("Runtime")]
+        [SerializeField] protected ItemSlot _itemSlot = null;
+        public ItemSlot ItemSlot
+        {
+            get
+            {
+                return _itemSlot;
+            }
+        }
 
         public virtual void UpdateItemSlot(ItemSlot itemSlot)
         {
+            _itemSlot = itemSlot;
+
             if (string.IsNullOrEmpty(itemSlot.ItemID) || itemSlot.ItemCount <= 0 || ItemDataManagerSingleton.Instance == null)
             {
                 _itemImage.enabled = false;
