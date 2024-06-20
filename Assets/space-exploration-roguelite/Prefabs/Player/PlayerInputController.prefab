@@ -328,6 +328,23 @@ MonoBehaviour:
       m_Action: Player Actionbar Scroll Input
       m_Flags: 0
     m_Flags: 0
+  _primaryActionInput:
+    m_Name: Jump Input
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: e06a8950-65d8-49ca-b499-cdd72be1455b
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 9b254e63-44ce-4c96-b13e-adb90432006e
+      m_Path: <Mouse>/leftButton
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Jump Input
+      m_Flags: 0
+    m_Flags: 0
   _setup: 0
   _canInteractInput: 1
   _interactInputCurrentCooldown: 0
@@ -337,6 +354,7 @@ MonoBehaviour:
   _currentJumpInput: 0
   _currentCrouchInput: 0
   _currentActionbarInput: -1
+  _currentPrimaryActionInput: 0
   OnCameraInputChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -365,5 +383,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnPlayerActionbarScrollInputPerformed:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPrimaryActionInputChanged:
     m_PersistentCalls:
       m_Calls: []

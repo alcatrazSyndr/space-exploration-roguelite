@@ -29,7 +29,7 @@ namespace SpaceExplorationRoguelite
         {
             None,
             Item,
-            Weapon
+            Tool
         }
     }
 

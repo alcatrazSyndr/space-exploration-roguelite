@@ -219,8 +219,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5921419058161223515}
+  - component: {fileID: 8262870410452995958}
   m_Layer: 0
-  m_Name: ViewModel_Weapon_LaserRifle
+  m_Name: ViewModel_Tool_LaserRifle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -244,6 +245,21 @@ Transform:
   - {fileID: 4038665490422611333}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8262870410452995958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5572046061620049419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95b29f60ac96b9244a2356e16726d3a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _setup: 0
+  _itemDataSO: {fileID: 0}
+  _currentPrimaryActionInput: 0
 --- !u!1 &8466416462269770272
 GameObject:
   m_ObjectHideFlags: 0

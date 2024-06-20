@@ -13,6 +13,7 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private bool _setup = false;
         [SerializeField] private PlayerController _playerController = null;
         [SerializeField] private GameObject _currentViewModelGO = null;
+        [SerializeField] private ViewModelController _currentViewModelController = null;
 
         #region Setup/Unsetup
 
@@ -52,13 +53,12 @@ namespace SpaceExplorationRoguelite
 
                 if (itemDataSO != null)
                 {
-                    if (itemDataSO.ItemType == Enums.ItemType.Weapon)
+                    if (itemDataSO.ViewModelPrefab != null)
                     {
-                        var weaponDataSO = itemDataSO as WeaponDataSO;
-
-                        if (weaponDataSO != null && weaponDataSO.ViewModelPrefab != null)
+                        _currentViewModelGO = Instantiate(itemDataSO.ViewModelPrefab, _viewModelRoot);
+                        if (_currentViewModelGO.TryGetComponent<ViewModelController>(out _currentViewModelController))
                         {
-                            _currentViewModelGO = Instantiate(weaponDataSO.ViewModelPrefab, _viewModelRoot);
+                            _currentViewModelController.Setup(_playerController, itemDataSO);
                         }
                     }
                 }
@@ -67,10 +67,23 @@ namespace SpaceExplorationRoguelite
 
         private void ResetViewModel()
         {
+            if (_currentViewModelController != null)
+            {
+                _currentViewModelController.Unsetup();
+            }
+
             if (_currentViewModelGO != null)
             {
                 Destroy(_currentViewModelGO);
                 _currentViewModelGO = null;
+            }
+        }
+
+        public void PrimaryActionInputChanged(bool input)
+        {
+            if (_currentViewModelController != null)
+            {
+                _currentViewModelController.PrimaryActionInputChanged(input);
             }
         }
 

@@ -307,6 +307,7 @@ namespace SpaceExplorationRoguelite
                 _playerInputController.OnCameraPerspectiveInputPerformed.AddListener(CameraPerspectiveInput);
                 _playerInputController.OnPlayerInventoryInputPerformed.AddListener(PlayerInventoryInput);
                 _playerInputController.OnPlayerActionbarInputPerformed.AddListener(PlayerActionbarInput);
+                _playerInputController.OnPrimaryActionInputChanged.AddListener(PrimaryActionInputChanged);
             }
         }
 
@@ -328,6 +329,7 @@ namespace SpaceExplorationRoguelite
                 _playerInputController.OnCameraPerspectiveInputPerformed.RemoveListener(CameraPerspectiveInput);
                 _playerInputController.OnPlayerInventoryInputPerformed.RemoveListener(PlayerInventoryInput);
                 _playerInputController.OnPlayerActionbarInputPerformed.RemoveListener(PlayerActionbarInput);
+                _playerInputController.OnPrimaryActionInputChanged.RemoveListener(PrimaryActionInputChanged);
 
                 var playerInputControllerGO = _playerInputController.gameObject;
                 _playerInputController.Unsetup();
@@ -532,6 +534,19 @@ namespace SpaceExplorationRoguelite
             ActionbarSelectionChanged(selectionInput);
         }
 
+        private void PrimaryActionInputChanged(bool input)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (_currentControlledObject == null && _playerViewModelController != null)
+            {
+                EquippedItemPrimaryActionInputChange(input);
+            }
+        }
+
         #endregion
 
         #region Controlled Object
@@ -718,6 +733,11 @@ namespace SpaceExplorationRoguelite
 
         private void ActionbarSelectionChanged(int selectionInput)
         {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
             if (_playerMenuControllerSingleton == null)
             {
                 return;
@@ -735,6 +755,16 @@ namespace SpaceExplorationRoguelite
             {
                 _playerViewModelController.UpdateViewModel(actionbarSelectionItemID);
             }
+        }
+
+        private void EquippedItemPrimaryActionInputChange(bool input)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            _playerViewModelController.PrimaryActionInputChanged(input);
         }
 
         #endregion

@@ -21,6 +21,7 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private InputAction _playerInventoryInput;
         [SerializeField] private InputAction _playerActionbarInput;
         [SerializeField] private InputAction _playerActionbarScrollInput;
+        [SerializeField] private InputAction _primaryActionInput;
 
         [Header("Runtime")]
         [SerializeField] private bool _setup = false;
@@ -67,6 +68,14 @@ namespace SpaceExplorationRoguelite
             }
         }
         [SerializeField] private int _currentActionbarInput = -1;
+        [SerializeField] private bool _currentPrimaryActionInput = false;
+        public bool CurrentPrimaryActionInput
+        {
+            get
+            {
+                return _currentPrimaryActionInput;
+            }
+        }
 
         [Header("Events")]
         public UnityEvent<Vector2> OnCameraInputChanged = new UnityEvent<Vector2>();
@@ -79,6 +88,7 @@ namespace SpaceExplorationRoguelite
         public UnityEvent OnPlayerInventoryInputPerformed = new UnityEvent();
         public UnityEvent<int> OnPlayerActionbarInputPerformed = new UnityEvent<int>();
         public UnityEvent<int> OnPlayerActionbarScrollInputPerformed = new UnityEvent<int>();
+        public UnityEvent<bool> OnPrimaryActionInputChanged = new UnityEvent<bool>();
 
         #region Setup/Unsetup/Update
 
@@ -117,6 +127,9 @@ namespace SpaceExplorationRoguelite
 
             InitializeCrouchInput();
             ToggleCrouchInput(true);
+
+            InitializePrimaryActionInput();
+            TogglePrimaryActionInput(true);
         }
 
         public void Unsetup()
@@ -154,6 +167,9 @@ namespace SpaceExplorationRoguelite
 
             ToggleCrouchInput(false);
             DeinitializeCrouchInput();
+
+            TogglePrimaryActionInput(false);
+            DeinitializePrimaryActionInput();
         }
 
         private void FixedUpdate()
@@ -600,6 +616,52 @@ namespace SpaceExplorationRoguelite
             }
 
             OnPlayerActionbarInputPerformed?.Invoke(_currentActionbarInput);
+        }
+
+        #endregion
+
+        #region Primary Action Input
+
+        private void InitializePrimaryActionInput()
+        {
+            _primaryActionInput.started += PrimaryActionInputChanged;
+            _primaryActionInput.canceled += PrimaryActionInputChanged;
+        }
+
+        private void DeinitializePrimaryActionInput()
+        {
+            _primaryActionInput.started -= PrimaryActionInputChanged;
+            _primaryActionInput.canceled -= PrimaryActionInputChanged;
+        }
+
+        public void TogglePrimaryActionInput(bool toggle)
+        {
+            _currentPrimaryActionInput = false;
+
+            if (toggle)
+            {
+                _primaryActionInput.Enable();
+            }
+            else
+            {
+                _primaryActionInput.Disable();
+            }
+
+            OnPrimaryActionInputChanged?.Invoke(_currentPrimaryActionInput);
+        }
+
+        private void PrimaryActionInputChanged(InputAction.CallbackContext context)
+        {
+            if (context.started)
+            {
+                _currentPrimaryActionInput = true;
+            }
+            else if (context.canceled)
+            {
+                _currentPrimaryActionInput = false;
+            }
+
+            OnPrimaryActionInputChanged?.Invoke(_currentPrimaryActionInput);
         }
 
         #endregion
