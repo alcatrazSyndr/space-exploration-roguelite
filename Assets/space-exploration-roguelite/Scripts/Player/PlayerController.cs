@@ -471,8 +471,9 @@ namespace SpaceExplorationRoguelite
             if (_playerMenuControllerSingleton != null)
             {
                 var inventoryMenuController = _playerMenuControllerSingleton.GetPlayerMenuController(Enums.PlayerMenuType.Inventory);
+                var hudMenuController = _playerMenuControllerSingleton.GetPlayerMenuController(Enums.PlayerMenuType.HUD);
 
-                if (inventoryMenuController != null)
+                if (inventoryMenuController != null && _playerInputController != null && hudMenuController != null)
                 {
                     if (_currentControlledObject != null)
                     {
@@ -483,10 +484,18 @@ namespace SpaceExplorationRoguelite
                         if (inventoryMenuController.IsActive)
                         {
                             _playerMenuControllerSingleton.ClosePlayerMenu(Enums.PlayerMenuType.Inventory);
+
+                            _playerInputController.ToggleCameraInput(true);
+
+                            (hudMenuController as PlayerMenuHUDController).ToggleCrosshair(true);
                         }
                         else
                         {
                             _playerMenuControllerSingleton.OpenPlayerMenu(Enums.PlayerMenuType.Inventory);
+
+                            _playerInputController.ToggleCameraInput(false);
+
+                            (hudMenuController as PlayerMenuHUDController).ToggleCrosshair(false);
                         }
                     }
                 }
@@ -524,8 +533,16 @@ namespace SpaceExplorationRoguelite
 
             _currentControlledObject = controllableObject;
 
-            if (_playerMenuControllerSingleton != null)
+            if (_playerMenuControllerSingleton != null && _playerInputController != null)
             {
+                _playerInputController.ToggleCameraInput(true);
+
+                var hudMenuController = _playerMenuControllerSingleton.GetPlayerMenuController(Enums.PlayerMenuType.HUD);
+                if (hudMenuController != null)
+                {
+                    (hudMenuController as PlayerMenuHUDController).ToggleCrosshair(true);
+                }    
+
                 if (_currentControlledObject != null)
                 {
                     var inventoryMenuController = _playerMenuControllerSingleton.GetPlayerMenuController(Enums.PlayerMenuType.Inventory);
@@ -551,7 +568,7 @@ namespace SpaceExplorationRoguelite
                         (shipHUDMenu as PlayerMenuShipHUDController).ToggleShipHUD(canSeeShipHUD, _currentControlledObject.ControllableObjectType);
                     }
 
-                    if (!canSeeShipHUD && _playerInputController != null)
+                    if (!canSeeShipHUD)
                     {
                         _playerInputController.CameraInputChangeOverride(Vector2.zero);
                     }

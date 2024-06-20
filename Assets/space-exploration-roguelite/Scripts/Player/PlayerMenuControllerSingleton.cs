@@ -41,6 +41,11 @@ namespace SpaceExplorationRoguelite
 
         public void Unsetup()
         {
+            foreach (var menuController in _playerMenuTypeControllerDict.Values)
+            {
+                menuController.Unsetup();
+            }
+
             _instance = null;
 
             _playerMenuTypeControllerDict.Clear();
@@ -76,6 +81,9 @@ namespace SpaceExplorationRoguelite
                 if (!_playerMenuTypeControllerDict.ContainsKey(playerMenuController.MenuType))
                 {
                     _playerMenuTypeControllerDict.Add(playerMenuController.MenuType, playerMenuController);
+
+                    playerMenuController.Setup();
+                    playerMenuController.PostSetup();
                 }
                 else
                 {

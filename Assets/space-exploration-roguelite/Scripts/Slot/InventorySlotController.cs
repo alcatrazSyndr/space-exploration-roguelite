@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SpaceExplorationRoguelite
 {
-    public class ItemSlotController : SlotController
+    public class InventorySlotController : SlotController
     {
 
     }

@@ -27,6 +27,21 @@ namespace SpaceExplorationRoguelite
             }
         }
 
+        public virtual void Setup()
+        {
+            _view.Setup();
+        }
+
+        public virtual void PostSetup()
+        {
+            _view.PostSetup();
+        }
+
+        public virtual void Unsetup()
+        {
+            _view.Unsetup();
+        }
+
         public virtual void Show()
         {
             if (_isActive)

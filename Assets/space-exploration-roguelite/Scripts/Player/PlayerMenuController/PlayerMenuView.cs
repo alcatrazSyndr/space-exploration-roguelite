@@ -8,6 +8,21 @@ namespace SpaceExplorationRoguelite
         [SerializeField] protected PlayerMenuController _controller;
         [SerializeField] protected Canvas _canvas;
 
+        public virtual void Setup()
+        {
+
+        }
+
+        public virtual void PostSetup()
+        {
+
+        }
+
+        public virtual void Unsetup()
+        {
+
+        }
+
         public virtual void Show()
         {
             if (_canvas != null)
