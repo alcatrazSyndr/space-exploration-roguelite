@@ -218,6 +218,8 @@ MonoBehaviour:
   _currentCrouchInput: 0
   _tickRate: 0
   _artificialGravityController: {fileID: 0}
+  _previousArtificialGravityLocalPosition: {x: 0, y: 0, z: 0}
+  _previousArtificialGravityLocalRotation: {x: 0, y: 0, z: 0, w: 1}
 --- !u!136 &3617837411676257057
 CapsuleCollider:
   m_ObjectHideFlags: 0
