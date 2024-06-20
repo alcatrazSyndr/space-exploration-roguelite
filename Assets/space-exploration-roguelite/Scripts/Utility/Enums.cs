@@ -24,6 +24,13 @@ namespace SpaceExplorationRoguelite
             Error,
             Warning
         }
+
+        public enum ItemType
+        {
+            None,
+            Item,
+            Weapon
+        }
     }
 
     public static class EnumsUtility

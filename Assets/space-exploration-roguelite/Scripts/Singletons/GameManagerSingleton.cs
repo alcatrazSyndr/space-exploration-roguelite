@@ -174,17 +174,6 @@ namespace SpaceExplorationRoguelite
                 var itemSlot = new ItemSlot();
                 itemSlot.SlotIndex = i;
 
-                if (i == 3)
-                {
-                    itemSlot.ItemID = "Debug_Item_ID_2";
-                    itemSlot.ItemCount = 2;
-                }
-                else if (i == 5)
-                {
-                    itemSlot.ItemID = "Debug_Item_ID_4";
-                    itemSlot.ItemCount = 4;
-                }
-
                 itemSlotList.Add(itemSlot);
             }
 
@@ -210,15 +199,10 @@ namespace SpaceExplorationRoguelite
                 var itemSlot = new ItemSlot();
                 itemSlot.SlotIndex = i;
 
-                if (i == 3)
+                if (i == 0)
                 {
-                    itemSlot.ItemID = "Debug_Item_ID_2";
-                    itemSlot.ItemCount = 2;
-                }
-                else if (i == 5)
-                {
-                    itemSlot.ItemID = "Debug_Item_ID_4";
-                    itemSlot.ItemCount = 4;
+                    itemSlot.ItemID = "Item_Weapon_LaserRifle";
+                    itemSlot.ItemCount = 1;
                 }
 
                 itemSlotList.Add(itemSlot);

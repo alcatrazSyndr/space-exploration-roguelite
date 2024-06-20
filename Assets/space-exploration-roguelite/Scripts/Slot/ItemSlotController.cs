@@ -14,7 +14,7 @@ namespace SpaceExplorationRoguelite
 
         public virtual void UpdateItemSlot(ItemSlot itemSlot)
         {
-            if (string.IsNullOrEmpty(itemSlot.ItemID) || itemSlot.ItemCount <= 0)
+            if (string.IsNullOrEmpty(itemSlot.ItemID) || itemSlot.ItemCount <= 0 || ItemDataManagerSingleton.Instance == null)
             {
                 _itemImage.enabled = false;
                 _itemCountText.text = string.Empty;
@@ -22,7 +22,27 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            _itemCountText.text = itemSlot.ItemCount.ToString();
+            var itemDataSO = ItemDataManagerSingleton.Instance.GetItemDataSOWithItemID(itemSlot.ItemID);
+
+            if (itemDataSO == null)
+            {
+                _itemImage.enabled = false;
+                _itemCountText.text = string.Empty;
+
+                return;
+            }
+
+            if (!itemDataSO.Stackable)
+            {
+                _itemCountText.text = string.Empty;
+            }
+            else
+            {
+                _itemCountText.text = itemSlot.ItemCount.ToString();
+            }
+
+            _itemImage.sprite = itemDataSO.ItemSprite;
+            _itemImage.enabled = itemDataSO.ItemSprite != null;
         }
     }
 }
