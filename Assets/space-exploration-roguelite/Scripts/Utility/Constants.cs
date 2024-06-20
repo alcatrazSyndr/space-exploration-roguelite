@@ -19,5 +19,8 @@ namespace SpaceExplorationRoguelite
 
         public static int PLAYER_INVENTORY_MAX_CAPACITY = 24;
         public static int PLAYER_ACTIONBAR_MAX_CAPACITY = 6;
+
+        public static string DEBUG_LOG_CLIENT_MESSAGE_COLOR_TAG = "#009CFF";
+        public static string DEBUG_LOG_SERVER_MESSAGE_COLOR_TAG = "#CE00FF";
     }
 }

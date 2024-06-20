@@ -17,5 +17,30 @@ namespace SpaceExplorationRoguelite
             None,
             Ship
         }
+
+        public enum DebugLogMessageType
+        {
+            Default,
+            Error,
+            Warning
+        }
+    }
+
+    public static class EnumsUtility
+    {
+        public static Color GetDebugMessageColorFromType(Enums.DebugLogMessageType type)
+        {
+            switch (type)
+            {
+                case Enums.DebugLogMessageType.Default:
+                    return Color.green;
+                case Enums.DebugLogMessageType.Error:
+                    return Color.red;
+                case Enums.DebugLogMessageType.Warning:
+                    return Color.yellow;
+                default:
+                    return Color.green;
+            }
+        }
     }
 }

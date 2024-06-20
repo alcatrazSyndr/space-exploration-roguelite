@@ -14,12 +14,23 @@ namespace SpaceExplorationRoguelite
             }
         }
 
+        #region Setup/Unsetup
+
         public override void Setup()
         {
             _maxActionbarCapacity = Constants.PLAYER_ACTIONBAR_MAX_CAPACITY;
 
             base.Setup();
         }
+
+        public override void Unsetup()
+        {
+            base.Unsetup();
+        }
+
+        #endregion
+
+        #region HUD Management
 
         public void ToggleInteractText(bool toggle, string interactText = "")
         {
@@ -30,5 +41,11 @@ namespace SpaceExplorationRoguelite
         {
             (_view as PlayerMenuHUDView).ToggleCrosshair(toggle);
         }
+
+        #endregion
+
+        #region Actionbar Management
+
+        #endregion
     }
 }

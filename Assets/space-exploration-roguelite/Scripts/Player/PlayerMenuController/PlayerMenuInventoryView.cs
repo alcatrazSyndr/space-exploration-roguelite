@@ -16,6 +16,8 @@ namespace SpaceExplorationRoguelite
         [Header("Runtime")]
         [SerializeField] private List<InventorySlotController> _inventorySlotControllerList = new List<InventorySlotController>();
 
+        #region Setup/Unsetup
+
         public override void Setup()
         {
             base.Setup();
@@ -54,5 +56,11 @@ namespace SpaceExplorationRoguelite
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(_inventorySlotControllerRoot);
         }
+
+        #endregion
+
+        #region Inventory Management
+
+        #endregion
     }
 }

@@ -18,6 +18,8 @@ namespace SpaceExplorationRoguelite
         [Header("Runtime")]
         [SerializeField] private List<ActionbarSlotController> _actionbarSlotControllerList = new List<ActionbarSlotController>();
 
+        #region Setup/Unsetup
+
         public override void Setup()
         {
             base.Setup();
@@ -58,6 +60,10 @@ namespace SpaceExplorationRoguelite
             LayoutRebuilder.ForceRebuildLayoutImmediate(_actionbarSlotControllerRoot);
         }
 
+        #endregion
+
+        #region Show/Hide
+
         public override void Show()
         {
             base.Show();
@@ -67,6 +73,10 @@ namespace SpaceExplorationRoguelite
         {
             base.Hide();
         }
+
+        #endregion
+
+        #region HUD Management
 
         public void ToggleInteractText(bool toggle, string interactText = "")
         {
@@ -79,5 +89,11 @@ namespace SpaceExplorationRoguelite
         {
             _crosshairImage.enabled = toggle;
         }
+
+        #endregion
+
+        #region Actionbar Management
+
+        #endregion
     }
 }

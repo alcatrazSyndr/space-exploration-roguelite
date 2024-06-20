@@ -16,11 +16,24 @@ namespace SpaceExplorationRoguelite
             }
         }
 
+        #region Setup/Unsetup
+
         public override void Setup()
         {
             _maxInventoryCapacity = Constants.PLAYER_INVENTORY_MAX_CAPACITY;
 
             base.Setup();
         }
+
+        public override void Unsetup()
+        {
+            base.Unsetup();
+        }
+
+        #endregion
+
+        #region Inventory Management
+
+        #endregion
     }
 }

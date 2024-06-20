@@ -11,6 +11,7 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private GameObject _playerCameraControllerPrefab;
         [SerializeField] private GameObject _playerInputControllerPrefab;
         [SerializeField] private GameObject _playerMenuControllerSingletonPrefab;
+        [SerializeField] private GameObject _playerInventoryControllerPrefab;
 
         [Header("Runtime - Client")]
         [SerializeField] private PlayerCameraController _playerCameraController = null;
@@ -44,6 +45,7 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private int _previousCameraPerspectiveTransformIndex = -1;
         [SerializeField] private Transform _currentCameraPerspectiveTransform = null;
         [SerializeField] private PlayerViewModelController _playerViewModelController = null;
+        [SerializeField] private PlayerInventoryController _playerInventoryController = null;
 
         [Header("Runtime - Network")]
         public readonly SyncVar<PlayerPawnController> PlayerPawnController = new();
@@ -67,6 +69,7 @@ namespace SpaceExplorationRoguelite
                 SetupMenuControllerSingleton();
                 SetupCameraControllers();
                 SetupInputController();
+                SetupInventoryController();
 
                 _playerMenuControllerSingleton.OpenPlayerMenu(Enums.PlayerMenuType.HUD);
 
@@ -91,6 +94,7 @@ namespace SpaceExplorationRoguelite
                 UnsetupCameraControllers();
                 UnsetupInputController();
                 UnsetupMenuControllerSingleton();
+                UnsetupInventoryController();
             }
         }
 
@@ -593,6 +597,46 @@ namespace SpaceExplorationRoguelite
             if (_currentControlledObject != null)
             {
                 _currentControlledObject.ReleaseOwnership();
+            }
+        }
+
+        #endregion
+
+        #region Inventory Management
+
+        private void SetupInventoryController()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (_playerInventoryController != null)
+            {
+                UnsetupInventoryController();
+            }
+
+            var playerInventoryControllerGO = Instantiate(_playerInventoryControllerPrefab, transform);
+            _playerInventoryController = playerInventoryControllerGO.GetComponent<PlayerInventoryController>();
+            if (_playerInventoryController != null)
+            {
+                _playerInventoryController.Setup(this);
+            }
+        }
+
+        private void UnsetupInventoryController()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (_playerInventoryController != null)
+            {
+                var playerInventoryControllerGO = _playerInventoryController.gameObject;
+                _playerInventoryController.Unsetup();
+                Destroy(playerInventoryControllerGO);
+                _playerInventoryController = null;
             }
         }
 
