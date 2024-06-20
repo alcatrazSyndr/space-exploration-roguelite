@@ -64,6 +64,11 @@ namespace SpaceExplorationRoguelite
             (_view as PlayerMenuHUDView).UpdateActionbarSlotController(itemSlot);
         }
 
+        public void UpdateActionbarSelection(int actionbarSlotIndex)
+        {
+            (_view as PlayerMenuHUDView).UpdateActionbarSelection(actionbarSlotIndex);
+        }
+
         #endregion
     }
 }

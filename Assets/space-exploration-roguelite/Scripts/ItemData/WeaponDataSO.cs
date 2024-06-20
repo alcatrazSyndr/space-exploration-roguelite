@@ -7,6 +7,6 @@ namespace SpaceExplorationRoguelite
     [CreateAssetMenu(fileName = "WeaponDataSO_", menuName = "SpaceExplorationRoguelite/New WeaponDataSO")]
     public class WeaponDataSO : ItemDataSO
     {
-
+        public GameObject ViewModelPrefab;
     }
 }

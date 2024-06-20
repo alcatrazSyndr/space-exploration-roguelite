@@ -246,6 +246,88 @@ MonoBehaviour:
       m_Action: Interact Input
       m_Flags: 0
     m_Flags: 0
+  _playerActionbarInput:
+    m_Name: Interact Input
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: 97b1ef6e-9a2a-4dee-ba7c-4f88debb240a
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: ca72502b-a5b3-41d7-acdb-e66242f93662
+      m_Path: <Keyboard>/1
+      m_Interactions: 
+      m_Processors: Scale
+      m_Groups: 
+      m_Action: Interact Input
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 3ea49ef6-6f74-4413-9a94-c1013878079d
+      m_Path: <Keyboard>/2
+      m_Interactions: 
+      m_Processors: Scale(factor=2)
+      m_Groups: 
+      m_Action: Interact Input
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 63630fb6-af2a-4570-b80b-37c63d302fde
+      m_Path: <Keyboard>/3
+      m_Interactions: 
+      m_Processors: Scale(factor=3)
+      m_Groups: 
+      m_Action: Interact Input
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 25cb5189-ae49-429f-b641-c632a9150d29
+      m_Path: <Keyboard>/4
+      m_Interactions: 
+      m_Processors: Scale(factor=4)
+      m_Groups: 
+      m_Action: Interact Input
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 7ed0a8d7-9297-4cc0-b595-97a5facbf509
+      m_Path: <Keyboard>/5
+      m_Interactions: 
+      m_Processors: Scale(factor=5)
+      m_Groups: 
+      m_Action: Interact Input
+      m_Flags: 0
+    - m_Name: 
+      m_Id: a906e9fc-3573-4ba9-bb9d-b810f441585a
+      m_Path: <Keyboard>/6
+      m_Interactions: 
+      m_Processors: Scale(factor=6)
+      m_Groups: 
+      m_Action: Interact Input
+      m_Flags: 0
+    m_Flags: 0
+  _playerActionbarScrollInput:
+    m_Name: Player Actionbar Scroll Input
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: b365f862-0e66-4a44-95c4-a84c9400ccc9
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: b2cf8e45-fd32-4d4b-8d32-459bdf2a8b56
+      m_Path: <Mouse>/scroll/down
+      m_Interactions: 
+      m_Processors: Scale
+      m_Groups: 
+      m_Action: Player Actionbar Scroll Input
+      m_Flags: 0
+    - m_Name: 
+      m_Id: f8cb2253-8004-439e-a1ce-296c27c0f1a0
+      m_Path: <Mouse>/scroll/up
+      m_Interactions: 
+      m_Processors: Scale(factor=-1)
+      m_Groups: 
+      m_Action: Player Actionbar Scroll Input
+      m_Flags: 0
+    m_Flags: 0
   _setup: 0
   _canInteractInput: 1
   _interactInputCurrentCooldown: 0
@@ -254,6 +336,7 @@ MonoBehaviour:
   _currentLeanInput: 0
   _currentJumpInput: 0
   _currentCrouchInput: 0
+  _currentActionbarInput: -1
   OnCameraInputChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -276,5 +359,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnPlayerInventoryInputPerformed:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPlayerActionbarInputPerformed:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPlayerActionbarScrollInputPerformed:
     m_PersistentCalls:
       m_Calls: []

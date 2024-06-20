@@ -306,6 +306,7 @@ namespace SpaceExplorationRoguelite
                 _playerInputController.OnCrouchInputChanged.AddListener(CrouchInputChanged);
                 _playerInputController.OnCameraPerspectiveInputPerformed.AddListener(CameraPerspectiveInput);
                 _playerInputController.OnPlayerInventoryInputPerformed.AddListener(PlayerInventoryInput);
+                _playerInputController.OnPlayerActionbarInputPerformed.AddListener(PlayerActionbarInput);
             }
         }
 
@@ -326,6 +327,7 @@ namespace SpaceExplorationRoguelite
                 _playerInputController.OnCrouchInputChanged.RemoveListener(CrouchInputChanged);
                 _playerInputController.OnCameraPerspectiveInputPerformed.RemoveListener(CameraPerspectiveInput);
                 _playerInputController.OnPlayerInventoryInputPerformed.RemoveListener(PlayerInventoryInput);
+                _playerInputController.OnPlayerActionbarInputPerformed.RemoveListener(PlayerActionbarInput);
 
                 var playerInputControllerGO = _playerInputController.gameObject;
                 _playerInputController.Unsetup();
@@ -520,6 +522,26 @@ namespace SpaceExplorationRoguelite
             }
         }
 
+        private void PlayerActionbarInput(int selectionInput)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (_playerMenuControllerSingleton == null)
+            {
+                return;
+            }
+
+            var hudMenuController = _playerMenuControllerSingleton.GetPlayerMenuController(Enums.PlayerMenuType.HUD);
+
+            if (hudMenuController != null)
+            {
+                (hudMenuController as PlayerMenuHUDController).UpdateActionbarSelection(selectionInput);
+            }
+        }
+
         #endregion
 
         #region Controlled Object
@@ -553,6 +575,7 @@ namespace SpaceExplorationRoguelite
 
             if (_playerMenuControllerSingleton != null && _playerInputController != null)
             {
+                _playerInputController.ResetActionbarInput();
                 _playerInputController.ToggleCameraInput(true);
 
                 var hudMenuController = _playerMenuControllerSingleton.GetPlayerMenuController(Enums.PlayerMenuType.HUD);
@@ -698,6 +721,12 @@ namespace SpaceExplorationRoguelite
                 _playerInventoryController.ForceUpdateActionbarDataFromServer(itemSlotList);
             }
         }
+
+        #endregion
+
+        #region Tool Management
+
+
 
         #endregion
     }

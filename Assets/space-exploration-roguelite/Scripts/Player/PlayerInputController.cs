@@ -19,6 +19,8 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private InputAction _leanInput;
         [SerializeField] private InputAction _cameraPerspectiveInput;
         [SerializeField] private InputAction _playerInventoryInput;
+        [SerializeField] private InputAction _playerActionbarInput;
+        [SerializeField] private InputAction _playerActionbarScrollInput;
 
         [Header("Runtime")]
         [SerializeField] private bool _setup = false;
@@ -64,6 +66,7 @@ namespace SpaceExplorationRoguelite
                 return _currentCrouchInput;
             }
         }
+        [SerializeField] private int _currentActionbarInput = -1;
 
         [Header("Events")]
         public UnityEvent<Vector2> OnCameraInputChanged = new UnityEvent<Vector2>();
@@ -74,6 +77,8 @@ namespace SpaceExplorationRoguelite
         public UnityEvent<bool> OnCrouchInputChanged = new UnityEvent<bool>();
         public UnityEvent OnCameraPerspectiveInputPerformed = new UnityEvent();
         public UnityEvent OnPlayerInventoryInputPerformed = new UnityEvent();
+        public UnityEvent<int> OnPlayerActionbarInputPerformed = new UnityEvent<int>();
+        public UnityEvent<int> OnPlayerActionbarScrollInputPerformed = new UnityEvent<int>();
 
         #region Setup/Unsetup/Update
 
@@ -96,6 +101,10 @@ namespace SpaceExplorationRoguelite
 
             InitializePlayerInventoryInput();
             TogglePlayerInventoryInput(true);
+
+            InitializePlayerActionbarInput();
+            TogglePlayerActionbarInput(true);
+            TogglePlayerActionbarScrollInput(true);
 
             InitializeMovementInput();
             ToggleMovementInput(true);
@@ -129,6 +138,10 @@ namespace SpaceExplorationRoguelite
 
             TogglePlayerInventoryInput(false);
             DeinitializePlayerInventoryInput();
+
+            TogglePlayerActionbarInput(false);
+            TogglePlayerActionbarScrollInput(false);
+            DeinitializePlayerActionbarInput();
 
             ToggleMovementInput(false);
             DeinitializeMovementInput();
@@ -492,6 +505,101 @@ namespace SpaceExplorationRoguelite
         private void PlayerInventoryInputPerformed(InputAction.CallbackContext context)
         {
             OnPlayerInventoryInputPerformed?.Invoke();
+        }
+
+        #endregion
+
+        #region Player Actionbar Input
+
+        private void InitializePlayerActionbarInput()
+        {
+            _playerActionbarInput.performed += PlayerActionbarInputPerformed;
+
+            _playerActionbarScrollInput.performed += PlayerActionbarScrollInputPerformed;
+        }
+
+        private void DeinitializePlayerActionbarInput()
+        {
+            _playerActionbarInput.performed -= PlayerActionbarInputPerformed;
+
+            _playerActionbarScrollInput.performed -= PlayerActionbarScrollInputPerformed;
+        }
+
+        public void TogglePlayerActionbarInput(bool toggle)
+        {
+            if (toggle && !_playerActionbarInput.enabled)
+            {
+                _playerActionbarInput.Enable();
+            }
+            else if (!toggle && _playerActionbarInput.enabled)
+            {
+                _playerActionbarInput.Disable();
+            }
+        }
+
+        public void TogglePlayerActionbarScrollInput(bool toggle)
+        {
+            if (toggle && !_playerActionbarScrollInput.enabled)
+            {
+                _playerActionbarScrollInput.Enable();
+            }
+            else if (!toggle && _playerActionbarScrollInput.enabled)
+            {
+                _playerActionbarScrollInput.Disable();
+            }
+        }
+
+        public void ResetActionbarInput()
+        {
+            _currentActionbarInput = -1;
+
+            OnPlayerActionbarInputPerformed?.Invoke(_currentActionbarInput);
+        }
+
+        private void PlayerActionbarInputPerformed(InputAction.CallbackContext context)
+        {
+            var inputIndex = Mathf.RoundToInt(context.ReadValue<float>());
+            inputIndex -= 1;
+
+            if (_currentActionbarInput == inputIndex)
+            {
+                _currentActionbarInput = -1;
+            }
+            else
+            {
+                _currentActionbarInput = inputIndex;
+            }
+
+            OnPlayerActionbarInputPerformed?.Invoke(_currentActionbarInput);
+        }
+
+        private void PlayerActionbarScrollInputPerformed(InputAction.CallbackContext context)
+        {
+            var inputValue = context.ReadValue<float>();
+            var inputIndex = 0;
+            if (inputValue > 0f)
+            {
+                inputIndex = 1;
+            }
+            else if (inputValue < 0f)
+            {
+                inputIndex = -1;
+            }
+
+            _currentActionbarInput += inputIndex;
+
+            var maxActionbarInput = Constants.PLAYER_ACTIONBAR_MAX_CAPACITY - 1;
+
+            if (_currentActionbarInput < 0)
+            {
+                _currentActionbarInput = maxActionbarInput;
+            }
+            else if (_currentActionbarInput > maxActionbarInput)
+            {
+                _currentActionbarInput = 0;
+            }
+
+            OnPlayerActionbarInputPerformed?.Invoke(_currentActionbarInput);
         }
 
         #endregion

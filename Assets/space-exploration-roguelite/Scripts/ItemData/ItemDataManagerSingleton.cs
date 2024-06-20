@@ -24,6 +24,8 @@ namespace SpaceExplorationRoguelite
             else
             {
                 Instance = this;
+
+                DontDestroyOnLoad(gameObject);
             }
         }
 
