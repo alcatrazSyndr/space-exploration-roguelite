@@ -61,6 +61,18 @@ namespace SpaceExplorationRoguelite
 
         #region Inventory Management
 
+        public void UpdateInventorySlotController(ItemSlot itemSlot)
+        {
+            var slotIndex = itemSlot.SlotIndex;
+
+            if (slotIndex < 0 || slotIndex >= _inventorySlotControllerList.Count)
+            {
+                return;
+            }
+
+            _inventorySlotControllerList[slotIndex].UpdateItemSlot(itemSlot);
+        }
+
         #endregion
     }
 }

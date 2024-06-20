@@ -114,7 +114,27 @@ namespace SpaceExplorationRoguelite
 
         private void ItemSlotChanged(ItemSlot itemSlot)
         {
-            
+            if (PlayerMenuControllerSingleton.Instance != null)
+            {
+                if (_inventoryItemSlotList.Contains(itemSlot))
+                {
+                    var inventoryMenuController = PlayerMenuControllerSingleton.Instance.GetPlayerMenuController(Enums.PlayerMenuType.Inventory);
+
+                    if (inventoryMenuController != null)
+                    {
+                        (inventoryMenuController as PlayerMenuInventoryController).UpdateInventorySlotController(itemSlot);
+                    }
+                }
+                else if (_actionbarItemSlotList.Contains(itemSlot))
+                {
+                    var hudMenuController = PlayerMenuControllerSingleton.Instance.GetPlayerMenuController(Enums.PlayerMenuType.HUD);
+
+                    if (hudMenuController != null)
+                    {
+                        (hudMenuController as PlayerMenuHUDController).UpdateActionbarSlotController(itemSlot);
+                    }
+                }
+            }
         }
 
         #endregion

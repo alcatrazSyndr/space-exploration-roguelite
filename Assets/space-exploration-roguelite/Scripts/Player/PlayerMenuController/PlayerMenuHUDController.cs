@@ -13,6 +13,14 @@ namespace SpaceExplorationRoguelite
                 return _maxActionbarCapacity;
             }
         }
+        [SerializeField] private PlayerController _playerController = null;
+        public PlayerController PlayerController
+        {
+            get
+            {
+                return _playerController;
+            }
+        }
 
         #region Setup/Unsetup
 
@@ -45,6 +53,16 @@ namespace SpaceExplorationRoguelite
         #endregion
 
         #region Actionbar Management
+
+        public void SetPlayerController(PlayerController playerController)
+        {
+            _playerController = playerController;
+        }
+
+        public void UpdateActionbarSlotController(ItemSlot itemSlot)
+        {
+            (_view as PlayerMenuHUDView).UpdateActionbarSlotController(itemSlot);
+        }
 
         #endregion
     }

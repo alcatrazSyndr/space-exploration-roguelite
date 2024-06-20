@@ -152,6 +152,18 @@ namespace SpaceExplorationRoguelite
             {
                 _playerMenuControllerSingleton.Setup();
             }
+
+            var hudMenuController = _playerMenuControllerSingleton.GetPlayerMenuController(Enums.PlayerMenuType.HUD);
+            if (hudMenuController != null)
+            {
+                (hudMenuController as PlayerMenuHUDController).SetPlayerController(this);
+            }
+
+            var inventoryMenuController = _playerMenuControllerSingleton.GetPlayerMenuController(Enums.PlayerMenuType.Inventory);
+            if (inventoryMenuController != null)
+            {
+                (inventoryMenuController as PlayerMenuInventoryController).SetPlayerController(this);
+            }
         }
 
         private void UnsetupMenuControllerSingleton()

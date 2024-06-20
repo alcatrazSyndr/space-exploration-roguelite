@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SpaceExplorationRoguelite
 {
-    public class ActionbarSlotController : SlotController
+    public class ActionbarSlotController : ItemSlotController
     {
         [Header("Components")]
         [SerializeField] private TextMeshProUGUI _actionbarIndexText;

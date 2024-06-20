@@ -15,6 +15,14 @@ namespace SpaceExplorationRoguelite
                 return _maxInventoryCapacity;
             }
         }
+        [SerializeField] private PlayerController _playerController = null;
+        public PlayerController PlayerController
+        {
+            get
+            {
+                return _playerController;
+            }
+        }
 
         #region Setup/Unsetup
 
@@ -33,6 +41,16 @@ namespace SpaceExplorationRoguelite
         #endregion
 
         #region Inventory Management
+
+        public void SetPlayerController(PlayerController playerController)
+        {
+            _playerController = playerController;
+        }
+
+        public void UpdateInventorySlotController(ItemSlot itemSlot)
+        {
+            (_view as PlayerMenuInventoryView).UpdateInventorySlotController(itemSlot);
+        }
 
         #endregion
     }

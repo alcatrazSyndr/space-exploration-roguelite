@@ -94,6 +94,18 @@ namespace SpaceExplorationRoguelite
 
         #region Actionbar Management
 
+        public void UpdateActionbarSlotController(ItemSlot itemSlot)
+        {
+            var slotIndex = itemSlot.SlotIndex;
+
+            if (slotIndex < 0 || slotIndex >= _actionbarSlotControllerList.Count)
+            {
+                return;
+            }
+
+            _actionbarSlotControllerList[slotIndex].UpdateItemSlot(itemSlot);
+        }
+
         #endregion
     }
 }
