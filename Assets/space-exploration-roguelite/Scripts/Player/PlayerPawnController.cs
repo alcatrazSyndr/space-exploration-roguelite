@@ -11,6 +11,16 @@ namespace SpaceExplorationRoguelite
 {
     public class PlayerPawnController : NetworkBehaviour
     {
+        [Header("Components - Client")]
+        [SerializeField] private Transform _debugBulletOriginPoint;
+        public Vector3 DebugBulletOriginPosition
+        {
+            get
+            {
+                return _debugBulletOriginPoint.position;
+            }
+        }
+
         [Header("Runtime")]
         [SerializeField] private float _noGravityMoveRate = 0f;
         [SerializeField] private float _noGravityRotateRate = 0f;

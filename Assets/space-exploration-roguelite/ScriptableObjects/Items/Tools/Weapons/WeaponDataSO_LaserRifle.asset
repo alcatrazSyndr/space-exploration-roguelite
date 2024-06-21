@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9ea5c1d8309f4144aeda08a62247993, type: 3}
-  m_Name: ToolDataSO_LaserRifle
+  m_Script: {fileID: 11500000, guid: e4d0b90dbc6f7044c808d6db61066699, type: 3}
+  m_Name: WeaponDataSO_LaserRifle
   m_EditorClassIdentifier: 
   ItemID: Item_Weapon_LaserRifle
   ItemName: Laser Rifle
@@ -19,3 +19,9 @@ MonoBehaviour:
   Stackable: 0
   ViewModelPrefab: {fileID: 5572046061620049419, guid: a220dfcf94bfa3041addaec9aa015546,
     type: 3}
+  ToolType: 1
+  WeaponType: 0
+  FiringType: 1
+  BulletPrefab: {fileID: 7783386496933789980, guid: cf0d5ee11b6a23241bb1f7470ba39b5a,
+    type: 3}
+  FiringCooldown: 0.25

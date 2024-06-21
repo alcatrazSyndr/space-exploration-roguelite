@@ -7,6 +7,6 @@ namespace SpaceExplorationRoguelite
     [CreateAssetMenu(fileName = "ToolDataSO_", menuName = "SpaceExplorationRoguelite/New ToolDataSO")]
     public class ToolDataSO : ItemDataSO
     {
-
+        public Enums.ToolType ToolType;
     }
 }

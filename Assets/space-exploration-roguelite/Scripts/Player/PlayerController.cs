@@ -31,6 +31,20 @@ namespace SpaceExplorationRoguelite
                 }
             }
         }
+        public Transform CameraVisionTransform
+        {
+            get
+            {
+                if (_playerCameraController != null && _playerCameraController.Camera != null)
+                {
+                    return _playerCameraController.Camera.transform;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
         [SerializeField] private PlayerInputController _playerInputController = null;
         [SerializeField] private PlayerInteractionController _playerInteractionController = null;
         [SerializeField] private PlayerMenuControllerSingleton _playerMenuControllerSingleton = null;
@@ -765,6 +779,67 @@ namespace SpaceExplorationRoguelite
             }
 
             _playerViewModelController.PrimaryActionInputChanged(input);
+        }
+
+        #endregion
+
+        #region Tool Action Replication
+
+        public void WeaponBulletFired(Vector3 targetPosition, string bulletWeaponItemID)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            WeaponBulletFiredServerRequest(PlayerPawnController.Value.DebugBulletOriginPosition, targetPosition, bulletWeaponItemID);
+        }
+
+        [ServerRpc(RequireOwnership = true)]
+        private void WeaponBulletFiredServerRequest(Vector3 originPosition, Vector3 targetPosition, string bulletWeaponItemID)
+        {
+            WeaponBulletFiredFromServer(originPosition, targetPosition, bulletWeaponItemID);
+        }
+
+        [ObserversRpc(BufferLast = true, ExcludeOwner = true)]
+        private void WeaponBulletFiredFromServer(Vector3 originPosition, Vector3 targetPosition, string bulletWeaponItemID)
+        {
+            if (ItemDataManagerSingleton.Instance == null)
+            {
+                return;
+            }
+
+            var itemDataSO = ItemDataManagerSingleton.Instance.GetItemDataSOWithItemID(bulletWeaponItemID);
+            if (itemDataSO == null)
+            {
+                return;
+            }
+
+            var weaponDataSO = itemDataSO as WeaponDataSO;
+            if (weaponDataSO == null)
+            {
+                return;
+            }
+
+            var bulletPrefab = weaponDataSO.BulletPrefab;
+
+            if (bulletPrefab == null)
+            {
+                return;
+            }
+
+            var bulletGO = Instantiate(bulletPrefab, null);
+            bulletGO.transform.position = originPosition;
+
+            var bulletController = bulletGO.GetComponent<ViewModelBulletController>();
+            if (bulletController != null)
+            {
+                bulletController.Setup(targetPosition);
+            }
+            else
+            {
+                Destroy(bulletGO);
+            }
         }
 
         #endregion

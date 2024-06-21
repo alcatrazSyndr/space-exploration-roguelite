@@ -40,7 +40,17 @@ namespace SpaceExplorationRoguelite
 
         public virtual void PrimaryActionInputChanged(bool input)
         {
-            if (_playerController == null || _itemDataSO == null)
+            if (_playerController == null)
+            {
+                return;
+            }
+
+            if (_itemDataSO == null)
+            {
+                return;
+            }
+
+            if (!_setup)
             {
                 return;
             }

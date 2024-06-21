@@ -22,6 +22,13 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private Transform _cameraZ;
         [SerializeField] private Transform _cameraTransform;
         [SerializeField] private Camera _camera;
+        public Camera Camera
+        {
+            get
+            {
+                return _camera;
+            }
+        }
 
         [Header("Runtime")]
         [SerializeField] private bool _setup = false;

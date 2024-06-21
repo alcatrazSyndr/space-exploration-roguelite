@@ -210,6 +210,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &4965711564502157701
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5733800304272839041}
+  m_Layer: 11
+  m_Name: BulletOriginRotationPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5733800304272839041
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4965711564502157701}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: -0.06107, z: 0.00247}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6977796741765175604}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &5572046061620049419
 GameObject:
   m_ObjectHideFlags: 0
@@ -219,9 +250,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5921419058161223515}
-  - component: {fileID: 8262870410452995958}
+  - component: {fileID: 8099939093964816860}
   m_Layer: 0
-  m_Name: ViewModel_Tool_LaserRifle
+  m_Name: ViewModel_Weapon_LaserRifle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -245,7 +276,7 @@ Transform:
   - {fileID: 4038665490422611333}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8262870410452995958
+--- !u!114 &8099939093964816860
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -254,12 +285,52 @@ MonoBehaviour:
   m_GameObject: {fileID: 5572046061620049419}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b29f60ac96b9244a2356e16726d3a5, type: 3}
+  m_Script: {fileID: 11500000, guid: 1d7bed82db6fc4247b3bf005d328a65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _setup: 0
   _itemDataSO: {fileID: 0}
+  _playerController: {fileID: 0}
   _currentPrimaryActionInput: 0
+  _bulletRaycastLayerMask:
+    serializedVersion: 2
+    m_Bits: 3063
+  _bulletOriginPoint: {fileID: 1756206246973229751}
+  _bulletPrefab: {fileID: 0}
+  _firingType: 0
+  _firingCooldownTime: 0
+  _canFire: 0
+--- !u!1 &6455340608058606170
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1756206246973229751}
+  m_Layer: 11
+  m_Name: BulletOriginPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1756206246973229751
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6455340608058606170}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -0, y: -0.00298, z: 0.00247}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6977796741765175604}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &8466416462269770272
 GameObject:
   m_ObjectHideFlags: 0
@@ -290,7 +361,9 @@ Transform:
   m_LocalPosition: {x: 0.513, y: -0.431, z: 1.006}
   m_LocalScale: {x: 50, y: 50, z: 50}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1756206246973229751}
+  - {fileID: 5733800304272839041}
   m_Father: {fileID: 5921419058161223515}
   m_LocalEulerAnglesHint: {x: -90, y: 180, z: -1.5}
 --- !u!33 &2895925850216055035

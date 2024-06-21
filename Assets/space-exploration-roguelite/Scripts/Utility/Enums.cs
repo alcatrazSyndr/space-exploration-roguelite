@@ -31,6 +31,26 @@ namespace SpaceExplorationRoguelite
             Item,
             Tool
         }
+
+        public enum ToolType
+        {
+            Tool,
+            Weapon
+        }
+
+        public enum WeaponType
+        {
+            Ranged,
+            Melee
+        }
+
+        public enum RangedWeaponFiringType
+        {
+            SingleAction,
+            SemiAutomatic,
+            Automatic,
+            Beam
+        }
     }
 
     public static class EnumsUtility
