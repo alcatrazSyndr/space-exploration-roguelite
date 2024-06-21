@@ -650,6 +650,13 @@ namespace SpaceExplorationRoguelite
             OnPrimaryActionInputChanged?.Invoke(_currentPrimaryActionInput);
         }
 
+        public void ResetPrimaryActionInput()
+        {
+            _currentPrimaryActionInput = false;
+
+            OnPrimaryActionInputChanged?.Invoke(_currentPrimaryActionInput);
+        }
+
         private void PrimaryActionInputChanged(InputAction.CallbackContext context)
         {
             if (context.started)

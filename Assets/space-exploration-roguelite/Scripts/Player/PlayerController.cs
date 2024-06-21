@@ -521,12 +521,16 @@ namespace SpaceExplorationRoguelite
                         {
                             _playerMenuControllerSingleton.ClosePlayerMenu(Enums.PlayerMenuType.Inventory);
 
+                            _playerInputController.ResetPrimaryActionInput();
+
                             _playerInputController.ToggleCameraInput(true);
 
                             (hudMenuController as PlayerMenuHUDController).ToggleCrosshair(true);
                         }
                         else
                         {
+                            _playerInputController.ResetPrimaryActionInput();
+
                             _playerMenuControllerSingleton.OpenPlayerMenu(Enums.PlayerMenuType.Inventory);
 
                             _playerInputController.ToggleCameraInput(false);
@@ -571,6 +575,8 @@ namespace SpaceExplorationRoguelite
             {
                 return;
             }
+
+            _playerInputController.ResetPrimaryActionInput();
 
             if (_currentControlledObject != null && controllableObject == null && PlayerPawnController.Value != null && _currentControlledObject.ControllableObjectExitTransform != null)
             {
@@ -765,6 +771,11 @@ namespace SpaceExplorationRoguelite
                 (hudMenuController as PlayerMenuHUDController).UpdateActionbarSelection(selectionInput, out actionbarSelectionItemID);
             }
 
+            if (_playerInputController != null)
+            {
+                _playerInputController.ResetPrimaryActionInput();
+            }
+
             if (_playerViewModelController != null)
             {
                 _playerViewModelController.UpdateViewModel(actionbarSelectionItemID);
@@ -774,6 +785,22 @@ namespace SpaceExplorationRoguelite
         private void EquippedItemPrimaryActionInputChange(bool input)
         {
             if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (_playerMenuControllerSingleton == null)
+            {
+                return;
+            }
+
+            var playerInventoryMenuController = _playerMenuControllerSingleton.GetPlayerMenuController(Enums.PlayerMenuType.Inventory);
+            if (playerInventoryMenuController == null)
+            {
+                return;
+            }
+
+            if (playerInventoryMenuController.IsActive)
             {
                 return;
             }
