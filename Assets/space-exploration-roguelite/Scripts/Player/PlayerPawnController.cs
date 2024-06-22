@@ -20,6 +20,7 @@ namespace SpaceExplorationRoguelite
                 return _debugBulletOriginPoint.position;
             }
         }
+        [SerializeField] private Transform _equippedItemPawnModelRoot;
 
         [Header("Runtime")]
         [SerializeField] private float _noGravityMoveRate = 0f;
@@ -53,6 +54,7 @@ namespace SpaceExplorationRoguelite
         private IEnumerator _fixPlayerUpDirectionCRT = null;
         [SerializeField] private Vector3 _previousArtificialGravityLocalPosition = Vector3.zero;
         [SerializeField] private Quaternion _previousArtificialGravityLocalRotation = Quaternion.identity;
+        [SerializeField] private GameObject _currentEquippedItemPawnModel = null;
 
         #region Setup/Unsetup/OnTick
 
@@ -703,6 +705,28 @@ namespace SpaceExplorationRoguelite
             else
             {
                 pawn.SetParent(newParent);
+            }
+        }
+
+        #endregion
+
+        #region Equipped Item Pawn Model
+
+        public void UpdateEquippedItemPawnModel(string itemID)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (!_setup)
+            {
+                return;
+            }
+
+            if (ItemDataManagerSingleton.Instance == null)
+            {
+                return;
             }
         }
 

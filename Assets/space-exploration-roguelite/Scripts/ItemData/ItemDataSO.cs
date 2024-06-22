@@ -13,5 +13,6 @@ namespace SpaceExplorationRoguelite
         public Enums.ItemType ItemType;
         public bool Stackable = false;
         public GameObject ViewModelPrefab;
+        public GameObject PawnModelPrefab;
     }
 }

@@ -780,6 +780,11 @@ namespace SpaceExplorationRoguelite
             {
                 _playerViewModelController.UpdateViewModel(actionbarSelectionItemID);
             }
+
+            if (PlayerPawnController.Value != null)
+            {
+                PlayerPawnController.Value.UpdateEquippedItemPawnModel(actionbarSelectionItemID);
+            }
         }
 
         private void EquippedItemPrimaryActionInputChange(bool input)
