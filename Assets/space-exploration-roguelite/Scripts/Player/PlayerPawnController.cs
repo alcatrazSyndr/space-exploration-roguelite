@@ -74,7 +74,7 @@ namespace SpaceExplorationRoguelite
 
             _setup = true;
 
-            //_pawnMeshRenderer.enabled = false;
+            _pawnMeshRenderer.enabled = false;
 
             _playerController = playerController;
 
@@ -733,10 +733,7 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (_currentEquippedItemPawnModel != null)
-            {
-                Destroy(_currentEquippedItemPawnModel);
-            }
+            RequestUpdateEquippedItemPawnModel(itemID);
 
             if (ItemDataManagerSingleton.Instance == null)
             {
@@ -751,18 +748,47 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            if (itemDataSO.PawnModelPrefab != null)
-            {
-                _currentEquippedItemPawnModel = Instantiate(itemDataSO.PawnModelPrefab, _equippedItemPawnModelRoot);
-                _currentEquippedItemPawnModel.transform.localPosition = Vector3.zero;
-                _currentEquippedItemPawnModel.transform.localRotation = Quaternion.identity;
-                _currentEquippedItemPawnModel.transform.localScale = Vector3.one;
-            }
-
             var toolDataSO = itemDataSO as ToolDataSO;
             if (toolDataSO != null)
             {
                 ChangePawnAnimatorToolType((int)toolDataSO.ToolAnimationType);
+            }
+        }
+
+        [ServerRpc]
+        private void RequestUpdateEquippedItemPawnModel(string itemID)
+        {
+            ApproveUpdateEquippedItemPawnModel(itemID);
+        }
+
+        [ObserversRpc(ExcludeOwner = true, BufferLast = true)]
+        private void ApproveUpdateEquippedItemPawnModel(string itemID)
+        {
+            if (_currentEquippedItemPawnModel != null)
+            {
+                Destroy(_currentEquippedItemPawnModel);
+            }
+
+            if (ItemDataManagerSingleton.Instance == null)
+            {
+                return;
+            }
+
+            var itemDataSO = ItemDataManagerSingleton.Instance.GetItemDataSOWithItemID(itemID);
+            if (itemDataSO == null)
+            {
+                return;
+            }
+
+            if (itemDataSO != null)
+            {
+                if (itemDataSO.PawnModelPrefab != null)
+                {
+                    _currentEquippedItemPawnModel = Instantiate(itemDataSO.PawnModelPrefab, _equippedItemPawnModelRoot);
+                    _currentEquippedItemPawnModel.transform.localPosition = Vector3.zero;
+                    _currentEquippedItemPawnModel.transform.localRotation = Quaternion.identity;
+                    _currentEquippedItemPawnModel.transform.localScale = Vector3.one;
+                }
             }
         }
 
