@@ -19,7 +19,8 @@ MonoBehaviour:
   Stackable: 0
   ViewModelPrefab: {fileID: 5572046061620049419, guid: a220dfcf94bfa3041addaec9aa015546,
     type: 3}
-  PawnModelPrefab: {fileID: 0}
+  PawnModelPrefab: {fileID: 3988181660344956690, guid: f893a08e53b3f0547901d3aaf69b561e,
+    type: 3}
   ToolType: 1
   ToolAnimationType: 1
   WeaponType: 0

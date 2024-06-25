@@ -824,7 +824,7 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            WeaponBulletFiredServerRequest(PlayerPawnController.Value.DebugBulletOriginPosition, targetPosition, bulletWeaponItemID);
+            WeaponBulletFiredServerRequest(PlayerPawnController.Value.BulletOriginPosition, targetPosition, bulletWeaponItemID);
         }
 
         [ServerRpc(RequireOwnership = true)]

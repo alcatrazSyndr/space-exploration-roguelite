@@ -12,13 +12,11 @@ namespace SpaceExplorationRoguelite
 {
     public class PlayerPawnController : NetworkBehaviour
     {
-        [Header("Components")]
-        [SerializeField] private Transform _debugBulletOriginPoint;
-        public Vector3 DebugBulletOriginPosition
+        public Vector3 BulletOriginPosition
         {
             get
             {
-                return _debugBulletOriginPoint.position;
+                return _equippedItemPawnModelRoot.position;
             }
         }
         [SerializeField] private Transform _equippedItemPawnModelRoot;
@@ -76,7 +74,7 @@ namespace SpaceExplorationRoguelite
 
             _setup = true;
 
-            _pawnMeshRenderer.enabled = false;
+            //_pawnMeshRenderer.enabled = false;
 
             _playerController = playerController;
 
@@ -735,6 +733,11 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
+            if (_currentEquippedItemPawnModel != null)
+            {
+                Destroy(_currentEquippedItemPawnModel);
+            }
+
             if (ItemDataManagerSingleton.Instance == null)
             {
                 ChangePawnAnimatorToolType(0);
@@ -746,6 +749,14 @@ namespace SpaceExplorationRoguelite
             {
                 ChangePawnAnimatorToolType(0);
                 return;
+            }
+
+            if (itemDataSO.PawnModelPrefab != null)
+            {
+                _currentEquippedItemPawnModel = Instantiate(itemDataSO.PawnModelPrefab, _equippedItemPawnModelRoot);
+                _currentEquippedItemPawnModel.transform.localPosition = Vector3.zero;
+                _currentEquippedItemPawnModel.transform.localRotation = Quaternion.identity;
+                _currentEquippedItemPawnModel.transform.localScale = Vector3.one;
             }
 
             var toolDataSO = itemDataSO as ToolDataSO;

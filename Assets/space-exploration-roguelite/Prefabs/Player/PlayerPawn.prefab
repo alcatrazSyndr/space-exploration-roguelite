@@ -230,8 +230,7 @@ MonoBehaviour:
   _componentIndexCache: 1
   _addedNetworkObject: {fileID: 8654876999964684564}
   _networkObjectCache: {fileID: 8654876999964684564}
-  _debugBulletOriginPoint: {fileID: 2404066750570710357}
-  _equippedItemPawnModelRoot: {fileID: 0}
+  _equippedItemPawnModelRoot: {fileID: 1330290277959435469}
   _pawnAnimator: {fileID: 2816995142870937473}
   _pawnMeshRenderer: {fileID: 6699426406239167841}
   _noGravityMoveRate: 0
@@ -337,6 +336,37 @@ Transform:
   - {fileID: 2404066750570710357}
   m_Father: {fileID: 7855057643438409672}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6804290073346329981
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1330290277959435469}
+  m_Layer: 0
+  m_Name: EquippedItemModelRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1330290277959435469
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6804290073346329981}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.3281066, y: 0.6495387, z: 0.41428033, w: 0.5466419}
+  m_LocalPosition: {x: 0.067, y: 0.463, z: 0.053}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8054902664644390360}
+  m_LocalEulerAnglesHint: {x: -63.753, y: 97.681, z: 3.46}
 --- !u!1001 &8538103071410098704
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -432,7 +462,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1852576806548013000, guid: bda264bec2f30484eb1664efa94e2817,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1330290277959435469}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bda264bec2f30484eb1664efa94e2817, type: 3}
 --- !u!95 &2816995142870937473 stripped
@@ -444,6 +478,12 @@ Animator:
 --- !u!137 &6699426406239167841 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: -6159715566357317775, guid: bda264bec2f30484eb1664efa94e2817,
+    type: 3}
+  m_PrefabInstance: {fileID: 8538103071410098704}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8054902664644390360 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1852576806548013000, guid: bda264bec2f30484eb1664efa94e2817,
     type: 3}
   m_PrefabInstance: {fileID: 8538103071410098704}
   m_PrefabAsset: {fileID: 0}
