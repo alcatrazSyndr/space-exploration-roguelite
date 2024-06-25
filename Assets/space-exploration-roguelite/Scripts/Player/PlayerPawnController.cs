@@ -1,3 +1,4 @@
+using FishNet.Component.Animating;
 using FishNet.Component.Transforming;
 using FishNet.Connection;
 using FishNet.Object;
@@ -11,7 +12,7 @@ namespace SpaceExplorationRoguelite
 {
     public class PlayerPawnController : NetworkBehaviour
     {
-        [Header("Components - Client")]
+        [Header("Components")]
         [SerializeField] private Transform _debugBulletOriginPoint;
         public Vector3 DebugBulletOriginPosition
         {
@@ -21,6 +22,8 @@ namespace SpaceExplorationRoguelite
             }
         }
         [SerializeField] private Transform _equippedItemPawnModelRoot;
+        [SerializeField] private Animator _pawnAnimator;
+        [SerializeField] private SkinnedMeshRenderer _pawnMeshRenderer;
 
         [Header("Runtime")]
         [SerializeField] private float _noGravityMoveRate = 0f;
@@ -55,6 +58,7 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private Vector3 _previousArtificialGravityLocalPosition = Vector3.zero;
         [SerializeField] private Quaternion _previousArtificialGravityLocalRotation = Quaternion.identity;
         [SerializeField] private GameObject _currentEquippedItemPawnModel = null;
+        private IEnumerator _changePawnAnimatorMovementCRT = null;
 
         #region Setup/Unsetup/OnTick
 
@@ -70,9 +74,11 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            _playerController = playerController;
-
             _setup = true;
+
+            _pawnMeshRenderer.enabled = false;
+
+            _playerController = playerController;
 
             _noGravityMoveRate = Constants.PLAYERPAWN_NO_GRAVITY_MOVE_RATE;
             _noGravityRotateRate = Constants.PLAYERPAWN_NO_GRAVITY_ROTATE_RATE;
@@ -99,6 +105,7 @@ namespace SpaceExplorationRoguelite
             {
                 return;
             }
+
             _setup = false;
         }
 
@@ -568,6 +575,8 @@ namespace SpaceExplorationRoguelite
             if (_currentMovementInput != movementInput)
             {
                 _currentMovementInput = movementInput;
+
+                ChangePawnAnimatorMovement();
             }
         }
 
@@ -662,6 +671,8 @@ namespace SpaceExplorationRoguelite
 
                 ResetFixPlayerUpDirectionProcess();
             }
+
+            ChangePawnAnimatorGravity();
         }
 
         [ServerRpc]
@@ -728,6 +739,98 @@ namespace SpaceExplorationRoguelite
             {
                 return;
             }
+        }
+
+        #endregion
+
+        #region Pawn Animation
+
+        private void ChangePawnAnimatorMovement()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (!_setup)
+            {
+                return;
+            }
+
+            ResetChangePawnAnimatorMovement();
+
+            _changePawnAnimatorMovementCRT = ChangePawnAnimatorMovementCRT();
+            StartCoroutine(_changePawnAnimatorMovementCRT);
+        }
+
+        private void ResetChangePawnAnimatorMovement()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (!_setup)
+            {
+                return;
+            }
+
+            if (_changePawnAnimatorMovementCRT != null)
+            {
+                StopCoroutine(_changePawnAnimatorMovementCRT);
+                _changePawnAnimatorMovementCRT = null;
+            }
+        }
+
+        private IEnumerator ChangePawnAnimatorMovementCRT()
+        {
+            var startMovementX = _pawnAnimator.GetFloat("MovementX");
+            var startMovementY = _pawnAnimator.GetFloat("MovementY");
+            var startMovementSpeed = _pawnAnimator.GetFloat("MovementSpeed");
+
+            var targetMovementX = _currentMovementInput.x;
+            var targetMovementY = _currentMovementInput.y;
+            var targetMovementSpeed = (Mathf.Abs(_currentMovementInput.x) > 0f || Mathf.Abs(_currentMovementInput.y) > 0f) ? 1f : 0f;
+
+            var time = Constants.PLAYERPAWN_ANIMATION_MOVEMENT_ANIMATION_TRANSITION_TIME;
+            var currentTime = 0f;
+            var interpolation = 0f;
+
+            while (currentTime < time)
+            {
+                interpolation = Mathf.Clamp01(currentTime / time);
+
+                _pawnAnimator.SetFloat("MovementX", Mathf.Lerp(startMovementX, targetMovementX, interpolation));
+                _pawnAnimator.SetFloat("MovementY", Mathf.Lerp(startMovementY, targetMovementY, interpolation));
+                _pawnAnimator.SetFloat("MovementSpeed", Mathf.Lerp(startMovementSpeed, targetMovementSpeed, interpolation));
+
+                currentTime += _tickRate;
+
+                yield return new WaitForSecondsRealtime(_tickRate);
+            }
+
+            _pawnAnimator.SetFloat("MovementX", targetMovementX);
+            _pawnAnimator.SetFloat("MovementY", targetMovementY);
+            _pawnAnimator.SetFloat("MovementSpeed", targetMovementSpeed);
+            
+            _changePawnAnimatorMovementCRT = null;
+
+            yield break;
+        }
+
+        private void ChangePawnAnimatorGravity()
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (!_setup)
+            {
+                return;
+            }
+
+            _pawnAnimator.SetFloat("Gravity", _artificialGravityController != null ? 1f : 0f);
         }
 
         #endregion
