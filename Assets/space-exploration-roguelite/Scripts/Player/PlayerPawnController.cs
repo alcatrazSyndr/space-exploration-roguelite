@@ -7,6 +7,7 @@ using FishNet.Object.Synchronizing;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 namespace SpaceExplorationRoguelite
 {
@@ -17,6 +18,7 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private Animator _pawnAnimator;
         [SerializeField] private SkinnedMeshRenderer _pawnMeshRenderer;
         [SerializeField] private Transform _pawnTorsoAimTargetTransform;
+        [SerializeField] private Rig _aimRig;
 
         [Header("Runtime")]
         [SerializeField] private float _noGravityMoveRate = 0f;
@@ -76,7 +78,7 @@ namespace SpaceExplorationRoguelite
 
             _setup = true;
 
-            //_pawnMeshRenderer.enabled = false;
+            _pawnMeshRenderer.enabled = false;
 
             _playerController = playerController;
 
@@ -770,12 +772,13 @@ namespace SpaceExplorationRoguelite
             ApproveUpdateEquippedItemPawnModel(itemID);
         }
 
-        [ObserversRpc(ExcludeOwner = false, BufferLast = true)]
+        [ObserversRpc(ExcludeOwner = true, BufferLast = true)]
         private void ApproveUpdateEquippedItemPawnModel(string itemID)
         {
             if (_currentEquippedItemPawnModel != null)
             {
                 Destroy(_currentEquippedItemPawnModel);
+                _aimRig.weight = 0f;
             }
 
             if (ItemDataManagerSingleton.Instance == null)
@@ -797,6 +800,8 @@ namespace SpaceExplorationRoguelite
                     _currentEquippedItemPawnModel.transform.localPosition = Vector3.zero;
                     _currentEquippedItemPawnModel.transform.localRotation = Quaternion.identity;
                     _currentEquippedItemPawnModel.transform.localScale = Vector3.one;
+
+                    _aimRig.weight = 1f;
                 }
             }
         }
