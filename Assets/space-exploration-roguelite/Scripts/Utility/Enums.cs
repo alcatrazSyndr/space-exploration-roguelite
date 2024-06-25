@@ -38,6 +38,12 @@ namespace SpaceExplorationRoguelite
             Weapon
         }
 
+        public enum ToolAnimType
+        {
+            Unarmed,
+            Rifle
+        }
+
         public enum WeaponType
         {
             Ranged,

@@ -7,6 +7,7 @@ namespace SpaceExplorationRoguelite
     [CreateAssetMenu(fileName = "ItemDataSO_", menuName = "SpaceExplorationRoguelite/New ItemDataSO")]
     public class ItemDataSO : ScriptableObject
     {
+        [Header("Item Data")]
         public string ItemID;
         public string ItemName;
         public Sprite ItemSprite;

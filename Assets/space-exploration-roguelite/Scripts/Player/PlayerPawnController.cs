@@ -737,7 +737,21 @@ namespace SpaceExplorationRoguelite
 
             if (ItemDataManagerSingleton.Instance == null)
             {
+                ChangePawnAnimatorToolType(0);
                 return;
+            }
+
+            var itemDataSO = ItemDataManagerSingleton.Instance.GetItemDataSOWithItemID(itemID);
+            if (itemDataSO == null)
+            {
+                ChangePawnAnimatorToolType(0);
+                return;
+            }
+
+            var toolDataSO = itemDataSO as ToolDataSO;
+            if (toolDataSO != null)
+            {
+                ChangePawnAnimatorToolType((int)toolDataSO.ToolAnimationType);
             }
         }
 
@@ -831,6 +845,21 @@ namespace SpaceExplorationRoguelite
             }
 
             _pawnAnimator.SetFloat("Gravity", _artificialGravityController != null ? 1f : 0f);
+        }
+
+        private void ChangePawnAnimatorToolType(int toolType)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            if (!_setup)
+            {
+                return;
+            }
+
+            _pawnAnimator.SetFloat("ToolType", (float)toolType);
         }
 
         #endregion
