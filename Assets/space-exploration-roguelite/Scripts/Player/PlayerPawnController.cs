@@ -12,16 +12,11 @@ namespace SpaceExplorationRoguelite
 {
     public class PlayerPawnController : NetworkBehaviour
     {
-        public Vector3 BulletOriginPosition
-        {
-            get
-            {
-                return _equippedItemPawnModelRoot.position;
-            }
-        }
+        [Header("Components")]
         [SerializeField] private Transform _equippedItemPawnModelRoot;
         [SerializeField] private Animator _pawnAnimator;
         [SerializeField] private SkinnedMeshRenderer _pawnMeshRenderer;
+        [SerializeField] private Transform _pawnTorsoAimTargetTransform;
 
         [Header("Runtime")]
         [SerializeField] private float _noGravityMoveRate = 0f;
@@ -57,6 +52,13 @@ namespace SpaceExplorationRoguelite
         [SerializeField] private Quaternion _previousArtificialGravityLocalRotation = Quaternion.identity;
         [SerializeField] private GameObject _currentEquippedItemPawnModel = null;
         private IEnumerator _changePawnAnimatorMovementCRT = null;
+        public Vector3 BulletOriginPosition
+        {
+            get
+            {
+                return _equippedItemPawnModelRoot.position;
+            }
+        }
 
         #region Setup/Unsetup/OnTick
 
@@ -74,7 +76,7 @@ namespace SpaceExplorationRoguelite
 
             _setup = true;
 
-            _pawnMeshRenderer.enabled = false;
+            //_pawnMeshRenderer.enabled = false;
 
             _playerController = playerController;
 
@@ -153,6 +155,13 @@ namespace SpaceExplorationRoguelite
 
                 var targetMovementPosition = new Vector3(_currentMovementInput.x, (_currentJumpInput ? 1f : 0f) + (_currentCrouchInput ? -1f : 0f), _currentMovementInput.y).normalized;
                 MovePlayerPawnNoGravity(targetMovementPosition);
+            }
+
+            if (_playerController != null && _playerController.CameraVisionTransform != null)
+            {
+                var cameraForward = _playerController.CameraVisionTransform.forward;
+
+                _pawnTorsoAimTargetTransform.position = transform.position + (cameraForward * 10f);
             }
         }
 
@@ -761,7 +770,7 @@ namespace SpaceExplorationRoguelite
             ApproveUpdateEquippedItemPawnModel(itemID);
         }
 
-        [ObserversRpc(ExcludeOwner = true, BufferLast = true)]
+        [ObserversRpc(ExcludeOwner = false, BufferLast = true)]
         private void ApproveUpdateEquippedItemPawnModel(string itemID)
         {
             if (_currentEquippedItemPawnModel != null)
