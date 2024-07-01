@@ -17,7 +17,7 @@ MonoBehaviour:
   ItemSprite: {fileID: 21300000, guid: 8a47a1fec12df754492f36f97b3ceb57, type: 3}
   ItemType: 2
   Stackable: 0
-  ViewModelPrefab: {fileID: 5572046061620049419, guid: a220dfcf94bfa3041addaec9aa015546,
+  ViewModelPrefab: {fileID: 1223815362240501241, guid: 98843c129868c0b4bb2ec7d8e712f183,
     type: 3}
   PawnModelPrefab: {fileID: 3988181660344956690, guid: f893a08e53b3f0547901d3aaf69b561e,
     type: 3}

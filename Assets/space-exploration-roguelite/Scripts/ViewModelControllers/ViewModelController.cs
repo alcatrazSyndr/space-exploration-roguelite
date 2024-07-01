@@ -6,6 +6,10 @@ namespace SpaceExplorationRoguelite
 {
     public class ViewModelController : MonoBehaviour
     {
+        [Header("Components")]
+        [SerializeField] protected Animator _primaryAnimator = null;
+        [SerializeField] protected Animator _secondaryAnimator = null;
+
         [Header("Runtime")]
         [SerializeField] protected bool _setup = false;
         [SerializeField] protected ItemDataSO _itemDataSO = null;

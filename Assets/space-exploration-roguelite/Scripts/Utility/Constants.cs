@@ -24,5 +24,7 @@ namespace SpaceExplorationRoguelite
 
         public static string DEBUG_LOG_CLIENT_MESSAGE_COLOR_TAG = "#009CFF";
         public static string DEBUG_LOG_SERVER_MESSAGE_COLOR_TAG = "#CE00FF";
+
+        public static string VIEWMODEL_FIRE_ANIMATION_NAME = "Fire";
     }
 }

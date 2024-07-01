@@ -86,37 +86,6 @@ MonoBehaviour:
       x: 1
       y: 1
       z: 1
---- !u!1 &537475612056734698
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2404066750570710357}
-  m_Layer: 8
-  m_Name: DebugBulletOriginPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2404066750570710357
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 537475612056734698}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.446, y: 0.303, z: 0.654}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6363862104899557525}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &956575283859560498
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,7 +291,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6363862104899557525}
   - {fileID: 8212268826804319739}
   - {fileID: 1371253670135934845}
   m_Father: {fileID: 0}
@@ -517,7 +485,7 @@ MonoBehaviour:
   _artificialGravityController: {fileID: 0}
   _previousArtificialGravityLocalPosition: {x: 0, y: 0, z: 0}
   _previousArtificialGravityLocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  _currentEquippedItemPawnModel: {fileID: 0}
+  _currentEquippedItemPawnModelController: {fileID: 0}
 --- !u!136 &3617837411676257057
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -649,38 +617,6 @@ MonoBehaviour:
       x: 1
       y: 1
       z: 1
---- !u!1 &4101926318764323929
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6363862104899557525}
-  m_Layer: 8
-  m_Name: PlayerPawn_EquippedToolRoot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6363862104899557525
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4101926318764323929}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2404066750570710357}
-  m_Father: {fileID: 7855057643438409672}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4375009910327660735
 GameObject:
   m_ObjectHideFlags: 0
@@ -869,7 +805,7 @@ Transform:
   m_GameObject: {fileID: 5519306920928260616}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.4460177, z: 0}
+  m_LocalPosition: {x: 0, y: 2.681, z: 0}
   m_LocalScale: {x: 1.7699115, y: 1.7699115, z: 1.7699115}
   m_ConstrainProportionsScale: 0
   m_Children:

@@ -150,6 +150,11 @@ namespace SpaceExplorationRoguelite
 
                 bulletController.Setup(targetPos);
                 _playerController.WeaponBulletFired(targetPos, _itemDataSO.ItemID);
+
+                if (_primaryAnimator != null)
+                {
+                    _primaryAnimator.Play(Constants.VIEWMODEL_FIRE_ANIMATION_NAME);
+                }
             }
             else
             {

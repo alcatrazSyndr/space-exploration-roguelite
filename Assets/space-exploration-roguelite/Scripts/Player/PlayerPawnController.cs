@@ -52,13 +52,20 @@ namespace SpaceExplorationRoguelite
         private IEnumerator _fixPlayerUpDirectionCRT = null;
         [SerializeField] private Vector3 _previousArtificialGravityLocalPosition = Vector3.zero;
         [SerializeField] private Quaternion _previousArtificialGravityLocalRotation = Quaternion.identity;
-        [SerializeField] private GameObject _currentEquippedItemPawnModel = null;
+        [SerializeField] private PawnModelController _currentEquippedItemPawnModelController = null;
         private IEnumerator _changePawnAnimatorMovementCRT = null;
         public Vector3 BulletOriginPosition
         {
             get
             {
-                return _equippedItemPawnModelRoot.position;
+                if (_currentEquippedItemPawnModelController != null && _currentEquippedItemPawnModelController.BulletOriginPoint != null)
+                {
+                    return _currentEquippedItemPawnModelController.BulletOriginPoint.position;
+                }
+                else
+                {
+                    return _equippedItemPawnModelRoot.position;
+                }
             }
         }
 
@@ -775,9 +782,9 @@ namespace SpaceExplorationRoguelite
         [ObserversRpc(ExcludeOwner = true, BufferLast = true)]
         private void ApproveUpdateEquippedItemPawnModel(string itemID)
         {
-            if (_currentEquippedItemPawnModel != null)
+            if (_currentEquippedItemPawnModelController != null)
             {
-                Destroy(_currentEquippedItemPawnModel);
+                Destroy(_currentEquippedItemPawnModelController.gameObject);
                 _aimRig.weight = 0f;
             }
 
@@ -796,10 +803,13 @@ namespace SpaceExplorationRoguelite
             {
                 if (itemDataSO.PawnModelPrefab != null)
                 {
-                    _currentEquippedItemPawnModel = Instantiate(itemDataSO.PawnModelPrefab, _equippedItemPawnModelRoot);
-                    _currentEquippedItemPawnModel.transform.localPosition = Vector3.zero;
-                    _currentEquippedItemPawnModel.transform.localRotation = Quaternion.identity;
-                    _currentEquippedItemPawnModel.transform.localScale = Vector3.one;
+                    var pawnModelGO = Instantiate(itemDataSO.PawnModelPrefab, _equippedItemPawnModelRoot);
+
+                    _currentEquippedItemPawnModelController = pawnModelGO.GetComponent<PawnModelController>();
+
+                    pawnModelGO.transform.localPosition = Vector3.zero;
+                    pawnModelGO.transform.localRotation = Quaternion.identity;
+                    pawnModelGO.transform.localScale = Vector3.one;
 
                     _aimRig.weight = 1f;
                 }
