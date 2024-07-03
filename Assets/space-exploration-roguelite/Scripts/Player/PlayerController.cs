@@ -824,53 +824,9 @@ namespace SpaceExplorationRoguelite
                 return;
             }
 
-            WeaponBulletFiredServerRequest(PlayerPawnController.Value.BulletOriginPosition, targetPosition, bulletWeaponItemID);
-        }
-
-        [ServerRpc(RequireOwnership = true)]
-        private void WeaponBulletFiredServerRequest(Vector3 originPosition, Vector3 targetPosition, string bulletWeaponItemID)
-        {
-            WeaponBulletFiredFromServer(originPosition, targetPosition, bulletWeaponItemID);
-        }
-
-        [ObserversRpc(BufferLast = true, ExcludeOwner = true)]
-        private void WeaponBulletFiredFromServer(Vector3 originPosition, Vector3 targetPosition, string bulletWeaponItemID)
-        {
-            if (ItemDataManagerSingleton.Instance == null)
+            if (PlayerPawnController.Value != null)
             {
-                return;
-            }
-
-            var itemDataSO = ItemDataManagerSingleton.Instance.GetItemDataSOWithItemID(bulletWeaponItemID);
-            if (itemDataSO == null)
-            {
-                return;
-            }
-
-            var weaponDataSO = itemDataSO as WeaponDataSO;
-            if (weaponDataSO == null)
-            {
-                return;
-            }
-
-            var bulletPrefab = weaponDataSO.BulletPrefab;
-
-            if (bulletPrefab == null)
-            {
-                return;
-            }
-
-            var bulletGO = Instantiate(bulletPrefab, null);
-            bulletGO.transform.position = originPosition;
-
-            var bulletController = bulletGO.GetComponent<ViewModelBulletController>();
-            if (bulletController != null)
-            {
-                bulletController.Setup(targetPosition);
-            }
-            else
-            {
-                Destroy(bulletGO);
+                PlayerPawnController.Value.WeaponBulletFired(targetPosition, bulletWeaponItemID);
             }
         }
 

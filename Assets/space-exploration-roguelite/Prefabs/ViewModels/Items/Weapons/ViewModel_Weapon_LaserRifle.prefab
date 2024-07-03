@@ -284,7 +284,7 @@ MonoBehaviour:
   _currentPrimaryActionInput: 0
   _bulletRaycastLayerMask:
     serializedVersion: 2
-    m_Bits: 3063
+    m_Bits: 705
   _bulletOriginPoint: {fileID: 7540779452926015101}
   _bulletPrefab: {fileID: 0}
   _firingType: 0

@@ -15,10 +15,14 @@ namespace SpaceExplorationRoguelite
     {
         [Header("Components")]
         [SerializeField] private Transform _equippedItemPawnModelRoot;
+        [SerializeField] private Transform _equippedItemPawnModelRootPivot; 
         [SerializeField] private Animator _pawnAnimator;
         [SerializeField] private SkinnedMeshRenderer _pawnMeshRenderer;
         [SerializeField] private Transform _pawnTorsoAimTargetTransform;
         [SerializeField] private Rig _aimRig;
+        [SerializeField] private Transform _leftHandIKTarget;
+        [SerializeField] private Transform _rightHandIKTarget;
+        [SerializeField] private Transform _bulletOriginTransform;
 
         [Header("Runtime")]
         [SerializeField] private float _noGravityMoveRate = 0f;
@@ -52,22 +56,8 @@ namespace SpaceExplorationRoguelite
         private IEnumerator _fixPlayerUpDirectionCRT = null;
         [SerializeField] private Vector3 _previousArtificialGravityLocalPosition = Vector3.zero;
         [SerializeField] private Quaternion _previousArtificialGravityLocalRotation = Quaternion.identity;
-        [SerializeField] private PawnModelController _currentEquippedItemPawnModelController = null;
         private IEnumerator _changePawnAnimatorMovementCRT = null;
-        public Vector3 BulletOriginPosition
-        {
-            get
-            {
-                if (_currentEquippedItemPawnModelController != null && _currentEquippedItemPawnModelController.BulletOriginPoint != null)
-                {
-                    return _currentEquippedItemPawnModelController.BulletOriginPoint.position;
-                }
-                else
-                {
-                    return _equippedItemPawnModelRoot.position;
-                }
-            }
-        }
+        private PawnModelController _currentEquippedItemPawnModelController = null;
 
         #region Setup/Unsetup/OnTick
 
@@ -811,8 +801,80 @@ namespace SpaceExplorationRoguelite
                     pawnModelGO.transform.localRotation = Quaternion.identity;
                     pawnModelGO.transform.localScale = Vector3.one;
 
+                    _equippedItemPawnModelRootPivot.LookAt(_pawnTorsoAimTargetTransform, transform.up);
+
+                    _leftHandIKTarget.localPosition = _currentEquippedItemPawnModelController.LeftHandIKTarget.localPosition;
+                    _leftHandIKTarget.localRotation = _currentEquippedItemPawnModelController.LeftHandIKTarget.localRotation;
+
+                    _rightHandIKTarget.localPosition = _currentEquippedItemPawnModelController.RightHandIKTarget.localPosition;
+                    _rightHandIKTarget.localRotation = _currentEquippedItemPawnModelController.RightHandIKTarget.localRotation;
+
+                    _bulletOriginTransform.position = _currentEquippedItemPawnModelController.BulletOriginPoint.position;
+                    _bulletOriginTransform.rotation = _currentEquippedItemPawnModelController.BulletOriginPoint.rotation;
+
                     _aimRig.weight = 1f;
                 }
+            }
+        }
+
+        #endregion
+
+        #region Tool Action Replication
+
+        public void WeaponBulletFired(Vector3 targetPosition, string bulletWeaponItemID)
+        {
+            if (!base.IsOwner)
+            {
+                return;
+            }
+
+            WeaponBulletFiredServerRequest(targetPosition, bulletWeaponItemID);
+        }
+
+        [ServerRpc(RequireOwnership = true)]
+        private void WeaponBulletFiredServerRequest(Vector3 targetPosition, string bulletWeaponItemID)
+        {
+            WeaponBulletFiredFromServer(targetPosition, bulletWeaponItemID);
+        }
+
+        [ObserversRpc(BufferLast = true, ExcludeOwner = true)]
+        private void WeaponBulletFiredFromServer(Vector3 targetPosition, string bulletWeaponItemID)
+        {
+            if (ItemDataManagerSingleton.Instance == null)
+            {
+                return;
+            }
+
+            var itemDataSO = ItemDataManagerSingleton.Instance.GetItemDataSOWithItemID(bulletWeaponItemID);
+            if (itemDataSO == null)
+            {
+                return;
+            }
+
+            var weaponDataSO = itemDataSO as WeaponDataSO;
+            if (weaponDataSO == null)
+            {
+                return;
+            }
+
+            var bulletPrefab = weaponDataSO.BulletPrefab;
+
+            if (bulletPrefab == null)
+            {
+                return;
+            }
+
+            var bulletGO = Instantiate(bulletPrefab, null);
+            bulletGO.transform.position = _bulletOriginTransform.position;
+
+            var bulletController = bulletGO.GetComponent<ViewModelBulletController>();
+            if (bulletController != null)
+            {
+                bulletController.Setup(targetPosition);
+            }
+            else
+            {
+                Destroy(bulletGO);
             }
         }
 

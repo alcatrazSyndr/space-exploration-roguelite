@@ -15,5 +15,21 @@ namespace SpaceExplorationRoguelite
                 return _bulletOriginPoint;
             }
         }
+        [SerializeField] private Transform _leftHandIKTarget;
+        public Transform LeftHandIKTarget
+        {
+            get
+            {
+                return _leftHandIKTarget;
+            }
+        }
+        [SerializeField] private Transform _rightHandIKTarget;
+        public Transform RightHandIKTarget
+        {
+            get
+            {
+                return _rightHandIKTarget;
+            }
+        }
     }
 }
